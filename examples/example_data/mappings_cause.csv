@@ -1,0 +1,48 @@
+,in,out_
+0,01 - Replace,Replacement
+1,02 - Repair,Repair
+2,03 - Adjust,Repair
+3,03 - Modify,Repair
+4,04 - Adjust,Repair
+5,05 - Refit(Reset),Repair
+6,06 - Check,"Troubleshooting ""Status"""
+7,07 - Service,"Troubleshooting ""Status"""
+8,08 - Test,"Troubleshooting ""Status"""
+9,09 - Inspection,"Troubleshooting ""Status"""
+10,09-Inspection,"Troubleshooting ""Status"""
+11,10 - Overhaul,Repair
+12,11 - Combination,Misc.
+13,12 - Other,Misc.
+14,13 - Remote Reset,Troubleshooting
+15,14 - Self Resolved,None
+16,15 - EPC Resolved,"Troubleshooting ""Status"""
+17,Clear faults,"Troubleshooting ""Reset"""
+18,Cleared faults through GUI,"Troubleshooting ""Reset"""
+19,Cleared through GUI,"Troubleshooting ""Reset"""
+20,Curtailment Lift,None
+21,DEPCOM warranty service work,"Troubleshooting ""Status"""
+22,Fault cleared manually,"Troubleshooting ""Reset"""
+23,Faults cleared,"Troubleshooting ""Reset"""
+24,Faults cleared through GUI with PC,"Troubleshooting ""Reset"""
+25,Field Wiring Repair,Repair
+26,Fuse Replacement,Replacement
+27,"Ground fault was isolated at combiner box 01. All strings at CB 01 were disconnected and fuses were removed. Combiner box was placed in ""off"" position and locked out. DC disconnect for CB's 01 & 02 at inverter 1 was opened before power cycling the inv.",Repair
+28,Hardware Adjustment,Repair
+29,Hardware Replacement,Replacement
+30,No Action Required,None
+31,Not Fixed - Follow-up,Misc.
+32,Other,Misc.
+33,Other Site Work,Misc.
+34,Power Cycle,"Troubleshooting ""Status"""
+35,Preventative Maintenance,"Troubleshooting ""Status"""
+36,Problem Self-Resolved,None
+37,Reclose,Troubleshooting
+38,Remote Reset,Troubleshooting
+39,Remote Troubleshooting,Troubleshooting
+40,Repair work on combiner box was sub' out to electrical contractors Anderson and Wood,Repair
+41,Replace/Repair,Replacement
+42,Replacement,Replacement
+43,Software Change/Update,Software
+44,Software/Firmware Adjustment,Software
+45,Software/Firmware Update,Software
+46,Unknown,Missing

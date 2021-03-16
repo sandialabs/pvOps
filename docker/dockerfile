@@ -1,0 +1,24 @@
+FROM nexus.web.sandia.gov:8083/continuumio/miniconda3
+LABEL authors="Adrian Perez <jespere@sandia.gov>"
+
+# https://wp.sandia.gov/proxy-services/
+ENV DEBIAN_FRONTEND="noninteractive" \
+    http_proxy="http://proxy.sandia.gov:80" \
+    https_proxy="http://proxy.sandia.gov:80" \
+    no_proxy="localhost,localnets,sandia.gov,127.0.0.1" \
+    # configure py pip to use Nexus
+    PIP_INDEX_URL=https://nexus.web.sandia.gov/repository/pypi-proxy/simple
+
+
+RUN mkdir -p /usr/local/share/ca-certificates
+ADD bc.pem /usr/local/share/ca-certificates/https-interception.sandia.gov.crt
+
+RUN apt-get update && \
+    apt-get install apt-utils ca-certificates curl git -y \
+    --no-install-recommends && \
+    update-ca-certificates && \
+    apt-get autoclean && \
+    apt-get --purge -y autoremove && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+CMD ["/bin/bash"]

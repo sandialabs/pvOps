@@ -1,0 +1,584 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>text package &mdash; pvOps 0.1 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="text2time package" href="text2time.html" />
+    <link rel="prev" title="tests package" href="tests.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> pvOps
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">pvops</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="tests.html">tests package</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">text package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-text.DataDensifier">text.DataDensifier module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#text-doc2vecmodel-module">text.Doc2VecModel module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-text.classification_deployer">text.classification_deployer module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-text.create_stopwords">text.create_stopwords module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#text-get-dates-module">text.get_dates module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#text-preprocessor-module">text.preprocessor module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-text.remap_attributes">text.remap_attributes module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#text-summarize-text-data-module">text.summarize_text_data module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-text.supervised_classifier_defs">text.supervised_classifier_defs module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-text.text_remove_nondate_nums">text.text_remove_nondate_nums module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#text-text-remove-numbers-urls-module">text.text_remove_numbers_urls module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-text.unsupervised_classifier_defs">text.unsupervised_classifier_defs module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-text.visualize_attribute_connectivity">text.visualize_attribute_connectivity module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#text-visualize-cluster-entropy-module">text.visualize_cluster_entropy module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-text.visualize_document_clusters">text.visualize_document_clusters module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-text.visualize_frequency_plot">text.visualize_frequency_plot module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-text.visualize_ticket_publication_timeseries">text.visualize_ticket_publication_timeseries module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-text">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="text2time.html">text2time package</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">pvOps</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="modules.html">pvops</a> &raquo;</li>
+        
+      <li>text package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/text.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="text-package">
+<h1>text package<a class="headerlink" href="#text-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-text.DataDensifier">
+<span id="text-datadensifier-module"></span><h2>text.DataDensifier module<a class="headerlink" href="#module-text.DataDensifier" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="text.DataDensifier.DataDensifier">
+<em class="property">class </em><code class="sig-prename descclassname">text.DataDensifier.</code><code class="sig-name descname">DataDensifier</code><a class="headerlink" href="#text.DataDensifier.DataDensifier" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sklearn.base.BaseEstimator</span></code></p>
+<p>A data structure transformer which converts sparse data to dense data. This process is usually 
+incorporated in this library when doing unsupervised machine learning. This class is built 
+specifically to work inside a sklearn pipeline. Therefore, it uses the default <code class="docutils literal notranslate"><span class="pre">transform</span></code>, <code class="docutils literal notranslate"><span class="pre">fit</span></code>, 
+<code class="docutils literal notranslate"><span class="pre">fit_transform</span></code> method structure.</p>
+<dl class="py method">
+<dt id="text.DataDensifier.DataDensifier.fit">
+<code class="sig-name descname">fit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em>, <em class="sig-param"><span class="n">y</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#text.DataDensifier.DataDensifier.fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Placeholder method to conform to the sklearn class structure.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="text.DataDensifier.DataDensifier.fit_transform">
+<code class="sig-name descname">fit_transform</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em>, <em class="sig-param"><span class="n">y</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#text.DataDensifier.DataDensifier.fit_transform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Performs same action as <code class="docutils literal notranslate"><span class="pre">DataDensifier.transform()</span></code></p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="text.DataDensifier.DataDensifier.transform">
+<code class="sig-name descname">transform</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em>, <em class="sig-param"><span class="n">y</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#text.DataDensifier.DataDensifier.transform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a dense array if the input array is sparse.</p>
+<dl class="simple">
+<dt>X<span class="classifier">array</span></dt><dd><p>Input data</p>
+</dd>
+</dl>
+<p>Returns</p>
+<p>sparse array</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="text-doc2vecmodel-module">
+<h2>text.Doc2VecModel module<a class="headerlink" href="#text-doc2vecmodel-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-text.classification_deployer">
+<span id="text-classification-deployer-module"></span><h2>text.classification_deployer module<a class="headerlink" href="#module-text.classification_deployer" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="text.classification_deployer.classification_deployer">
+<code class="sig-prename descclassname">text.classification_deployer.</code><code class="sig-name descname">classification_deployer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em>, <em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">n_splits</span></em>, <em class="sig-param"><span class="n">classifiers</span></em>, <em class="sig-param"><span class="n">search_space</span></em>, <em class="sig-param"><span class="n">pipeline_steps</span></em>, <em class="sig-param"><span class="n">scoring</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">3</span></em><span class="sig-paren">)</span><a class="headerlink" href="#text.classification_deployer.classification_deployer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build classifier evaluator with hyperparameter fine-tuning grid search protocol</p>
+<p>To see an example of this method, see <code class="docutils literal notranslate"><span class="pre">examples//text_class_example.py</span></code></p>
+<dl>
+<dt>X<span class="classifier">list</span></dt><dd><p>List of documents (str)</p>
+</dd>
+<dt>y<span class="classifier">list</span></dt><dd><p>List of labels corresponding with the documents in X</p>
+</dd>
+<dt>n_splits<span class="classifier">int</span></dt><dd><p>Integer defining the number of splits in the cross validation split during training</p>
+</dd>
+<dt>classifiers<span class="classifier">dict</span></dt><dd><p>Dictionary with key as classifier identifier (str) and value as classifier instance following sklearn’s 
+base model convention, checked here: <a href="#id3"><span class="problematic" id="id4">`Scikit learn classifier checker&lt;https://scikit-learn.org/stable/modules/generated/sklearn.base.is_classifier.html&gt;`_</span></a>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">classifiers</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;LinearSVC&#39;</span><span class="p">:</span> <span class="n">LinearSVC</span><span class="p">(),</span>
+    <span class="s1">&#39;AdaBoostClassifier&#39;</span><span class="p">:</span> <span class="n">AdaBoostClassifier</span><span class="p">(),</span>
+    <span class="s1">&#39;RidgeClassifier&#39;</span><span class="p">:</span> <span class="n">RidgeClassifier</span><span class="p">()</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>To see this package’s defaults, see <code class="docutils literal notranslate"><span class="pre">supervised_classifier_defs.py</span></code> or <code class="docutils literal notranslate"><span class="pre">unsupervised_classifier_defs.py</span></code></p>
+</dd>
+<dt>search_space<span class="classifier">dict</span></dt><dd><p>Dictionary with classifier identifiers, as used in <code class="docutils literal notranslate"><span class="pre">classifiers</span></code>, mapped to its hyperparameters.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">search_space</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;LinearSVC&#39;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="s1">&#39;clf__C&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">1e-2</span><span class="p">,</span><span class="mf">1e-1</span><span class="p">],</span>
+    <span class="s1">&#39;clf__max_iter&#39;</span><span class="p">:[</span><span class="mi">800</span><span class="p">,</span><span class="mi">1000</span><span class="p">],</span>
+    <span class="p">},</span>
+    <span class="s1">&#39;AdaBoostClassifier&#39;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="s1">&#39;clf__n_estimators&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">50</span><span class="p">,</span><span class="mi">100</span><span class="p">],</span>
+    <span class="s1">&#39;clf__learning_rate&#39;</span><span class="p">:[</span><span class="mf">1.</span><span class="p">,</span><span class="mf">0.9</span><span class="p">,</span><span class="mf">0.8</span><span class="p">],</span>
+    <span class="s1">&#39;clf__algorithm&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;SAMME.R&#39;</span><span class="p">]</span>
+    <span class="p">},</span>
+    <span class="s1">&#39;RidgeClassifier&#39;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="s1">&#39;clf__alpha&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.</span><span class="p">,</span><span class="mf">1e-3</span><span class="p">,</span><span class="mf">1.</span><span class="p">],</span>
+    <span class="s1">&#39;clf__normalize&#39;</span><span class="p">:</span> <span class="p">[</span><span class="kc">False</span><span class="p">,</span><span class="kc">True</span><span class="p">]</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>To see this package’s defaults, see <code class="docutils literal notranslate"><span class="pre">supervised_classifier_defs.py</span></code> or <code class="docutils literal notranslate"><span class="pre">unsupervised_classifier_defs.py</span></code></p>
+</dd>
+<dt>pipeline_steps<span class="classifier">list of tuples</span></dt><dd><p>Define embedding and machine learning pipeline. The last tuple must be <code class="docutils literal notranslate"><span class="pre">('clf',</span> <span class="pre">None)</span></code> so that the output
+of the pipeline is a prediction.
+For supervised classifiers using a TFIDF embedding, one could specify</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pipeline_steps</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;tfidf&#39;</span><span class="p">,</span> <span class="n">TfidfVectorizer</span><span class="p">()),</span>
+                  <span class="p">(</span><span class="s1">&#39;clf&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)]</span>
+</pre></div>
+</div>
+<p>For unsupervised clusterers using a TFIDF embedding, one could specify</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">pipeline_steps</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;tfidf&#39;</span><span class="p">,</span> <span class="n">TfidfVectorizer</span><span class="p">()),</span>
+                  <span class="p">(</span><span class="s1">&#39;to_dense&#39;</span><span class="p">,</span> <span class="n">DataDensifier</span><span class="o">.</span><span class="n">DataDensifier</span><span class="p">()),</span>
+                  <span class="p">(</span><span class="s1">&#39;clf&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)]</span>
+</pre></div>
+</div>
+<p>A densifier is required from some clusters, which fail if sparse data is passed.</p>
+</dd>
+<dt>scoring<span class="classifier">sklearn callable scorer</span></dt><dd><p>Callable object that returns a scalar score created using sklearn.metrics.make_scorer
+For supervised classifiers, one could specify</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">scoring</span> <span class="o">=</span> <span class="n">make_scorer</span><span class="p">(</span><span class="n">f1_score</span><span class="p">,</span> <span class="n">average</span> <span class="o">=</span> <span class="s1">&#39;weighted&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>For unsupervised classifiers, one could specify</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">scoring</span> <span class="o">=</span> <span class="n">make_scorer</span><span class="p">(</span><span class="n">homogeneity_score</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd>
+<dt>verbose<span class="classifier">int</span></dt><dd><p>Verbosity of the print statements</p>
+</dd>
+</dl>
+<p>Returns</p>
+<dl class="simple">
+<dt>DataFrame</dt><dd><p>Summarization of results from all of the classifiers</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-text.create_stopwords">
+<span id="text-create-stopwords-module"></span><h2>text.create_stopwords module<a class="headerlink" href="#module-text.create_stopwords" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="text.create_stopwords.create_stopwords">
+<code class="sig-prename descclassname">text.create_stopwords.</code><code class="sig-name descname">create_stopwords</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lst_langs</span><span class="o">=</span><span class="default_value">['english']</span></em>, <em class="sig-param"><span class="n">lst_add_words</span><span class="o">=</span><span class="default_value">[]</span></em>, <em class="sig-param"><span class="n">lst_keep_words</span><span class="o">=</span><span class="default_value">[]</span></em><span class="sig-paren">)</span><a class="headerlink" href="#text.create_stopwords.create_stopwords" title="Permalink to this definition">¶</a></dt>
+<dd><p>Assimilate a list of stopwords using both words grabbed from nltk and user-specified words.</p>
+<dl class="simple">
+<dt>lst_langs<span class="classifier">list</span></dt><dd><p>List of strings designating the languages for a nltk.corpus.stopwords.words query. If empty list is passed, no stopwords will be queried from nltk.</p>
+</dd>
+<dt>lst_add_words<span class="classifier">list</span></dt><dd><p>List of words represented as strings to add to stopwords list. If these words are already included in the nltk query, a duplicate will not be added.</p>
+</dd>
+<dt>lst_keep_words<span class="classifier">list</span></dt><dd><p>List of words represented as strings to remove from stopwords list. This is usually used as an assurance to remove specific words conglomerated during the nltk queries.</p>
+</dd>
+</dl>
+<p>Returns</p>
+<dl class="simple">
+<dt>List</dt><dd><p>List of alphabetized stopwords</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="text-get-dates-module">
+<h2>text.get_dates module<a class="headerlink" href="#text-get-dates-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="text-preprocessor-module">
+<h2>text.preprocessor module<a class="headerlink" href="#text-preprocessor-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-text.remap_attributes">
+<span id="text-remap-attributes-module"></span><h2>text.remap_attributes module<a class="headerlink" href="#module-text.remap_attributes" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="text.remap_attributes.remap_attributes">
+<code class="sig-prename descclassname">text.remap_attributes.</code><code class="sig-name descname">remap_attributes</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">df</span></em>, <em class="sig-param"><span class="n">ATTRIBUTE_COL</span></em>, <em class="sig-param"><span class="n">remapping_df</span></em>, <em class="sig-param"><span class="n">REMAPPING_COL_FROM</span></em>, <em class="sig-param"><span class="n">REMAPPING_COL_TO</span></em><span class="sig-paren">)</span><a class="headerlink" href="#text.remap_attributes.remap_attributes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remap the attributes of a dataframe according to the <cite>remapping_df</cite></p>
+<blockquote>
+<div><dl class="simple">
+<dt>df<span class="classifier">pandas dataframe</span></dt><dd><p>Dataframe which will be remapped</p>
+</dd>
+<dt>ATTRIBUTE_COL<span class="classifier">str</span></dt><dd><p>Name of column in <cite>df</cite> which will be remapped</p>
+</dd>
+<dt>remapping_df<span class="classifier">pandas dataframe</span></dt><dd><p>Holds columns that define the remappings</p>
+</dd>
+<dt>REMAPPING_COL_FROM<span class="classifier">str</span></dt><dd><p>Name of column in <cite>remapping_df</cite> which will contain the original attribute in <cite>df</cite></p>
+</dd>
+<dt>REMAPPING_COL_TO<span class="classifier">str</span></dt><dd><p>Name of column in <cite>remapping_df</cite> which will contain the final mapping</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>Returns</p>
+<dl class="simple">
+<dt>DataFrame</dt><dd><p>dataframe with remapped columns populated</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="text-summarize-text-data-module">
+<h2>text.summarize_text_data module<a class="headerlink" href="#text-summarize-text-data-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-text.supervised_classifier_defs">
+<span id="text-supervised-classifier-defs-module"></span><h2>text.supervised_classifier_defs module<a class="headerlink" href="#module-text.supervised_classifier_defs" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="text.supervised_classifier_defs.supervised_classifier_defs">
+<code class="sig-prename descclassname">text.supervised_classifier_defs.</code><code class="sig-name descname">supervised_classifier_defs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">setting</span></em><span class="sig-paren">)</span><a class="headerlink" href="#text.supervised_classifier_defs.supervised_classifier_defs" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Esablish supervised classifier definitions which are non-specific to embeddor,</dt><dd><p>and therefore, non-specific to the NLP application</p>
+</dd>
+</dl>
+<blockquote>
+<div><dl class="simple">
+<dt>n_clusters<span class="classifier">int,</span></dt><dd><p>Number of clusters, which is usually set to the number of classes</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>Returns</p>
+<dl class="simple">
+<dt>dict</dt><dd><p>Contains sklearn classifiers instances</p>
+</dd>
+<dt>dict</dt><dd><p>Hyperparameter instances for each clusterer</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-text.text_remove_nondate_nums">
+<span id="text-text-remove-nondate-nums-module"></span><h2>text.text_remove_nondate_nums module<a class="headerlink" href="#module-text.text_remove_nondate_nums" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="text.text_remove_nondate_nums.text_remove_nondate_nums">
+<code class="sig-prename descclassname">text.text_remove_nondate_nums.</code><code class="sig-name descname">text_remove_nondate_nums</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">document</span></em>, <em class="sig-param"><span class="n">PRINT_INFO</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#text.text_remove_nondate_nums.text_remove_nondate_nums" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Conduct initial text processing steps to prepare the text for date extraction. </dt><dd><p>This mostly includes regex-based text substitution to remove numerical structures
+within the text which may be mistaken as a date by the date extractor.</p>
+</dd>
+</dl>
+<p>document : str
+PRINT_INFO : bool</p>
+<blockquote>
+<div><p>Flag indicating whether to print information about the preprocessing progress</p>
+</div></blockquote>
+<p>Returns</p>
+<dl class="simple">
+<dt>list</dt><dd><p>List of processed documents</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="text-text-remove-numbers-urls-module">
+<h2>text.text_remove_numbers_urls module<a class="headerlink" href="#text-text-remove-numbers-urls-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-text.unsupervised_classifier_defs">
+<span id="text-unsupervised-classifier-defs-module"></span><h2>text.unsupervised_classifier_defs module<a class="headerlink" href="#module-text.unsupervised_classifier_defs" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="text.unsupervised_classifier_defs.unsupervised_classifier_defs">
+<code class="sig-prename descclassname">text.unsupervised_classifier_defs.</code><code class="sig-name descname">unsupervised_classifier_defs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">setting</span></em>, <em class="sig-param"><span class="n">n_clusters</span></em><span class="sig-paren">)</span><a class="headerlink" href="#text.unsupervised_classifier_defs.unsupervised_classifier_defs" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Esablish supervised classifier definitions which are non-specific to embeddor,</dt><dd><p>and therefore, non-specific to the NLP application</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>n_clusters<span class="classifier">int,</span></dt><dd><p>Number of clusters, which is usually set to the number of classes</p>
+</dd>
+<dt>higher_n_clusters<span class="classifier">int,</span></dt><dd><p>A value higher than the n_clusters, used to provide other specifications for clustering parameters</p>
+</dd>
+</dl>
+<p>Returns</p>
+<dl class="simple">
+<dt>dict</dt><dd><p>Contains sklearn cluster instances</p>
+</dd>
+<dt>dict</dt><dd><p>Hyperparameter instances for each clusterer</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-text.visualize_attribute_connectivity">
+<span id="text-visualize-attribute-connectivity-module"></span><h2>text.visualize_attribute_connectivity module<a class="headerlink" href="#module-text.visualize_attribute_connectivity" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="text.visualize_attribute_connectivity.visualize_attribute_connectivity">
+<code class="sig-prename descclassname">text.visualize_attribute_connectivity.</code><code class="sig-name descname">visualize_attribute_connectivity</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">df</span></em>, <em class="sig-param"><span class="n">ATTRIBUTE1_COL</span></em>, <em class="sig-param"><span class="n">ATTRIBUTE2_COL</span></em><span class="sig-paren">)</span><a class="headerlink" href="#text.visualize_attribute_connectivity.visualize_attribute_connectivity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Visualize a knowledge graph which shows the frequency of combinations between attributes <code class="docutils literal notranslate"><span class="pre">ATTRIBUTE1_COL</span></code> and <code class="docutils literal notranslate"><span class="pre">ATTRIBUTE2_COL</span></code></p>
+<dl class="simple">
+<dt>df<span class="classifier">dataframe</span></dt><dd><p>Hold columns containing attributes (i.e. asset, issue, etc.)</p>
+</dd>
+<dt>ATTRIBUTE1_COL<span class="classifier">str</span></dt><dd><p>Column name for a attribute</p>
+</dd>
+<dt>ATTRIBUTE2_COL<span class="classifier">str</span></dt><dd><p>Column name for a second attribute</p>
+</dd>
+</dl>
+<p>Returns</p>
+<p>Matplotlib figure instance</p>
+</dd></dl>
+
+</div>
+<div class="section" id="text-visualize-cluster-entropy-module">
+<h2>text.visualize_cluster_entropy module<a class="headerlink" href="#text-visualize-cluster-entropy-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-text.visualize_document_clusters">
+<span id="text-visualize-document-clusters-module"></span><h2>text.visualize_document_clusters module<a class="headerlink" href="#module-text.visualize_document_clusters" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="text.visualize_document_clusters.visualize_document_clusters">
+<code class="sig-prename descclassname">text.visualize_document_clusters.</code><code class="sig-name descname">visualize_document_clusters</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cluster_tokens</span></em>, <em class="sig-param"><span class="n">min_frequency</span><span class="o">=</span><span class="default_value">20</span></em><span class="sig-paren">)</span><a class="headerlink" href="#text.visualize_document_clusters.visualize_document_clusters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Visualize most frequent word in a cluster. This helps when visualizing
+the results of an unsupervised partitioning of documents.</p>
+<dl class="simple">
+<dt>cluster_tokens<span class="classifier">list</span></dt><dd><p>List of tokenized documents</p>
+</dd>
+<dt>min_frequency<span class="classifier">int</span></dt><dd><p>Minimum frequency that a word must have in a cluster for it to be visualized</p>
+</dd>
+</dl>
+<p>Returns</p>
+<p>Matplotlib figure instance</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-text.visualize_frequency_plot">
+<span id="text-visualize-frequency-plot-module"></span><h2>text.visualize_frequency_plot module<a class="headerlink" href="#module-text.visualize_frequency_plot" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="text.visualize_frequency_plot.visualize_frequency_plot">
+<code class="sig-prename descclassname">text.visualize_frequency_plot.</code><code class="sig-name descname">visualize_frequency_plot</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">words</span></em>, <em class="sig-param"><span class="n">title</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">linewidth</span><span class="o">=</span><span class="default_value">4</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">aargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#text.visualize_frequency_plot.visualize_frequency_plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Visualize the frequency distribution of a set of words</p>
+<dl class="simple">
+<dt>words<span class="classifier">list</span></dt><dd><p>List of tokenized words</p>
+</dd>
+<dt>title<span class="classifier">str</span></dt><dd><p>Optional, title of plot</p>
+</dd>
+<dt>linewidth<span class="classifier">int</span></dt><dd><p>Optional, width of line</p>
+</dd>
+<dt><a href="#id1"><span class="problematic" id="id2">*</span></a>aargs<span class="classifier"></span></dt><dd><p>Optional, other parameters passed to nltk.FreqDist.plot()</p>
+</dd>
+</dl>
+<p>Returns</p>
+<p>Matplotlib figure instance</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-text.visualize_ticket_publication_timeseries">
+<span id="text-visualize-ticket-publication-timeseries-module"></span><h2>text.visualize_ticket_publication_timeseries module<a class="headerlink" href="#module-text.visualize_ticket_publication_timeseries" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="text.visualize_ticket_publication_timeseries.visualize_ticket_publication_timeseries">
+<code class="sig-prename descclassname">text.visualize_ticket_publication_timeseries.</code><code class="sig-name descname">visualize_ticket_publication_timeseries</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">df</span></em>, <em class="sig-param"><span class="n">LABEL_COLUMN</span></em>, <em class="sig-param"><span class="n">DATE_COLUMN</span></em>, <em class="sig-param"><span class="n">figsize</span><span class="o">=</span><span class="default_value">12, 6</span></em>, <em class="sig-param"><span class="n">cmap_name</span><span class="o">=</span><span class="default_value">'brg'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#text.visualize_ticket_publication_timeseries.visualize_ticket_publication_timeseries" title="Permalink to this definition">¶</a></dt>
+<dd><p>Visualize stacked bar chart where x-axis is time and y-axis is count, displaying separate bars for each definition in <code class="docutils literal notranslate"><span class="pre">LABEL_COLUMN</span></code></p>
+<dl class="simple">
+<dt>df<span class="classifier">dataframe</span></dt><dd><p>contains LABEL_COLUMN and DATE_COLUMN</p>
+</dd>
+<dt>LABEL_COLUMN<span class="classifier">str</span></dt><dd><p>Column name of the label/attribute</p>
+</dd>
+<dt>DATE_COLUMN<span class="classifier">str</span></dt><dd><p>Column name of the date relating to the document</p>
+</dd>
+<dt>figsize<span class="classifier">tuple</span></dt><dd><p>Optional, figure size</p>
+</dd>
+<dt>cmap_name<span class="classifier">str</span></dt><dd><p>Optional, color map name in matplotlib.</p>
+</dd>
+</dl>
+<p>Returns</p>
+<p>Matplotlib figure instance</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-text">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-text" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="text2time.html" class="btn btn-neutral float-right" title="text2time package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="tests.html" class="btn btn-neutral float-left" title="tests package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Thushara Gunda.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

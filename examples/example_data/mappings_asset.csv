@@ -1,0 +1,26 @@
+,in,out_
+0,Inverter,inverter
+1,Recloser,recloser
+2,Transformer,transformer
+3,Switchgear,switchgear
+4,Combiner,combiner
+5,DC Disconnect,combiner
+6,Recombiner,combiner
+7,Feeder (Dip Pole/Array),wiring
+8,Ground-Mount PV System,module
+9,Module,module
+10,Tracker,tracker
+11,Met station,met station
+12,Weather Station,met station
+13,Pyranometer,met station
+14,Temperature sensor,met station
+15,Met station battery,met station
+16,Anemometer,met station
+17,Reference cell,met station
+18,Relative humidity sensor,met station
+19,Relay,relay
+20,Energy Meter,energy meter
+21,Meter,energy meter
+22,Substation,substation
+23,Energy Storage/Battery,energy storage
+24,Facility,facility

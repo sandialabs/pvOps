@@ -1,0 +1,15 @@
+randid,Asset,date_start,date_end,WONumber,WOType,GeneralDesc
+,Inverter,5/2/2018 12:00,5/17/2018 16:00,100,Corrective,"Inverter 1.1 Contactor 7, Inverter 1.2 Contactors 1 and 4 suspected DC production issues"
+R23,Facility,5/19/2018 15:44,5/19/2018 13:04,101,Preventive,Site offline due to grid disturbance
+R23,Facility,6/15/2018 6:46,6/15/2018 10:30,102,Corrective,Plant trip due to grid disturbance
+R23,Facility,6/18/2018 11:20,6/18/2018 14:03,103,Corrective,Site trip due to cause grid disturbance
+R23,Facility,7/21/2018 4:45,7/21/2018 13:15,104,Vegetation,Site tripped due to grid disturbance
+R23,Inverter,7/21/2018 13:16,7/21/2018 14:25,105,Corrective,Inverter failed to start following plant trip
+R23,Inverter,7/25/2018 14:20,7/25/2018 16:40,106,Corrective,inverter offline due to high ambient temp fault
+R23,Inverter,8/1/2018 11:45,,107,Corrective,Inverter major underperformance 
+R23,Facility,8/2/2018 1:05,8/2/2018 9:28,108,Corrective,Site trip due to grid disturbance
+R27,Facility,9/14/2018 10:00,9/16/2018 16:00,1,corrective,hurricane florence outages/response. complete post-storm inspection form and upload to the work order. perform site inspection to assess any damage sustained from hurricane florence. site went offline around 1000 et on 14-sep. loss of ac voltage can be verified. update 16- sep: site came back online around 5pm 16-sep update 18-sep cb stuck at -74.21 amps. 019 - unplanned outage/derate. inspection complete. no damage. site operational.. techdispatched: yes
+R27,Facility,9/24/2018 10:00,9/16/2018 17:00,2,vegetation,Vegetation maintenance activities were performed
+R27,Other,9/19/2018 7:00,10/11/2018 20:00,3,corrective,hurricane response. perform site inspection to assess any damage sustained from hurricane 0000 - unknown. post hurricane inspection.. techdispatched: yes
+R27,Facility,10/13/2018 12:00,10/13/2018 17:00,4,preventive,Monthly visual inspection
+R27,other,10/14/2018 11:00,,5,preventive,Monthly visual inspection
