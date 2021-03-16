@@ -8,4 +8,4 @@ matplotlib
 seaborn
 plotly
 gensim
-networkxx
+networkx
