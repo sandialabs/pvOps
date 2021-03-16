@@ -1,0 +1,11 @@
+pandas>=0.23.0
+numpy>=1.15.0
+scipy>=1.2.0
+scikit-learn
+nltk
+datefinder
+matplotlib
+seaborn
+plotly
+gensim
+networkx
