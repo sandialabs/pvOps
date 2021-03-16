@@ -30,35 +30,7 @@ jobs:
     - name: Test with pytest
       run: |
         pip install pytest pytest-cov
-        pytest --cov=pvOps --cov-config=.coveragerc --cov-report term-missing pvOps --runslow
-    - name: Upload Coverage
-      run: |
-        pip install --upgrade coveralls
-        coveralls
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        COVERALLS_FLAG_NAME: ${{ matrix.os }}-${{ matrix.python-version }}-${{ matrix.requirements }}
-        COVERALLS_PARALLEL: true
-
-  coveralls:
-
-    name: Finish Coveralls
-    needs: test
-
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Set up Python 3.8
-        uses: actions/setup-python@v1
-        with:
-          python-version: 3.8
-      - name: Finish Coveralls Upload
-        run: |
-          pip install --upgrade pip
-          pip install --upgrade coveralls
-          coveralls --finish
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        pytest --cov=pvOps --cov-config=.coveragerc --cov-report term-missing pvOps
 
   lint:
 
