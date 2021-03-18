@@ -79,9 +79,9 @@ These functions focus on pre-processing user O&M and production data to create v
 
 #### **Visualizations:**
 These functions focus on visualizing the processed O&M and production data
-* `viz_om_prod` creates a visualization that overlays the O&M data on top of the coinciding production data.
-* `catscat_fig` generates categorical scatter plots of chosen variable based on specified category (e.g. site ID) for the O&M data.
-* `coutn_var` generates a count plot of categories based on a chosen categorical variable column for the O&M data.  If that variable is the user's site ID for every ticket, a plot for total count of events can be generated.
+* `visualize_om_prod_overlap` creates a visualization that overlays the O&M data on top of the coinciding production data.
+* `visualize_categorical_scatter` generates categorical scatter plots of chosen variable based on specified category (e.g. site ID) for the O&M data.
+* `visualize_counts` generates a count plot of categories based on a chosen categorical variable column for the O&M data.  If that variable is the user's site ID for every ticket, a plot for total count of events can be generated.
 
 
 Contributing
