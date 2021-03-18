@@ -12,6 +12,12 @@
 #
 import os
 import sys
+
+import mock
+MODULES = ['numpy', 'nltk', 'text', 'text2time']
+for module in MODULES:
+    sys.modules[module] = mock.Mock()
+
 import shlex
 
 sys.path.insert(0, os.path.abspath("../pvops"))
