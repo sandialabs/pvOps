@@ -84,10 +84,10 @@ text.text\_remove\_nondate\_nums module
    :undoc-members:
    :show-inheritance:
 
-text.text\_remove\_numbers\_urls module
+text.text\_remove\_numbers\_stopwords module
 ---------------------------------------
 
-.. automodule:: text.text_remove_numbers_urls
+.. automodule:: text.text_remove_numbers__stopwords
    :members:
    :undoc-members:
    :show-inheritance:
@@ -124,18 +124,18 @@ text.visualize\_document\_clusters module
    :undoc-members:
    :show-inheritance:
 
-text.visualize\_frequency\_plot module
+text.visualize\_word\_frequency\_plot module
 --------------------------------------
 
-.. automodule:: text.visualize_frequency_plot
+.. automodule:: text.visualize_word_frequency_plot
    :members:
    :undoc-members:
    :show-inheritance:
 
-text.visualize\_ticket\_publication\_timeseries module
+text.visualize\_attribute\_timeseries module
 ------------------------------------------------------
 
-.. automodule:: text.visualize_ticket_publication_timeseries
+.. automodule:: text.visualize_attribute_timeseries
    :members:
    :undoc-members:
    :show-inheritance:
