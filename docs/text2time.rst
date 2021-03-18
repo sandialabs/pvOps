@@ -4,18 +4,18 @@ text2time package
 Submodules
 ----------
 
-text2time.catscat\_fig module
+text2time.visualize\_categorical\_scatter module
 -----------------------------
 
-.. automodule:: text2time.catscat_fig
+.. automodule:: text2time.visualize_categorical_scatter
    :members:
    :undoc-members:
    :show-inheritance:
 
-text2time.count\_fig module
+text2time.visualize\_counts module
 ---------------------------
 
-.. automodule:: text2time.count_fig
+.. automodule:: text2time.visualize_counts
    :members:
    :undoc-members:
    :show-inheritance:
@@ -116,10 +116,10 @@ text2time.summarize\_overlaps module
    :undoc-members:
    :show-inheritance:
 
-text2time.viz\_om\_prod module
+text2time.visualize\_om\_prod\_overlap module
 ------------------------------
 
-.. automodule:: text2time.viz_om_prod
+.. automodule:: text2time.visualize_om_prod_overlap
    :members:
    :undoc-members:
    :show-inheritance:
