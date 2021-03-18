@@ -4,7 +4,7 @@ from scipy.signal import find_peaks
 import plotly.graph_objects as go
 
 
-def viz_om_prod(
+def visualize_om_prod_overlap(
     prod_df,
     om_df,
     prod_col_dict,
