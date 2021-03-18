@@ -1,12 +1,12 @@
 import sys
 import os
 import pandas as pd
-from overlapping_data import overlapping_data
 
 T2time_path = os.path.join("..", "pvops", "text2time")
 sys.path.append("..")
 sys.path.append(T2time_path)
 
+from overlapping_data import overlapping_data
 
 def summarize_overlaps(prod_df, om_df, prod_col_dict, om_col_dict):
     """

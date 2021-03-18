@@ -14,14 +14,14 @@ def visualize_counts(om_df, om_col_dict, count_var, fig_sets):
     ----------
     om_df: DataFrame
         A data frame corresponding to the O&M data after having been pre-processed
-        to address NANs and date consistency, and after applying the ``om_summary_stats`` function.
+        to address NANs and date consistency, and after applying the `om_summary_stats` function.
         This data frame needs at least the columns specified in om_col_dict.
 
     om_col_dict: dict of {str : str}
         A dictionary that contains the column names relevant for the O&M data
 
         - **siteid** (*string*), should be assigned to column name for associated site-ID in om_df.
-        - **modatestart** (*string*), should be assigned to column name desired for month of event start. This column is calculated by ``om_summary_stats``
+        - **modatestart** (*string*), should be assigned to column name desired for month of event start. This column is calculated by `om_summary_stats`
 
     count_var:str
         Column name that contains categorical variable to be plotted
