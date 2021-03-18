@@ -87,7 +87,7 @@ text.text\_remove\_nondate\_nums module
 text.text\_remove\_numbers\_stopwords module
 ---------------------------------------
 
-.. automodule:: text.text_remove_numbers__stopwords
+.. automodule:: text.text_remove_numbers_stopwords
    :members:
    :undoc-members:
    :show-inheritance:
