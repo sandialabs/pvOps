@@ -3,7 +3,7 @@ pvOps contains a series of functions to facilitate fusion of text-based data wit
 
 Installation
 =============
-pvOps can be installed using `pip` or `conda`. See more information at [readthedocs](http://pvlib-python.readthedocs.io/en/stable/).
+pvOps can be installed using `pip` or `conda`. See more information at [readthedocs](https://pvops.readthedocs.io/en/latest/).
 
 
 Package Layout and Documentation
@@ -22,7 +22,7 @@ The package is delineated into the following directories. Refer to the `examples
     └───text2time       : └─── Text2Timeseries functions
 ```
 
-More information about theses modules is available in the documentation at [readthedocs](http://pvlib-python.readthedocs.io/en/stable/).
+More information about theses modules is available in the documentation at [readthedocs](https://pvops.readthedocs.io/en/latest/).
 
 Text Subpackage Layout
 ======================
