@@ -14,7 +14,7 @@ import os
 import sys
 
 import mock
-MODULES = ['numpy', 'nltk', 'text', 'text2time']
+MODULES = ['numpy', 'nltk']#, 'text', 'text2time']
 for module in MODULES:
     sys.modules[module] = mock.Mock()
 
