@@ -22,7 +22,7 @@ DISTNAME = 'pvOps'
 MAINTAINER = "Thushara Gunda"
 MAINTAINER_EMAIL = 'tgunda@sandia.gov'
 LICENSE = 'Revised BSD'
-URL = 'XX'
+URL = 'https://github.com/tgunda/pvOps'
 
 TESTS_REQUIRE = [
     'pytest',
@@ -31,7 +31,15 @@ TESTS_REQUIRE = [
 INSTALL_REQUIRES = [
     'numpy >= 1.15.0',
     'pandas >= 0.23.0',
-    'scipy >= 1.2.0'
+    'scipy >= 1.2.0',
+    'scikit-learn',
+    'nltk',
+    'datefinder',
+    'matplotlib',
+    'seaborn',
+    'plotly',
+    'gensim',
+    'networkx'
 ]
 
 DOCS_REQUIRE = [
