@@ -14,7 +14,7 @@ import os
 import sys
 
 import mock
-MODULES = ['numpy', 'nltk', 'sklearn.pipeline', 'sklearn.model_selection', 'scipy.sparse', 'pandas',  'scipy', 'sklearn.base', 'gensim.models.doc2vec', 'nltk.tokenize', 'datefinder', 'text_remove_nondate_nums', 'text_remove_numbers_stopwords', 'get_dates', 'gensim.models', 'sklearn.svm', 'sklearn.tree', 'sklearn.neural_network', 'sklearn.linear_model', 'sklearn.ensemble', "sklearn.cluster", "networkx", "matplotlib", "matplotlib.pyplot", "gensim.models.doc2vec", "sklearn.feature_extraction.text", "nltk.tokenize", "plotly.graph_objects", "scipy.signal", 'matplotlib.colors', 'seaborn', 'matplotlib.ticker', 'scipy.signal.find_peaks]
+MODULES = ['numpy', 'nltk', 'sklearn.pipeline', 'sklearn.model_selection', 'scipy.sparse', 'pandas',  'scipy', 'sklearn.base', 'gensim.models.doc2vec', 'nltk.tokenize', 'datefinder', 'text_remove_nondate_nums', 'text_remove_numbers_stopwords', 'get_dates', 'gensim.models', 'sklearn.svm', 'sklearn.tree', 'sklearn.neural_network', 'sklearn.linear_model', 'sklearn.ensemble', "sklearn.cluster", "networkx", "matplotlib", "matplotlib.pyplot", "gensim.models.doc2vec", "sklearn.feature_extraction.text", "nltk.tokenize", "plotly.graph_objects", "scipy.signal", 'matplotlib.colors', 'seaborn', 'matplotlib.ticker', 'scipy.signal.find_peaks']
 for module in MODULES:
     sys.modules[module] = mock.Mock()
 
