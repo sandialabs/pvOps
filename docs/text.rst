@@ -7,18 +7,26 @@ Submodules
 text.DataDensifier module
 -------------------------
 
-.. automodule:: text.DataDensifier
-   :members:
-   :undoc-members:
-   :show-inheritance:
+.. autoclass:: MyClass     
+   :members: 
+
+   .. automethod:: transform
+
+   .. automethod:: fit
+
+   .. automethod:: fit_transform
 
 text.Doc2VecModel module
 ------------------------
 
 .. automodule:: text.Doc2VecModel
    :members:
-   :undoc-members:
-   :show-inheritance:
+
+   .. automethod:: transform
+
+   .. automethod:: fit
+
+   .. automethod:: fit_transform
 
 text.classification\_deployer module
 ------------------------------------
