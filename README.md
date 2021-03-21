@@ -13,10 +13,10 @@ The package is delineated into the following directories. Refer to the `examples
 ```
 ├───docs                : Documentation directory
 |
-├───examples            : Example directory
+├───examples            : Functionality examples directory
 │   └─── example_data   : └─── Example data
 |
-└───pvops               : Source library
+└───pvops               : Source function library
     ├───tests           : ├─── Library stability tests
     ├───text            : ├─── Text processing functions
     └───text2time       : └─── Text2Timeseries functions
