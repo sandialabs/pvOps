@@ -92,7 +92,7 @@ Contributing
 The long-term success of pvOps requires community support. One can make contributions by submitting issues and pull requests. Please follow the PR template
 
 Copyright and License
-=======
+=====================
 
 pvOps is copyright through Sandia National Laboratories. The software is distributed under the Revised BSD License.
 

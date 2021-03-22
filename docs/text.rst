@@ -4,30 +4,6 @@ text package
 Submodules
 ----------
 
-text.DataDensifier module
--------------------------
-
-.. autoclass:: DataDensifier     
-   :members: 
-
-   .. automethod:: transform
-
-   .. automethod:: fit
-
-   .. automethod:: fit_transform
-
-text.Doc2VecModel module
-------------------------
-
-.. autoclass:: Doc2VecModel
-   :members:
-
-   .. automethod:: transform
-
-   .. automethod:: fit
-
-   .. automethod:: fit_transform
-
 text.classification\_deployer module
 ------------------------------------
 
