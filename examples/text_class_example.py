@@ -8,29 +8,24 @@ import sys
 import os
 
 sys.path.append("..")
-text_directory = os.path.join("..", "pvops", "text")
-sys.path.append(text_directory)
+pvops_directory = os.path.join("..", "pvops")
+sys.path.append(pvops_directory)
 
 # Utilities
-from pvops.text import create_stopwords, summarize_text_data
+from pvops.text import nlp_utils
+from pvops.text import utils
 
 # Visualizations
-from pvops.text import (
-    visualize_word_frequency_plot,
-    visualize_attribute_connectivity,
-    visualize_attribute_timeseries,
-    visualize_cluster_entropy,
-    visualize_document_clusters,
-)
+from pvops.text import visualize
 
 # Preprocessing
-from pvops.text import preprocessor, DataDensifier, Doc2VecModel
+from pvops.text import preprocess
 
 # Classification
-from pvops.text import classification_deployer
+from pvops.text import classify
 
 # Library example definitions
-from pvops.text import supervised_classifier_defs, unsupervised_classifier_defs
+from pvops.text import defaults
 
 # Embedding
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -49,13 +44,13 @@ class Example:
         self.df = df
 
     def summarize_text_data(self, DATA_COLUMN):
-        summarize_text_data.summarize_text_data(self.df, DATA_COLUMN)
+        utils.summarize_text_data(self.df, DATA_COLUMN)
 
     def visualize_attribute_timeseries(self, DATE_COLUMN):
         col_dict = {"date": DATE_COLUMN, "label": self.LABEL_COLUMN}
         df = self.df.copy()
         df[DATE_COLUMN] = pd.to_datetime(df[DATE_COLUMN])
-        fig = visualize_attribute_timeseries.visualize_attribute_timeseries(
+        fig = visualize.visualize_attribute_timeseries(
             df, col_dict
         )
         return fig
@@ -68,7 +63,7 @@ class Example:
 
         doc2vec_model = Doc2Vec(vector_size=40, min_count=2, epochs=30)
         ks = np.arange(1, 61, 10)
-        fig = visualize_cluster_entropy.visualize_cluster_entropy(
+        fig = visualize.visualize_cluster_entropy(
             doc2vec_model, eval_kmeans, self.df, cols, ks, cmap_name="brg"
         )
         return fig
@@ -89,7 +84,7 @@ class Example:
         }
 
         try:
-            self.df = preprocessor.preprocessor(
+            self.df = preprocess.preprocessor(
                 self.df, None, col_dict, print_info=False, extract_dates_only=True
             )
         except Exception as e:
@@ -116,7 +111,7 @@ class Example:
                 self.df = self.df[self.df[self.LABEL_COLUMN] != lbl]
         self.df = self.df.sample(frac=1)
 
-        lst_stopwords = create_stopwords.create_stopwords(
+        lst_stopwords = nlp_utils.create_stopwords(
             ["english"],
             lst_add_words=["dtype", "say", "new", "length", "object", "u", "ha", "wa"],
             lst_keep_words=["new"],
@@ -130,7 +125,7 @@ class Example:
         }
 
         try:
-            self.df = preprocessor.preprocessor(
+            self.df = preprocess.preprocessor(
                 self.df, lst_stopwords, col_dict, print_info=False
             )
         except Exception as e:
@@ -156,7 +151,7 @@ class Example:
             )
 
         tokenized = nltk.word_tokenize(words)
-        fig = visualize_word_frequency_plot.visualize_word_frequency_plot(
+        fig = visualize.visualize_word_frequency_plot(
             tokenized, title=str(LBL_CAT) + f" (Num. Docs: {num_rows})", **graph_aargs
         )
         return fig
@@ -171,14 +166,14 @@ class Example:
         ]
         num_rows = len(self.df[DATA_COLUMN].index)
         cluster_tokens = [nltk.word_tokenize(words) for words in cluster_words]
-        fig = visualize_document_clusters.visualize_document_clusters(
+        fig = visualize.visualize_document_clusters(
             cluster_tokens, min_frequency=min_frequency
         )
         return fig
 
     def visualize_attribute_connectivity(self, om_col_dict, **networkxDrawAargs):
         df_filtered = self.df.dropna(subset=list(om_col_dict.values()), inplace=False)
-        fig, edges = visualize_attribute_connectivity.visualize_attribute_connectivity(
+        fig, edges = visualize.visualize_attribute_connectivity(
             df_filtered, om_col_dict, **networkxDrawAargs
         )
         return fig, edges
@@ -221,7 +216,7 @@ class Example:
                 print("Starting ML analysis with Doc2Vec embeddings")
                 search_space = self._doc2vec_classifier_defs(search_space)
 
-            results_df, best_model = classification_deployer.classification_deployer(
+            results_df, best_model = classify.classification_deployer(
                 X,
                 y,
                 n_cv_splits,
@@ -327,7 +322,7 @@ class Example:
         if embedding == "tfidf":
             pipeline_steps = [("tfidf", TfidfVectorizer()), ("clf", None)]
         elif embedding == "doc2vec":
-            pipeline_steps = [("doc2vec", Doc2VecModel.Doc2VecModel()), ("clf", None)]
+            pipeline_steps = [("doc2vec", nlp_utils.Doc2VecModel()), ("clf", None)]
 
         scoring = make_scorer(f1_score, average="weighted")
         self.greater_is_better = True
@@ -337,7 +332,7 @@ class Example:
             (
                 search_space,
                 classes,
-            ) = supervised_classifier_defs.supervised_classifier_defs(setting)
+            ) = defaults.supervised_classifier_defs(setting)
 
             if subset_example_classifiers != None:
                 for clf_str in subset_example_classifiers:
@@ -424,13 +419,13 @@ class Example:
         if embedding == "tfidf":
             pipeline_steps = [
                 ("tfidf", TfidfVectorizer()),
-                ("to_dense", DataDensifier.DataDensifier()),
+                ("to_dense", nlp_utils.DataDensifier()),
                 ("clf", None),
             ]
         elif embedding == "doc2vec":
             pipeline_steps = [
-                ("doc2vec", Doc2VecModel.Doc2VecModel()),
-                ("to_dense", DataDensifier.DataDensifier()),
+                ("doc2vec", nlp_utils.Doc2VecModel()),
+                ("to_dense", nlp_utils.DataDensifier()),
                 ("clf", None),
             ]
         scoring = make_scorer(homogeneity_score)
@@ -443,7 +438,7 @@ class Example:
             (
                 search_space,
                 classes,
-            ) = unsupervised_classifier_defs.unsupervised_classifier_defs(
+            ) = defaults.unsupervised_classifier_defs(
                 setting, n_clusters
             )
 
