@@ -3,8 +3,6 @@ import nltk
 from sklearn.base import BaseEstimator
 from gensim.models.doc2vec import TaggedDocument, Doc2Vec
 from nltk.tokenize import word_tokenize
-
-from sklearn.base import BaseEstimator
 import scipy
 
 class Doc2VecModel(BaseEstimator):
