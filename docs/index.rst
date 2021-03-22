@@ -14,12 +14,15 @@ Introduction
 ============
 pvops contains a series of functions to facilitate fusion of text-based data with time series production data collected at photovoltaic sites. The package also contains example datasets and tutorials to help demonstrate how the functions can be used.
 
-Installation
-=============
-pvops can be installed using `pip`.
+How to access pvops
+========================
+pvops is available by running ``git clone https://github.com/tgunda/pvOps.git`` in a windows terminal. This option requires having `git <https://git-scm.com/>`_ installed. 
 
-``pip install pvops``
+If you do not have git installed, or you just want to utilize the *pvops* functionality without contributing to the package, a popular choice is to install the python packaging using `pip`:
 
++------------------------+
+|>  ``pip install pvops``|
++------------------------+
 
 Text Subpackage Layout
 ======================
