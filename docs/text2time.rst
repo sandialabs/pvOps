@@ -1,9 +1,6 @@
 text2time package
 =================
 
-Submodules
-----------
-
 text2time.preprocess module
 -----------------------------
 
