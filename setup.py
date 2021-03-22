@@ -5,11 +5,11 @@ try:
 except ImportError:
     raise RuntimeError('setuptools is required')
 
-DESCRIPTION = ('pvOps is a python library for the analysis of ' +
+DESCRIPTION = ('pvops is a python library for the analysis of ' +
                'field collected operational data for photovoltaic systems.')
 
 LONG_DESCRIPTION = """
-pvOps is a python package for PV operators & researchers. It is
+pvops is a python package for PV operators & researchers. It is
 a collection of functions for working with text-based data
 from photovoltaic power systems. The library includes functions for
 processing text data as well as fusion of the text information with
@@ -18,15 +18,15 @@ analysis.
 
 Documentation: https://pvops.readthedocs.io/en/latest/index.html
 
-Source code: https://github.com/tgunda/pvOps
+Source code: https://github.com/tgunda/pvops
 
 """
 
-DISTNAME = 'pvOps'
+DISTNAME = 'pvops'
 MAINTAINER = "Thushara Gunda"
 MAINTAINER_EMAIL = 'tgunda@sandia.gov'
 LICENSE = 'Revised BSD'
-URL = 'https://github.com/tgunda/pvOps'
+URL = 'https://github.com/tgunda/pvops'
 
 TESTS_REQUIRE = [
     'pytest',

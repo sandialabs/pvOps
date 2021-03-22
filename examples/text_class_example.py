@@ -8,14 +8,14 @@ import sys
 import os
 
 sys.path.append("..")
-text_directory = os.path.join("..", "pvOps", "text")
+text_directory = os.path.join("..", "pvops", "text")
 sys.path.append(text_directory)
 
 # Utilities
-from pvOps.text import create_stopwords, summarize_text_data
+from pvops.text import create_stopwords, summarize_text_data
 
 # Visualizations
-from pvOps.text import (
+from pvops.text import (
     visualize_word_frequency_plot,
     visualize_attribute_connectivity,
     visualize_attribute_timeseries,
@@ -24,13 +24,13 @@ from pvOps.text import (
 )
 
 # Preprocessing
-from pvOps.text import preprocessor, DataDensifier, Doc2VecModel
+from pvops.text import preprocessor, DataDensifier, Doc2VecModel
 
 # Classification
-from pvOps.text import classification_deployer
+from pvops.text import classification_deployer
 
 # Library example definitions
-from pvOps.text import supervised_classifier_defs, unsupervised_classifier_defs
+from pvops.text import supervised_classifier_defs, unsupervised_classifier_defs
 
 # Embedding
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -271,7 +271,7 @@ class Example:
                 Thoroughness of supervised classification investigation with following options:
                 'normal': a smaller subset of settings used in grid search
                 'detailed': a comprehensive set of settings used in grid search
-                For specifics, view the `supervised_classifier_defs.py` file located in `/pvOps/text/`.
+                For specifics, view the `supervised_classifier_defs.py` file located in `/pvops/text/`.
                 To specify your own classifier pipeline, use `user_defined_classes` and `user_defined_search_space` parameters.
 
 

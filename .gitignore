@@ -1,5 +1,5 @@
 __pycache__/
-pvOps/text/__pycache__/
-pvOps/text2time/__pycache__/
+pvops/text/__pycache__/
+pvops/text2time/__pycache__/
 examples/*.npy
 docs/_build/

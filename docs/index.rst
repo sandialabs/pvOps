@@ -1,7 +1,7 @@
 .. _index:
 
 ******************************************************
-pvOps: a python package for PV operators & researchers
+pvops: a python package for PV operators & researchers
 ******************************************************
 
 .. toctree::
@@ -12,11 +12,11 @@ pvOps: a python package for PV operators & researchers
 
 Introduction
 ============
-pvOps contains a series of functions to facilitate fusion of text-based data with time series production data collected at photovoltaic sites. The package also contains example datasets and tutorials to help demonstrate how the functions can be used.
+pvops contains a series of functions to facilitate fusion of text-based data with time series production data collected at photovoltaic sites. The package also contains example datasets and tutorials to help demonstrate how the functions can be used.
 
 Installation
 =============
-pvOps can be installed using `pip`.
+pvops can be installed using `pip`.
 
 
 Text Subpackage Layout
@@ -90,12 +90,12 @@ These functions focus on visualizing the processed O&M and production data
 Contributing
 ============
 
-The long-term success of pvOps requires community support. One can make contributions by submitting issues and pull requests. Please follow the PR template
+The long-term success of pvops requires community support. One can make contributions by submitting issues and pull requests. Please follow the PR template
 
 Copyright and License
 =====================
 
-pvOps is copyright through Sandia National Laboratories. The software is distributed under the Revised BSD License.
+pvops is copyright through Sandia National Laboratories. The software is distributed under the Revised BSD License.
 
 Indices and tables
 ==================
