@@ -16,7 +16,8 @@ pvOps contains a series of functions to facilitate fusion of text-based data wit
 
 Installation
 =============
-pvOps can be installed using `pip` or `conda`.
+pvOps can be installed using `pip`.
+
 
 Text Subpackage Layout
 ======================

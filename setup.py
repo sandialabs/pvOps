@@ -9,13 +9,14 @@ DESCRIPTION = ('pvOps is a python library for the analysis of ' +
                'field collected operational data for photovoltaic systems.')
 
 LONG_DESCRIPTION = """
-pvOps is a collection of functions for working with text-based data
+pvOps is a python package for PV operators & researchers. It is
+a collection of functions for working with text-based data
 from photovoltaic power systems. The library includes functions for
 processing text data as well as fusion of the text information with
 time series data for visualization of contextual details for data
 analysis. 
-Documentation: XX
-Source code: XX
+Documentation: https://pvops.readthedocs.io/en/latest/index.html
+Source code: https://github.com/tgunda/pvOps
 """
 
 DISTNAME = 'pvOps'
