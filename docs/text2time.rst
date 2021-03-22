@@ -28,10 +28,3 @@ text2time.visualize module
    :undoc-members:
    :show-inheritance:
 
-Module contents
----------------
-
-.. automodule:: text2time
-   :members:
-   :undoc-members:
-   :show-inheritance:

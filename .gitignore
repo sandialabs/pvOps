@@ -3,4 +3,5 @@ pvops/text/__pycache__/
 pvops/text2time/__pycache__/
 examples/*.npy
 docs/_build/
+.pytest_cache/
 *.py[cod]
