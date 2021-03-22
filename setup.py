@@ -15,8 +15,11 @@ from photovoltaic power systems. The library includes functions for
 processing text data as well as fusion of the text information with
 time series data for visualization of contextual details for data
 analysis. 
+
 Documentation: https://pvops.readthedocs.io/en/latest/index.html
+
 Source code: https://github.com/tgunda/pvOps
+
 """
 
 DISTNAME = 'pvOps'
