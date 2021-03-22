@@ -1,9 +1,6 @@
 text package
 ============
 
-Submodules
-----------
-
 text.classify module
 ------------------------------------
 

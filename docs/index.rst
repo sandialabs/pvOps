@@ -5,10 +5,11 @@ pvops: a python package for PV operators & researchers
 ******************************************************
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
    :caption: Contents:
 
    modules
+   contributing
 
 Introduction
 ============
