@@ -1,4 +1,4 @@
-pvops
+pvOps
 =====
 
 .. toctree::

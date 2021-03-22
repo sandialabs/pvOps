@@ -30,7 +30,7 @@ jobs:
     - name: Test with pytest
       run: |
         pip install pytest pytest-cov
-        pytest --cov=pvops --cov-config=.coveragerc --cov-report term-missing pvops
+        pytest --cov=pvOps --cov-config=.coveragerc --cov-report term-missing pvOps
 
   lint:
 

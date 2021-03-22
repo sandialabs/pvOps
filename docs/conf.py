@@ -20,9 +20,9 @@ for module in MODULES:
 
 import shlex
 
-sys.path.insert(0, os.path.abspath("../pvops"))
-sys.path.insert(0, os.path.abspath("../pvops/text2time"))
-sys.path.insert(0, os.path.abspath("../pvops/text"))
+sys.path.insert(0, os.path.abspath("../pvOps"))
+sys.path.insert(0, os.path.abspath("../pvOps/text2time"))
+sys.path.insert(0, os.path.abspath("../pvOps/text"))
 
 
 # -- Project information -----------------------------------------------------

@@ -2,7 +2,7 @@ import sys
 import os
 import pandas as pd
 
-T2time_path = os.path.join("..", "pvops", "text2time")
+T2time_path = os.path.join("..", "pvOps", "text2time")
 sys.path.append("..")
 sys.path.append(T2time_path)
 
