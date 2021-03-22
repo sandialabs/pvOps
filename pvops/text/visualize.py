@@ -95,7 +95,7 @@ def visualize_attribute_connectivity(
     weights = [G[u][v]["w"] for u, v in edges]
     weights = np.array(weights)
     weights = list(1 + (edge_width_scalar * weights / weights.max()))  # scale 1-11
-    nx.draw_shell(G, edges=edges, width=weights, node_color=color_map, **graph_aargs)
+    nx.draw_shell(G, width=weights, node_color=color_map, **graph_aargs)
 
     return fig, edges
 
