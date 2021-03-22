@@ -18,6 +18,8 @@ Installation
 =============
 pvops can be installed using `pip`.
 
+``pip install pvops``
+
 
 Text Subpackage Layout
 ======================
