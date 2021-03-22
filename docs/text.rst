@@ -7,7 +7,7 @@ Submodules
 text.DataDensifier module
 -------------------------
 
-.. autoclass:: MyClass     
+.. autoclass:: DataDensifier     
    :members: 
 
    .. automethod:: transform
@@ -19,7 +19,7 @@ text.DataDensifier module
 text.Doc2VecModel module
 ------------------------
 
-.. automodule:: text.Doc2VecModel
+.. autoclass:: Doc2VecModel
    :members:
 
    .. automethod:: transform
