@@ -35,9 +35,9 @@ Text pre-processing
 These functions process the O&M data into concise, machine learning-ready documents. Additionally, extract dates from the text.
 
 * ``preprocessor.py`` acts as a wrapper function, utilizing the other preprocessing functions, which prepares the data for machine learning. 
-* To prep documents for machine learning, utilize the ``preprocessor.preprocessor()``
+* ``preprocessor.preprocessor()`` is used to prep documents for machine learning
     * see ``text_class_example.prep_data_for_ML()`` module for an example
-* If the primary interest is date extraction (and not continue to preprocess all text for machine learning), then call preprocessor as ``preprocessor.preprocessor(..., extract_dates_only = True)``
+* ``preprocessor.preprocessor(..., extract_dates_only = True)`` should be used if the primary interest is date extraction (and not continue to preprocess all text for machine learning)
     * see ``text_class_example.extract_dates()`` module for an example
 
 
@@ -53,7 +53,8 @@ These functions process the O&M data to make an inference on the specified event
 
 Utils
 ------
-These functions 
+These helper functions focus on performing exploratory or secondary processing activities for the O&M data
+
 *  ``summarize_text_data`` is used to generate summarize contents of the O&M data 
 *  ``remap_attributes`` is used to reorganize an attribute column into a new set of labels
 
