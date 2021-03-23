@@ -31,31 +31,38 @@ The text package can be broken down into three main components: **text processin
 An example implementation of all capabilities can be found in `text_class_example.py` (for specifics) and `tutorial_textmodule.ipynb` (for basics).
 
 Text pre-processing
----------------
+-------------------
 These functions process the O&M data into concise, machine learning-ready documents. Additionally, extract dates from the text.
 
-* ``preprocessor.py`` acts as a wrapper function, utilizing the other preprocessing functions, which prepares the data for machine learning. 
-* ``preprocessor.preprocessor()`` is used to prep documents for machine learning
-    * see ``text_class_example.prep_data_for_ML()`` module for an example
-* ``preprocessor.preprocessor(..., extract_dates_only = True)`` should be used if the primary interest is date extraction (and not continue to preprocess all text for machine learning)
-    * see ``text_class_example.extract_dates()`` module for an example
+* ``preprocess.preprocessor`` acts as a wrapper function, utilizing the other preprocessing functions, which prepares the data for machine learning. 
+
+    * See ``text_class_example.prep_data_for_ML`` module for an example.
+
+* ``preprocessor.preprocessor(..., extract_dates_only = True)`` should be used if the primary interest is date extraction (and not continue to preprocess all text for machine learning).
+
+    * See ``text_class_example.extract_dates`` module for an example.
 
 
 Text classification
 -------------------
 These functions process the O&M data to make an inference on the specified event descriptor.
 
-* ``classify.classification_deployer()`` is used to conduct supervised or unsupervised classification of text documents. This function conducts a grid search across the passed classifiers and hyperparameters.
-    * ``defaults.supervised_classifier_defs`` and ``defaults.unsupervised_classifier_defs`` contain default values for conducting the grid search 
-    * See ``text_class_example.classify_supervised()`` or ``text_class_example.classify_unsupervised()`` modules for an example
-* Once the model is built and selected, classification (for supervised ML) or clustering (for unsupervised ML) analysis can be conducted on the best model returned from the pipeline object. 
-    * See ``text_class_example.predict_best_model()`` module for an example
+* ``classify.classification_deployer`` is used to conduct supervised or unsupervised classification of text documents. This function conducts a grid search across the passed classifiers and hyperparameters. 
+
+    * The ``defaults.supervised_classifier_defs`` and ``defaults.unsupervised_classifier_defs`` functions contain default values for conducting the grid search.
+    
+    * See ``text_class_example.classify_supervised`` or ``text_class_example.classify_unsupervised`` modules for an example.
+
+* Once the model is built and selected, classification (for supervised ML) or clustering (for unsupervised ML) analysis can be conducted on the best model returned from the pipeline object.
+
+    * See ``text_class_example.predict_best_model`` module for an example.
+
 
 Utils
 ------
 These helper functions focus on performing exploratory or secondary processing activities for the O&M data
 
-*  ``summarize_text_data`` is used to generate summarize contents of the O&M data 
+*  ``summarize_text_data`` is used to print summarized contents of the O&M data 
 *  ``remap_attributes`` is used to reorganize an attribute column into a new set of labels
 
 Visualizations
