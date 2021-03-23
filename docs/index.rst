@@ -30,37 +30,42 @@ The text package can be broken down into three main components: **text processin
 
 An example implementation of all capabilities can be found in `text_class_example.py` (for specifics) and `tutorial_textmodule.ipynb` (for basics).
 
-Text Processing
+Text pre-processing
 ---------------
-Process the documents into concise, machine learning-ready documents. Additionally, extract dates from the text.
+These functions process the O&M data into concise, machine learning-ready documents. Additionally, extract dates from the text.
 
-* ``preprocessor.py`` acts as a wrapper function, utilizing the other preprocessing functions, which preps the data for machine learning. 
-* If all you want to do is extract dates (and not continue to preprocess all text for machine learning), then call preprocessor as ``preprocessor.preprocessor(..., extract_dates_only = True)``
-    * see ``text_class_example.extract_dates()`` module for an example
-
+* ``preprocessor.py`` acts as a wrapper function, utilizing the other preprocessing functions, which prepares the data for machine learning. 
 * To prep documents for machine learning, utilize the ``preprocessor.preprocessor()``
     * see ``text_class_example.prep_data_for_ML()`` module for an example
+* If the primary interest is date extraction (and not continue to preprocess all text for machine learning), then call preprocessor as ``preprocessor.preprocessor(..., extract_dates_only = True)``
+    * see ``text_class_example.extract_dates()`` module for an example
+
 
 Text classification
 -------------------
-The written tickets are used to make an inference on the specified event descriptor.
+These functions process the O&M data to make an inference on the specified event descriptor.
 
-* Conduct supervised or unsupervised classification of text documents utilizing ``classification_deployer.classification_deployer()``. This function conducts a grid search across the passed classifiers and hyperparameters.
+* ``classify.classification_deployer()`` is used to conduct supervised or unsupervised classification of text documents. This function conducts a grid search across the passed classifiers and hyperparameters.
+    * ``defaults.supervised_classifier_defs`` and ``defaults.unsupervised_classifier_defs`` contain default values for conducting the grid search 
     * See ``text_class_example.classify_supervised()`` or ``text_class_example.classify_unsupervised()`` modules for an example
-* Once the model is built and selected, one can conduct classification (for supervised ML) or clustering (for unsupervised ML) by conducting a prediction on the returned pipeline object. 
+* Once the model is built and selected, classification (for supervised ML) or clustering (for unsupervised ML) analysis can be conducted on the best model returned from the pipeline object. 
     * See ``text_class_example.predict_best_model()`` module for an example
+
+Utils
+------
+These functions 
+*  ``summarize_text_data`` is used to generate summarize contents of the O&M data 
+*  ``remap_attributes`` is used to reorganize an attribute column into a new set of labels
 
 Visualizations
 --------------
-Create visualizations to get a better understanding about your documents.
+These functions create visualizations to get a better understanding about your documents.
 
-*  Observe brief description about the passed documents by calling ``summarize_text_data.summarize_text_data()``
-*  Observe attribute ticket densities across time using ``visualize_ticket_publication_timeseries``
-*  Observe the performance of different text embeddings by calling ``visualize_cluster_entropy``
-*  Observe word frequencies in the passed attribute's documents by calling ``visualize_freqPlot``
-*  Observe graph which indicates the connectivity of two attributes by calling ``visualize_attribute_connectivity``
-*  After clustering, utilize ``visualize_document_clusters`` to observe popular words in each cluster
-
+*  ``visualize_attribute_connectivity`` can be used to visualize the connectivity of two attributes
+*  ``visualize_attribute_timeseries`` can be used to evaluate the density of an attribute over time  
+*  ``visualize_cluster_entropy`` can be used to observe the performance of different text embeddings  
+*  ``visualize_document_clusters`` can be used after clustering to visualize popular words in each cluster
+*  ``visualize_word_frequency_plot`` can be used to visualize word frequencies in the associated attribute column of O&M data
 
 Text2Time Subpackage Layout
 ===========================
