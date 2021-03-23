@@ -79,13 +79,13 @@ These functions focus on pre-processing user O&M and production data to create v
 Utils
 ------
 These functions focus on pre-processing user O&M and production data to create visualizations of the merged data.
+
 *  ``iec_calc`` is used to calculate a comparison dataset for the production data based on an irradiance as calculated by IEC calculation
 *  ``summarize_overlaps`` is used to summarize the overlapping production and O&M data.
 * ``om_summary_stats`` is used to summarize statistics (e.g., event duration and month of occurrence) of O&M data
 *  ``overlapping_data`` is used to trim the production and O&M data frames and only retain the data where both datasets overlap in time.
 *  ``prod_anomalies`` is used to detect/correct issues when the production data is input in cumulative format and unexpected dips show up in the data.
 *  ``prod_quant`` is used to calculate a comparison between the actual production data and a baseline (e.g. the IEC calculation)
-
 
 Visualizations
 --------------
