@@ -13,17 +13,15 @@ pvops: a python package for PV operators & researchers
 
 Introduction
 ============
-pvops contains a series of functions to facilitate fusion of text-based data with time series production data collected at photovoltaic sites. The package also contains example datasets and tutorials to help demonstrate how the functions can be used.
+pvops is a python package for PV operators & researchers. It is a collection of functions for working with text-based data from photovoltaic power systems. The library includes functions for processing text data as well as fusion of the text information with time series data for visualization of contextual details for data analysis. 
 
 How to access pvops
 ========================
-pvops is available by running ``git clone https://github.com/tgunda/pvOps.git`` in a windows terminal. This option requires having `git <https://git-scm.com/>`_ installed. 
-
-If you do not have git installed, or you just want to utilize the *pvops* functionality without contributing to the package, a popular choice is to install the python packaging using `pip`:
-
 +------------------------+
 |>  ``pip install pvops``|
 +------------------------+
+
+If you are interested in contributing to pvops, then you can also access this package through the GitHub repository: ``git clone https://github.com/tgunda/pvOps.git``.
 
 Text Subpackage Layout
 ======================
@@ -73,35 +71,29 @@ Data pre-processing
 -------------------
 These functions focus on pre-processing user O&M and production data to create visualizations of the merged data.
 
-*  ``om_date_convert`` and ``prod_date_convert`` convert dates in string format to date-time objects
+*  ``om_date_convert`` and ``prod_date_convert`` convert dates in string format to date-time objects in the O&M and production data respectively.
 *  ``data_site_na`` is used to handle missing site IDs in the user data.  This function can be used for both O&M and production data.
 *  ``om_datelogic_check`` is used to detect/correct issues with the logic of the O&M date, specifically when the conclusion of an event occurs before it begins.
-*  ``prod_anomalies`` is used to detect/correct issues when the production data is input in cumulative format and unexpected dips show up in the data.
-*  ``prod_nadate_process`` is used to detect/correct any missing time-stamps in the production data.
-*  ``om_nadate_process`` is used to detect/correct any missing time-stamps in the O&M data.
-*  ``summarize_overlaps`` is used to summarize the overlapping production and O&M data.
-*  ``overlapping_data`` is used to trim the production and O&M data frames and only retain the data where both datasets overlap in time.
+*  ``om_nadate_process`` and ``prod_nadate_process`` are used to detect/correct any missing time-stamps in the O&M and production data respectively.
+
+Utils
+------
+These functions focus on pre-processing user O&M and production data to create visualizations of the merged data.
 *  ``iec_calc`` is used to calculate a comparison dataset for the production data based on an irradiance as calculated by IEC calculation
+*  ``summarize_overlaps`` is used to summarize the overlapping production and O&M data.
+* ``om_summary_stats`` is used to summarize statistics (e.g., event duration and month of occurrence) of O&M data
+*  ``overlapping_data`` is used to trim the production and O&M data frames and only retain the data where both datasets overlap in time.
+*  ``prod_anomalies`` is used to detect/correct issues when the production data is input in cumulative format and unexpected dips show up in the data.
 *  ``prod_quant`` is used to calculate a comparison between the actual production data and a baseline (e.g. the IEC calculation)
+
 
 Visualizations
 --------------
 These functions focus on visualizing the processed O&M and production data
 
-*  ``visualize_om_prod_overlap`` creates a visualization that overlays the O&M data on top of the coinciding production data.
 *  ``visualize_categorical_scatter`` generates categorical scatter plots of chosen variable based on specified category (e.g. site ID) for the O&M data.
 *  ``visualize_counts`` generates a count plot of categories based on a chosen categorical variable column for the O&M data.  If that variable is the user's site ID for every ticket, a plot for total count of events can be generated.
-
-
-Contributing
-============
-
-The long-term success of pvops requires community support. One can make contributions by submitting issues and pull requests. Please follow the PR template
-
-Copyright and License
-=====================
-
-pvops is copyright through Sandia National Laboratories. The software is distributed under the Revised BSD License.
+*  ``visualize_om_prod_overlap`` creates a visualization that overlays the O&M data on top of the coinciding production data.
 
 Indices and tables
 ==================
