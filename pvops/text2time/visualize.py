@@ -114,9 +114,6 @@ def visualize_counts(om_df, om_col_dict, count_var, fig_sets):
     count_var:str
         Column name that contains categorical variable to be plotted
 
-    sv_nm: str
-        The name under which the plot should be saved as
-
     fig_sets: dict
         A dictionary that contains the settings to be used for the
         figure to be generated, and those settings should include:
