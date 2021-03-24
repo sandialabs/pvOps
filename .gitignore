@@ -5,5 +5,5 @@ examples/*.npy
 docs/_build/
 .pytest_cache/
 *.py[cod]
-example/analysis/
+examples/analysis/
 *~
