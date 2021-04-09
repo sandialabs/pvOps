@@ -1,19 +1,22 @@
-import pandas as pd
+"""
+These functions focus on pre-processing user O&M and production data to
+create visualizations of the merged data
+"""
 from datetime import datetime
+import pandas as pd
 
-def data_site_na(df, df_col_dict):
+def data_site_na(pom_df, df_col_dict):
     """
     Drops rows where site-ID is missing (NAN) within either production or O&M data.
-
 
     Parameters
 
     ----------
-    df: DataFrame
+    pom_df: DataFrame
         A data frame corresponding to either the production or O&M data.
 
     df_col_dict: dict of {str : str}
-        A dictionary that contains the column names associated with the input df
+        A dictionary that contains the column names associated with the input `pom_df`
         and contains at least:
 
         - **siteid** (*string*), should be assigned to column name for user's site-ID
@@ -21,7 +24,7 @@ def data_site_na(df, df_col_dict):
     Returns
 
     -------
-    df: DataFrame
+    pom_df: DataFrame
         An updated version of the input data frame, where rows with site-IDs of NAN are dropped.
 
     addressed: DataFrame
@@ -30,14 +33,14 @@ def data_site_na(df, df_col_dict):
 
     df_site = df_col_dict["siteid"]
 
-    df = df.copy()
+    pom_df = pom_df.copy()
 
-    namask = df.loc[:, df_site].isna()
-    addressed = df.loc[namask]
+    namask = pom_df.loc[:, df_site].isna()
+    addressed = pom_df.loc[namask]
 
-    df.dropna(subset=[df_site], inplace=True)
+    pom_df.dropna(subset=[df_site], inplace=True)
 
-    return df, addressed
+    return pom_df, addressed
 
 
 def om_date_convert(om_df, om_col_dict, toffset=0.0):
@@ -52,10 +55,13 @@ def om_date_convert(om_df, om_col_dict, toffset=0.0):
         A data frame corresponding to O&M data.
 
     om_col_dict: dict of {str : str}
-        A dictionary that contains the column names associated with the O&M data, which consist of at least:
+        A dictionary that contains the column names associated with the O&M data,
+        which consist of at least:
 
-          - **datestart** (*string*), should be assigned to column name for O&M event start date in om_df
-          - **dateend** (*string*), should be assigned to column name for O&M event end date  in om_df
+          - **datestart** (*string*), should be assigned to column name for
+            O&M event start date in om_df
+          - **dateend** (*string*), should be assigned to column name for
+            O&M event end date  in om_df
 
     toffset: float
        Value that specifies how many hours the O&M data should be shifted by in
@@ -69,20 +75,20 @@ def om_date_convert(om_df, om_col_dict, toffset=0.0):
         converted to localized (time-zone agnostic) date-time objects.
     """
 
-    df = om_df.copy()
+    om_df = om_df.copy()
 
     om_date_s = om_col_dict["datestart"]
     om_date_e = om_col_dict["dateend"]
 
     # Converting date-data from string data to DateTime objects
-    df[om_date_s] = pd.to_datetime(df[om_date_s]) + pd.Timedelta(hours=toffset)
-    df[om_date_e] = pd.to_datetime(df[om_date_e]) + pd.Timedelta(hours=toffset)
+    om_df[om_date_s] = pd.to_datetime(om_df[om_date_s]) + pd.Timedelta(hours=toffset)
+    om_df[om_date_e] = pd.to_datetime(om_df[om_date_e]) + pd.Timedelta(hours=toffset)
 
     # localizing timestamp
-    df[om_date_s] = df[om_date_s].dt.tz_localize(None)
-    df[om_date_e] = df[om_date_e].dt.tz_localize(None)
+    om_df[om_date_s] = om_df[om_date_s].dt.tz_localize(None)
+    om_df[om_date_e] = om_df[om_date_e].dt.tz_localize(None)
 
-    return df
+    return om_df
 
 
 def om_datelogic_check(om_df, om_col_dict, om_dflag="swap"):
@@ -99,21 +105,25 @@ def om_datelogic_check(om_df, om_col_dict, om_dflag="swap"):
         A data frame corresponding to O&M data.
 
     om_col_dict: dict of {str : str}
-        A dictionary that contains the column names associated with the O&M data, which consist of at least:
+        A dictionary that contains the column names associated with the O&M data, which
+        consist of at least:
 
-          - **datestart** (*string*), should be assigned to column name for associated O&M event start date in om_df
-          - **dateend** (*string*), should be assigned to column name for associated O&M event end date in om_df
+          - **datestart** (*string*), should be assigned to column name for associated
+            O&M event start date in om_df
+          - **dateend** (*string*), should be assigned to column name for associated
+            O&M event end date in om_df
 
     om_dflag: str
-       A flag that specifies how to address rows where the start of an event occurs after its conclusion.
-       A flag of 'drop' will drop those rows, and a flag of 'swap' swap the two dates for that row.
+       A flag that specifies how to address rows where the start of an event occurs
+       after its conclusion. A flag of 'drop' will drop those rows, and a
+       flag of 'swap' swap the two dates for that row.
 
     Returns
 
     -------
     om_df: DataFrame
-        An updated version of the input dataframe, but with O&M data quality issues addressed to ensure the start of an event
-        precedes the event end date.
+        An updated version of the input dataframe, but with O&M data quality issues addressed to
+        ensure the start of an event precedes the event end date.
 
     addressed: DataFrame
         A data frame showing rows from the input that were addressed by this function.
@@ -141,8 +151,9 @@ def om_datelogic_check(om_df, om_col_dict, om_dflag="swap"):
 def om_nadate_process(om_df, om_col_dict, om_dendflag="drop"):
     """
     Addresses issues with O&M dataframe where dates are missing (NAN). Two operations are performed:
-    1) rows are dropped where start of an event is missing and (2) rows where the conclusion of an event is NAN
-    can either be dropped or marked with the time at which program is run, depending on the user's preference.
+    1) rows are dropped where start of an event is missing and (2) rows where the
+    conclusion of an event is NAN can either be dropped or marked with the time at
+    which program is run, depending on the user's preference.
 
     Parameters
 
@@ -151,9 +162,11 @@ def om_nadate_process(om_df, om_col_dict, om_dendflag="drop"):
         A data frame corresponding to O&M data.
 
     om_col_dict: dict of {str : str}
-        A dictionary that contains the column names associated with the O&M data, which consist of at least:
+        A dictionary that contains the column names associated with the O&M data,
+        which consist of at least:
 
-          - **datestart** (*string*), should be assigned to column name for user's O&M event start-date
+          - **datestart** (*string*), should be assigned to column name for user's
+            O&M event start-date
           - **dateend** (*string*), should be assigned to column name for user's O&M event end-date
 
     om_dendflag: str
@@ -198,7 +211,7 @@ def om_nadate_process(om_df, om_col_dict, om_dendflag="drop"):
             pd.to_datetime(str(datetime.now())[:20]), inplace=True
         )  # replacing NANs with today's date
     else:
-        None
+        raise SyntaxError('Undefined om_dendflag')
 
     return om_df, addressed
 
@@ -215,7 +228,8 @@ def prod_date_convert(prod_df, prod_col_dict, toffset=0.0):
         A data frame corresponding to production data.
 
     prod_col_dict: dict of {str : str}
-        A dictionary that contains the column names associated with the production data, which consist of at least:
+        A dictionary that contains the column names associated with the production data,
+        which consist of at least:
 
           - **timestamp** (*string*), should be assigned to user's time-stamp column name
 
@@ -232,17 +246,17 @@ def prod_date_convert(prod_df, prod_col_dict, toffset=0.0):
     """
 
     # creating local dataframes to not modify originals
-    df = prod_df.copy()
+    prod_df = prod_df.copy()
 
     prod_ts = prod_col_dict["timestamp"]
 
     # Converting date-data from string data to DateTime objects
-    df[prod_ts] = pd.to_datetime(df[prod_ts]) + pd.Timedelta(hours=toffset)
+    prod_df[prod_ts] = pd.to_datetime(prod_df[prod_ts]) + pd.Timedelta(hours=toffset)
 
     # localizing timestamp
-    df[prod_ts] = df[prod_ts].dt.tz_localize(None)
+    prod_df[prod_ts] = prod_df[prod_ts].dt.tz_localize(None)
 
-    return df
+    return prod_df
 
 
 def prod_nadate_process(prod_df, prod_col_dict, pnadrop=False):
@@ -257,14 +271,16 @@ def prod_nadate_process(prod_df, prod_col_dict, pnadrop=False):
         A data frame corresponding to production data.
 
     prod_df_col_dict: dict of {str : str}
-        A dictionary that contains the column names associated with the production data, which consist of at least:
+        A dictionary that contains the column names associated with the production data,
+        which consist of at least:
 
-          - **timestamp** (*string*), should be assigned to associated time-stamp column name in prod_df
+          - **timestamp** (*string*), should be assigned to associated time-stamp
+            column name in prod_df
 
     pnadrop: bool
         Boolean flag that determines what to do with rows where time-stamp is missing.
-        A value of 'drop' (default) will drop these rows.  Leaving the default
-        value of 'ID' will identify rows with missing time-stamps for the user,
+        A value of `True` will drop these rows.  Leaving the default
+        value of `False` will identify rows with missing time-stamps for the user,
         but the function will output the same input data frame with no modifications.
 
     Returns
@@ -292,7 +308,5 @@ def prod_nadate_process(prod_df, prod_col_dict, pnadrop=False):
     addressed = prod_df[mask]
     if pnadrop:
         prod_df.dropna(subset=[prod_ts], inplace=True)
-    else:
-        None
 
     return prod_df, addressed

@@ -1,10 +1,10 @@
+"""These functions focus on visualizing the processed O&M and production data"""
 import pandas as pd
 import numpy as np
 from scipy.signal import find_peaks
 import plotly.graph_objects as go
 import matplotlib.pyplot as plt
 import seaborn as sns
-import os
 from matplotlib.ticker import MaxNLocator
 
 
@@ -19,14 +19,16 @@ def visualize_categorical_scatter(om_df, om_col_dict, cat_varx, cat_vary, fig_se
     ----------
     om_df: DataFrame
         A data frame corresponding to the O&M data after having been pre-processed
-        to address NANs and date consistency, and after applying the ``om_summary_stats.py`` function.
+        to address NANs and date consistency, and after applying the ``om_summary_stats`` function.
         This data frame needs at least the columns specified in om_col_dict.
 
     om_col_dict: dict of {str : str}
         A dictionary that contains the column names relevant for the O&M data
 
-        - **eventdur** (*string*), should be assigned to column name desired for repair duration. This column is calculated by ``om_summary_stats``
-        - **agedatestart** (*string*), should be assigned to column name desired for age of site when event started. This column is calculated by ``om_summary_stats``
+        - **eventdur** (*string*), should be assigned to column name desired for repair duration.
+          This column is calculated by ``om_summary_stats``
+        - **agedatestart** (*string*), should be assigned to column name desired for age of
+          site when event started. This column is calculated by ``om_summary_stats``
 
     cat_varx: str
         Column name that contains categorical variable to be plotted
@@ -109,7 +111,8 @@ def visualize_counts(om_df, om_col_dict, count_var, fig_sets):
         A dictionary that contains the column names relevant for the O&M data
 
         - **siteid** (*string*), should be assigned to column name for associated site-ID in om_df.
-        - **modatestart** (*string*), should be assigned to column name desired for month of event start. This column is calculated by ``om_summary_stats``
+        - **modatestart** (*string*), should be assigned to column name desired for month of
+          event start. This column is calculated by ``om_summary_stats``
 
     count_var:str
         Column name that contains categorical variable to be plotted
@@ -177,17 +180,17 @@ def visualize_counts(om_df, om_col_dict, count_var, fig_sets):
 
 
 def visualize_om_prod_overlap(
-    prod_df,
-    om_df,
-    prod_col_dict,
-    om_col_dict,
-    prod_fldr,
-    Ecumu,
-    BEcumu,
-    samp_freq="H",
-    pshift=0.0,
-    baselineflag=True,
-):
+        prod_df,
+        om_df,
+        prod_col_dict,
+        om_col_dict,
+        prod_fldr,
+        e_cumu,
+        be_cumu,
+        samp_freq="H",
+        pshift=0.0,
+        baselineflag=True
+        ):
     """
     Creates Plotly figures of performance data overlaid with coinciding O&M tickets.
     A separate figure for each site in the production data frame (prod_df) is generated.
@@ -209,29 +212,36 @@ def visualize_om_prod_overlap(
     prod_col_dict: dict of {str : str}
         A dictionary that contains the column names relevant for the production data
 
-        - **siteid** (*string*), should be assigned to associated site-ID column name in prod_df
-        - **timestamp** (*string*), should be assigned to associated time-stamp column name in prod_df
-        - **energyprod** (*string*), should be assigned to associated production column name in prod_df
-        - **irradiance** (*string*), should be assigned to associated irradiance column name in prod_df.  Data should be in [W/m^2].
+        - **siteid** (*string*), should be assigned to associated site-ID column name in
+          prod_df
+        - **timestamp** (*string*), should be assigned to associated time-stamp column name in
+          prod_df
+        - **energyprod** (*string*), should be assigned to associated production column name in
+          prod_df
+        - **irradiance** (*string*), should be assigned to associated irradiance column name in
+          prod_df. Data should be in [W/m^2].
 
     om_col_dict: dict of {str : str}
         A dictionary that contains the column names relevant for the O&M data
 
         - **siteid** (*string*), should be assigned to column name for user's site-ID
-        - **datestart** (*string*), should be assigned to column name for user's O&M event start-date
+        - **datestart** (*string*), should be assigned to column name for user's
+        O&M event start-date
         - **dateend** (*string*), should be assigned to column name for user's O&M event end-date
         - **workID** (*string*), should be assigned to column name for user's O&M unique event ID
-        - **worktype** (*string*), should be assigned to column name for user's O&M ticket type (corrective, predictive, etc)
-        - **asset** (*string*), should be assigned to column name for affected asset in user's O&M ticket
+        - **worktype** (*string*), should be assigned to column name for user's
+          O&M ticket type (corrective, predictive, etc)
+        - **asset** (*string*), should be assigned to column name for affected asset in user's
+          O&M ticket
 
     prod_fldr: str
         Path to directory where plots should be saved.
 
-    Ecumu: bool
+    e_cumu: bool
         Boolean flag that specifies whether the production (energy output)
         data is input as cumulative information ("True") or on a per time-step basis ("False").
 
-    BEcumu: bool
+    be_cumu: bool
         Boolean that specifies whether the baseline production data is input as cumulative
         information ("True") or on a per time-step basis ("False").
 
@@ -291,7 +301,7 @@ def visualize_om_prod_overlap(
         # Resampling the performance data to obtain daily energy production
         # (different between cumulative and non-cumulative energy output)
 
-        if Ecumu:
+        if e_cumu:
             # energy data is cumulative over time, so take difference between
             # largest and smallest value on any given day
             tstep = np.diff(prod_df.loc[i].index)[2] / np.timedelta64(1, "s")
@@ -311,7 +321,7 @@ def visualize_om_prod_overlap(
             )
 
         # Resampling baselineE and assigning to separate variable to not resample entire data frame.
-        if BEcumu:  # baseline energy cumulative over time
+        if be_cumu:  # baseline energy cumulative over time
             baseline_site = (
                 prod_df.loc[i, prod_baseline].resample(samp_freq, label="left").max()
                 - prod_df.loc[i, prod_baseline].resample(samp_freq, label="left").min()
@@ -333,13 +343,13 @@ def visualize_om_prod_overlap(
         # Finding the corresponding closest dip to each OM om_date_s for
         # each ticket:  first by location/index, and then by converting those
         # indices to dates
-        E_dips_nearOM_Indices = [
+        edips_nearom_indices = [
             np.argmin(abs(edips_all_dates - xx)) for xx in om_df.loc[i].index
         ]
-        E_dips_nearOM_DATES = edips_all_dates[E_dips_nearOM_Indices]
+        edips_nearom_dates = edips_all_dates[edips_nearom_indices]
 
         # Adding the nearest performance-dip-date to the OM data frame
-        om_df.loc[i, "corr_perfDip"] = E_dips_nearOM_DATES
+        om_df.loc[i, "corr_perfDip"] = edips_nearom_dates
 
         # Taking largest value of daily output(perf-data) to create a [ficticious]
         # plot-value/column for OM-data => "_h" implies hover text
@@ -374,8 +384,8 @@ def visualize_om_prod_overlap(
                 )
             )
 
-        # For loop to add shaded regions for each ticket, where left side of the region corresponds to the
-        # EventStart (index of om data in this case), and right side of region corresponds
+        # For loop to add shaded regions for each ticket, where left side of the region corresponds
+        # to the EventStart (index of om data in this case), and right side of region corresponds
         # to the EventEnd.  These two dates make the edges of the region, x below.
         for j in range(len(om_df.loc[i])):
             fig.add_trace(
