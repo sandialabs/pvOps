@@ -127,7 +127,8 @@ def classification_deployer(
         X = X.toarray()
 
     # get position of 'clf' in pipeline_steps
-    idx_clf_pipeline = [i for i, it in enumerate(pipeline_steps) if it[0] == "clf"][0]
+    idx_clf_pipeline = [i for i, it in enumerate(
+        pipeline_steps) if it[0] == "clf"][0]
 
     best_gs_instance = None
     if greater_is_better:

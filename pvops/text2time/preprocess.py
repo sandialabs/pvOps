@@ -5,6 +5,7 @@ create visualizations of the merged data
 from datetime import datetime
 import pandas as pd
 
+
 def data_site_na(pom_df, df_col_dict):
     """
     Drops rows where site-ID is missing (NAN) within either production or O&M data.
@@ -81,8 +82,10 @@ def om_date_convert(om_df, om_col_dict, toffset=0.0):
     om_date_e = om_col_dict["dateend"]
 
     # Converting date-data from string data to DateTime objects
-    om_df[om_date_s] = pd.to_datetime(om_df[om_date_s]) + pd.Timedelta(hours=toffset)
-    om_df[om_date_e] = pd.to_datetime(om_df[om_date_e]) + pd.Timedelta(hours=toffset)
+    om_df[om_date_s] = pd.to_datetime(
+        om_df[om_date_s]) + pd.Timedelta(hours=toffset)
+    om_df[om_date_e] = pd.to_datetime(
+        om_df[om_date_e]) + pd.Timedelta(hours=toffset)
 
     # localizing timestamp
     om_df[om_date_s] = om_df[om_date_s].dt.tz_localize(None)
@@ -251,7 +254,8 @@ def prod_date_convert(prod_df, prod_col_dict, toffset=0.0):
     prod_ts = prod_col_dict["timestamp"]
 
     # Converting date-data from string data to DateTime objects
-    prod_df[prod_ts] = pd.to_datetime(prod_df[prod_ts]) + pd.Timedelta(hours=toffset)
+    prod_df[prod_ts] = pd.to_datetime(
+        prod_df[prod_ts]) + pd.Timedelta(hours=toffset)
 
     # localizing timestamp
     prod_df[prod_ts] = prod_df[prod_ts].dt.tz_localize(None)

@@ -18,6 +18,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from gensim.models.doc2vec import TaggedDocument
 from nltk.tokenize import word_tokenize
 
+
 def visualize_attribute_connectivity(
     om_df,
     om_col_dict,
@@ -73,7 +74,8 @@ def visualize_attribute_connectivity(
             w = len(df_iter[df_iter[ATTRIBUTE2_COL] == i])
             nx_data.append([a, i, w])
 
-    unique_df = pd.DataFrame(nx_data, columns=[ATTRIBUTE1_COL, ATTRIBUTE2_COL, "w"])
+    unique_df = pd.DataFrame(
+        nx_data, columns=[ATTRIBUTE1_COL, ATTRIBUTE2_COL, "w"])
 
     G = nx.from_pandas_edgelist(unique_df, ATTRIBUTE1_COL, ATTRIBUTE2_COL, "w")
     fig = plt.figure(figsize=figsize)
@@ -94,10 +96,12 @@ def visualize_attribute_connectivity(
     edges = G.edges()
     weights = [G[u][v]["w"] for u, v in edges]
     weights = np.array(weights)
-    weights = list(1 + (edge_width_scalar * weights / weights.max()))  # scale 1-11
+    weights = list(1 + (edge_width_scalar * weights /
+                   weights.max()))  # scale 1-11
     nx.draw_shell(G, width=weights, node_color=color_map, **graph_aargs)
 
     return fig, edges
+
 
 def visualize_attribute_timeseries(
     om_df, om_col_dict, date_structure="%Y-%m", figsize=(12, 6), cmap_name="brg"
@@ -186,6 +190,7 @@ def visualize_attribute_timeseries(
     plt.xticks(rotation=45)
     return fig
 
+
 def visualize_cluster_entropy(
     doc2vec, eval_kmeans, om_df, data_cols, ks, cmap_name="brg"
 ):
@@ -272,6 +277,7 @@ def visualize_cluster_entropy(
 
     return fig
 
+
 def visualize_document_clusters(cluster_tokens, min_frequency=20):
     """Visualize words most frequently occurring in a cluster. Especially useful when visualizing
     the results of an unsupervised partitioning of documents.
@@ -293,7 +299,8 @@ def visualize_document_clusters(cluster_tokens, min_frequency=20):
     all_tokens = [item for sublist in cluster_tokens for item in sublist]
     # important_words_freq is [[word1,freq1],[word2,freq2],...]
     total_important_words_freq = Counter(all_tokens).most_common()
-    word_freq_df = pd.DataFrame(total_important_words_freq, columns=["word", "freq"])
+    word_freq_df = pd.DataFrame(
+        total_important_words_freq, columns=["word", "freq"])
 
     all_words_of_interest = []
     for tokens in cluster_tokens:
@@ -332,7 +339,8 @@ def visualize_document_clusters(cluster_tokens, min_frequency=20):
 
     df = pd.DataFrame(index=filter_cluster_list)
     df["freq"] = filter_freq_list
-    ax = df["freq"].plot(kind="barh", figsize=(20, 14), color="coral", fontsize=13)
+    ax = df["freq"].plot(kind="barh", figsize=(
+        20, 14), color="coral", fontsize=13)
 
     xbias = 0.3
     ybias = 0.0
@@ -346,6 +354,7 @@ def visualize_document_clusters(cluster_tokens, min_frequency=20):
         )
 
     return ax
+
 
 def visualize_word_frequency_plot(
     tokenized_words, title="", font_size=16, graph_aargs={}

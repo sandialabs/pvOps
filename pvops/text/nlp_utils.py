@@ -5,6 +5,7 @@ from gensim.models.doc2vec import TaggedDocument, Doc2Vec
 from nltk.tokenize import word_tokenize
 import scipy
 
+
 class Doc2VecModel(BaseEstimator):
     """Performs a gensim Doc2Vec transformation of the input documents to create
     embedded representations of the documents. See gensim's
@@ -92,16 +93,17 @@ class DataDensifier(BaseEstimator):
     specifically to work inside a sklearn pipeline. Therefore, it uses the default ``transform``, ``fit``, 
     ``fit_transform`` method structure.
     '''
+
     def transform(self, X, y=None):
         '''Return a dense array if the input array is sparse.
 
         Parameters
-        
+
         ----------
         X : array
             Input data of numerical values. For this package, these values could
             represent embedded representations of documents. 
-        
+
         Returns
 
         -------
@@ -116,7 +118,7 @@ class DataDensifier(BaseEstimator):
         '''Placeholder method to conform to the sklearn class structure.
 
         Parameters
-        
+
         ----------
         X : array
             Input data
@@ -134,7 +136,7 @@ class DataDensifier(BaseEstimator):
         which returns a dense array when the input is sparse. 
 
         Parameters
-        
+
         ----------
         X : array
             Input data
@@ -146,6 +148,7 @@ class DataDensifier(BaseEstimator):
         dense array
         '''
         return self.transform(X=X, y=y)
+
 
 def create_stopwords(lst_langs=["english"], lst_add_words=[], lst_keep_words=[]):
     """Concatenate a list of stopwords using both words grabbed from nltk and user-specified words.
