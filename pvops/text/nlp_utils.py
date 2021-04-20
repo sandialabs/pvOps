@@ -5,6 +5,7 @@ from gensim.models.doc2vec import TaggedDocument, Doc2Vec
 from nltk.tokenize import word_tokenize
 import scipy
 
+
 class Doc2VecModel(BaseEstimator):
     """Performs a gensim Doc2Vec transformation of the input documents to create
     embedded representations of the documents. See gensim's
@@ -87,36 +88,37 @@ class Doc2VecModel(BaseEstimator):
 
 
 class DataDensifier(BaseEstimator):
-    '''A data structure transformer which converts sparse data to dense data. This process is usually 
-    incorporated in this library when doing unsupervised machine learning. This class is built 
-    specifically to work inside a sklearn pipeline. Therefore, it uses the default ``transform``, ``fit``, 
-    ``fit_transform`` method structure.
-    '''
+    """A data structure transformer which converts sparse data to dense data.
+    This process is usually incorporated in this library when doing unsupervised machine learning.
+    This class is built specifically to work inside a sklearn pipeline.
+    Therefore, it uses the default ``transform``, ``fit``, ``fit_transform`` method structure.
+    """
+
     def transform(self, X, y=None):
-        '''Return a dense array if the input array is sparse.
+        """Return a dense array if the input array is sparse.
 
         Parameters
-        
+
         ----------
         X : array
             Input data of numerical values. For this package, these values could
-            represent embedded representations of documents. 
-        
+            represent embedded representations of documents.
+
         Returns
 
         -------
         dense array
-        '''
+        """
         if scipy.sparse.issparse(X):
             return X.toarray()
         else:
             return X.copy()
 
     def fit(self, X, y=None):
-        '''Placeholder method to conform to the sklearn class structure.
+        """Placeholder method to conform to the sklearn class structure.
 
         Parameters
-        
+
         ----------
         X : array
             Input data
@@ -126,15 +128,15 @@ class DataDensifier(BaseEstimator):
 
         -------
         DataDensifier object
-        '''
+        """
         return self
 
     def fit_transform(self, X, y=None):
-        '''Performs same action as ``DataDensifier.transform()``, 
-        which returns a dense array when the input is sparse. 
+        """Performs same action as ``DataDensifier.transform()``,
+        which returns a dense array when the input is sparse.
 
         Parameters
-        
+
         ----------
         X : array
             Input data
@@ -144,8 +146,9 @@ class DataDensifier(BaseEstimator):
 
         -------
         dense array
-        '''
+        """
         return self.transform(X=X, y=y)
+
 
 def create_stopwords(lst_langs=["english"], lst_add_words=[], lst_keep_words=[]):
     """Concatenate a list of stopwords using both words grabbed from nltk and user-specified words.
@@ -153,12 +156,12 @@ def create_stopwords(lst_langs=["english"], lst_add_words=[], lst_keep_words=[])
     Parameters
 
     ---------
-    lst_langs : list
+    lst_langs: list
         List of strings designating the languages for a nltk.corpus.stopwords.words query. If empty list is passed, no stopwords will be queried from nltk.
-    lst_add_words : list
-        List of words (e.g., "road" or "street") to add to stopwords list. If these words are already included in the nltk query, a duplicate will not be added.
-    lst_keep_words : list
-        List of words (e.g., "before" or "until") to remove from stopwords list. This is usually used to modify default stop words that might be of interest to PV.
+    lst_add_words: list
+        List of words(e.g., "road" or "street") to add to stopwords list. If these words are already included in the nltk query, a duplicate will not be added.
+    lst_keep_words: list
+        List of words(e.g., "before" or "until") to remove from stopwords list. This is usually used to modify default stop words that might be of interest to PV.
 
     Returns
 

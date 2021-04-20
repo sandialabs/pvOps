@@ -50,7 +50,8 @@ def summarize_text_data(om_df, colname):
     # Display information.
     print(f'  {info["n_samples"]} samples')
     print(f'  {info["n_nan_docs"]} invalid documents')
-    print("  {:.2f} words per sample on average".format(info["n_words_doc_average"]))
+    print("  {:.2f} words per sample on average".format(
+        info["n_words_doc_average"]))
     print(f'  Number of unique words {info["n_unique_words"]}')
     print("  {:.2f} total words".format(info["n_total_words"]))
 

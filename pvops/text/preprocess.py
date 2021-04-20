@@ -6,6 +6,7 @@ import datefinder
 import traceback
 from datetime import datetime, timedelta
 
+
 def preprocessor(
     om_df, lst_stopwords, col_dict, print_info=False, extract_dates_only=False
 ):
@@ -67,7 +68,8 @@ def preprocessor(
             n_nans += 1
         try:
             document = str(document).lower()
-            document = text_remove_nondate_nums(document, PRINT_INFO=print_info)
+            document = text_remove_nondate_nums(
+                document, PRINT_INFO=print_info)
             dts = get_dates(document, df, ind, col_dict, print_info)
             if print_info:
                 print("Dates: ", dts)
@@ -113,7 +115,8 @@ def preprocessor(
             continue
 
         try:
-            date = datetime.strptime(row[EVENTSTART_COLUMN], "%Y-%m-%d %H:%M:%S")
+            date = datetime.strptime(
+                row[EVENTSTART_COLUMN], "%Y-%m-%d %H:%M:%S")
 
             fltrd = []
             for dt in nlp_dates:
@@ -131,6 +134,7 @@ def preprocessor(
     df[SAVE_DATE_COLUMN] = filtered_dates
 
     return df
+
 
 def get_dates(
     document, om_df, ind, col_dict, print_info, infer_date_surrounding_rows=True
@@ -208,7 +212,8 @@ def get_dates(
                             pass
                         else:
                             basedate = list(
-                                datefinder.find_dates(row_behind[EVENTSTART_COLUMN])
+                                datefinder.find_dates(
+                                    row_behind[EVENTSTART_COLUMN])
                             )[0]
                             find_valid = True
                             continue
@@ -223,7 +228,8 @@ def get_dates(
                             pass
                         else:
                             basedate = list(
-                                datefinder.find_dates(row_ahead[EVENTSTART_COLUMN])
+                                datefinder.find_dates(
+                                    row_ahead[EVENTSTART_COLUMN])
                             )[0]
                             find_valid = True
                             continue  # not needed but consistent syntax
@@ -271,6 +277,7 @@ def get_dates(
 
     return valid_matches
 
+
 def text_remove_nondate_nums(document, PRINT_INFO=False):
     """Conduct initial text processing steps to prepare the text for date extractions.
     Function mostly uses regex-based text substitution to remove numerical structures
@@ -309,16 +316,21 @@ def text_remove_nondate_nums(document, PRINT_INFO=False):
         r"\s\d{3}\s",  # numeric with 3 digits
         r"\b(0|00|1[3-9]|[2-9]\d)\b-\d{4}",  # [1-12]-4DIGIT  allowed only
         r"\s+\d+\.\d+\s+",  # e.g.: 10.1 and 10.2 with space before and after
-        r"\d{9,}",  # Take out numbers longer than 8 digits (8 because datetimes 20190320 should stay)
+        # Take out numbers longer than 8 digits (8 because datetimes 20190320 should stay)
+        r"\d{9,}",
         r"\d+[.]+\d+[.]\d+[.][\d?]",  # Take out IP numbers
-        r"\d-\d-\d",  # Take out single digit-hyphen trios e.g. 3-1-4  but leave 10-20-18 (possible date)
-        r"\d[.]\d[.]\d",  # Take out single digit-hyphen trios e.g. 3-1-4  but leave 10-20-18 (possible date)
+        # Take out single digit-hyphen trios e.g. 3-1-4  but leave 10-20-18 (possible date)
+        r"\d-\d-\d",
+        # Take out single digit-hyphen trios e.g. 3-1-4  but leave 10-20-18 (possible date)
+        r"\d[.]\d[.]\d",
         r"\d+(\.\d*)?\s*[kK]?[wW]\s",
         r"\b(?!([jJ]an(uary)?|[fF]eb(r)?(uary)?|[mM]ar(ch)?|[aA]pr(il)?|[mM]ay|[jJ]un(e)?|[jJ]ul(y)?|[aA]ug(ust)?|[sS]ep(t)?(ember)?|[oO]ct(ober)?|[nN]ov(ember)?|[dD]ec(ember)?\b))[a-zA-Z]+-\d+",
         # ^ take out e.g. webbox-10
         r"[\w\.-]+@[\w\.-]+\.\w+",  # take out email addresses
-        r"(\s\d{3}[-\.\s]?\d{3}[-\.\s]?\d{4}|\(\d{3}\)\s*\d{3}[-\.\s]?\d{4}|\s\d{3}[-\.\s]\d{4})",  # take out phone numbers
-        r"\s\d+[.]\d+\D+[.]\d+\s",  # e.g. neff - cb 2.1b.16 - forced outage ; unknown. at 1645 26-jun cb 2.1b.16 offline.. 0000 - unknown
+        # take out phone numbers
+        r"(\s\d{3}[-\.\s]?\d{3}[-\.\s]?\d{4}|\(\d{3}\)\s*\d{3}[-\.\s]?\d{4}|\s\d{3}[-\.\s]\d{4})",
+        # e.g. neff - cb 2.1b.16 - forced outage ; unknown. at 1645 26-jun cb 2.1b.16 offline.. 0000 - unknown
+        r"\s\d+[.]\d+\D+[.]\d+\s",
         r"\s\D[.]\d[,\s]",
     ]
 
@@ -373,17 +385,22 @@ def text_remove_nondate_nums(document, PRINT_INFO=False):
         r"\d+(,\d+)+(].]d*)?",  # take out lists of numbers with no space
         r"\d+(,\s\d+)+(].]d*)?",  # take out list of numbers with space
         r"\s\d{3}\s",  # numeric with 3 digits
-        r"\s\b(0|00|1[3-9]|[2-9]\d)\b[-/]\d{4}\s",  # [1-12]-4DIGIT  allowed only: 91-1010
-        r"\s\d{4}[-/]\b(0|00|1[3-9]|[2-9]\d)\b\s",  # 4DIGIT-[1-12]  allowed only: 4301/43
+        # [1-12]-4DIGIT  allowed only: 91-1010
+        r"\s\b(0|00|1[3-9]|[2-9]\d)\b[-/]\d{4}\s",
+        # 4DIGIT-[1-12]  allowed only: 4301/43
+        r"\s\d{4}[-/]\b(0|00|1[3-9]|[2-9]\d)\b\s",
         r"\s\d+\[.]\d+\s",  # e.g.: ' 10.1 ' and 10.2
-        r"\d{9,}",  # Take out numbers longer than 8 digits (8 because datetimes 20190320 should stay)
+        # Take out numbers longer than 8 digits (8 because datetimes 20190320 should stay)
+        r"\d{9,}",
         r"\s\D[.]\s",  # Take out " m. " for maybe, ' c. ' for cerca, etc.
-        r"\s\d{3}\/\d{2}\s",  # Take out 123/29 because not a date format, usually indicating temperature/etc.
+        # Take out 123/29 because not a date format, usually indicating temperature/etc.
+        r"\s\d{3}\/\d{2}\s",
         r"\s[a-zA-Z]+-[a-zA-Z]+\d\s",  # this and next one: e-a4 they are e7-1
         r"\s[a-zA-Z]\d+-\d+\s",
         r"\s[a-zA-Z]\d+\s",  # take out examples like `j23`
     ]
-    replacements = ["", "", "", "", " ", " ", " ", " ", "", " ", " ", " ", " ", " "]
+    replacements = ["", "", "", "", " ", " ",
+                    " ", " ", "", " ", " ", " ", " ", " "]
 
     document = document.center(len(document) + 2)  # add spaces on either side
     for regex, repl in zip(regexs, replacements):
@@ -393,6 +410,7 @@ def text_remove_nondate_nums(document, PRINT_INFO=False):
         print("TO DFINDER: ", document)
 
     return document
+
 
 def text_remove_numbers_stopwords(document, lst_stopwords):
     """Conduct final processing steps after date extraction

@@ -7,3 +7,5 @@ docs/_build/
 *.py[cod]
 examples/analysis/
 *~
+pvops/.vscode/
+pvops/text2time/.vscode

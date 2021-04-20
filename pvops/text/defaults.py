@@ -27,6 +27,7 @@ from sklearn.ensemble import (
     BaggingClassifier,
 )
 
+
 def supervised_classifier_defs(settings_flag):
     """Esablish supervised classifier definitions which are non-specific to embeddor,
     and therefore, non-specific to the natural language processing application
@@ -249,6 +250,7 @@ def supervised_classifier_defs(settings_flag):
         }
 
     return search_space, classifiers
+
 
 def unsupervised_classifier_defs(setting_flag, n_clusters):
     """Establish supervised classifier definitions which are non-specific to embeddor,

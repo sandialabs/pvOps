@@ -1,3 +1,7 @@
+"""
+These helper functions focus on performing secondary calcuations from the O&M and
+production data to create visualizations of the merged data
+"""
 import pandas as pd
 import numpy as np
 
@@ -19,10 +23,12 @@ def iec_calc(prod_df, prod_col_dict, meta_df, meta_col_dict, gi_ref=1000.0):
 
         - **siteid** (*string*), should be assigned to site-ID column name in prod_df
         - **timestamp** (*string*), should be assigned to time-stamp column name in prod_df
-        - **energyprod** (*string*), should be assigned to production column name in prod_df
-        - **irradiance** (*string*), should be assigned to irradiance column name in prod_df, where data should be in [W/m^2]
-        - **baseline** (*string*), should be assigned to preferred column name to capture IEC calculations in prod_df
-        - **dcsize**, (*string*), should be assigned to preferred column name for site capacity in prod_df
+        - **irradiance** (*string*), should be assigned to irradiance column name in prod_df,
+          where data should be in [W/m^2]
+        - **baseline** (*string*), should be assigned to preferred column name to capture
+          IEC calculations in prod_df
+        - **dcsize**, (*string*), should be assigned to preferred column name for site capacity in
+          prod_df
 
     meta_df: DataFrame
         A data frame corresponding to site metadata.
@@ -32,7 +38,8 @@ def iec_calc(prod_df, prod_col_dict, meta_df, meta_col_dict, gi_ref=1000.0):
         A dictionary that contains the column names relevant for the meta-data
 
         - **siteid** (*string*), should be assigned to site-ID column name
-        - **dcsize** (*string*), should be assigned to column name corresponding to site capacity, where data is in [kW]
+        - **dcsize** (*string*), should be assigned to column name corresponding to site capacity,
+          where data is in [kW]
 
     gi_ref: float
         reference plane of array irradiance in W/m^2 at which a site capacity is determined
@@ -51,7 +58,6 @@ def iec_calc(prod_df, prod_col_dict, meta_df, meta_col_dict, gi_ref=1000.0):
     # assigning dictionary items to local variables for cleaner code
     prod_site = prod_col_dict["siteid"]
     prod_ts = prod_col_dict["timestamp"]
-    prod_ener = prod_col_dict["energyprod"]
     prod_irr = prod_col_dict["irradiance"]
     prod_iec = prod_col_dict["baseline"]
     prod_dcsize = prod_col_dict["dcsize"]
@@ -113,16 +119,21 @@ def summarize_overlaps(prod_df, om_df, prod_col_dict, om_col_dict):
         A dictionary that contains the column names relevant for the production data
 
         - **siteid** (*string*), should be assigned to associated site-ID column name in prod_df
-        - **timestamp** (*string*), should be assigned to associated time-stamp column name in prod_df
-        - **energyprod** (*string*), should be assigned to associated production column name in prod_df
-        - **irradiance** (*string*), should be assigned to associated irradiance column name in prod_df
+        - **timestamp** (*string*), should be assigned to associated time-stamp column name in
+          prod_df
+        - **energyprod** (*string*), should be assigned to associated production column name in
+          prod_df
+        - **irradiance** (*string*), should be assigned to associated irradiance column name in
+          prod_df
 
     om_col_dict: dict of {str : str}
         A dictionary that contains the column names relevant for the O&M data
 
         - **siteid** (*string*), should be assigned to associated site-ID column name in om_df
-        - **datestart** (*string*), should be assigned to associated O&M event start-date column name in om_df
-        - **dateend** (*string*), should be assigned to associated O&M event end-date column name in om_df
+        - **datestart** (*string*), should be assigned to associated O&M event start-date
+          column name in om_df
+        - **dateend** (*string*), should be assigned to associated O&M event end-date
+          column name in om_df
 
     Returns
 
@@ -131,15 +142,19 @@ def summarize_overlaps(prod_df, om_df, prod_col_dict, om_col_dict):
         A data frame that includes statistics for the production data per site in the data frame.
         Two statistical parameters are calculated and assigned to separate columns:
 
-        - **Actual # Time Stamps** (*datetime.datetime*), total number of overlapping production time-stamps
-        - **Max # Time Stamps** (*datetime.datetime), maximum number of production time-stamps, including NANs
+        - **Actual # Time Stamps** (*datetime.datetime*), total number of overlapping
+          production time-stamps
+        - **Max # Time Stamps** (*datetime.datetime), maximum number of production time-stamps,
+          including NANs
 
     om_out: DataFrame
         A data frame that includes statistics for the O&M data per site in the data frame.
         Three statistical parameters are calculated and assigned to separate columns:
 
-        - **Earliest Event Start** (*datetime.datetime*), column that specifies timestamp of earliest start of all events per site.
-        - **Latest Event End** (*datetime.datetime), column that specifies timestamp for latest conclusion of all events per site.
+        - **Earliest Event Start** (*datetime.datetime*), column that specifies timestamp of
+          earliest start of all events per site.
+        - **Latest Event End** (*datetime.datetime), column that specifies timestamp for
+          latest conclusion of all events per site.
         - **Total Events** (*int*), column that specifies total number of events per site
 
     """
@@ -179,8 +194,10 @@ def summarize_overlaps(prod_df, om_df, prod_col_dict, om_col_dict):
 
 def om_summary_stats(om_df, meta_df, om_col_dict, meta_col_dict):
     """
-    Adds columns to OM dataframe capturing statistics (e.g., event duration, month of occurrence, and age).
-    Latter is calculated by using corresponding site commissioning date within the metadata dataframe.
+    Adds columns to OM dataframe capturing statistics (e.g., event duration, month of
+    occurrence, and age).
+    Latter is calculated by using corresponding site commissioning date within the
+    metadata dataframe.
 
 
     Parameters
@@ -195,20 +212,27 @@ def om_summary_stats(om_df, meta_df, om_col_dict, meta_col_dict):
         A data frame corresponding to the metadata that contains columns specified in meta_col_dict.
 
     om_col_dict: dict of {str : str}
-        A dictionary that contains the column names relevant for the O&M data which consist of at least:
+        A dictionary that contains the column names relevant for the O&M data which consist of
+        at least:
 
         - **siteid** (*string*), should be assigned to column name for associated site-ID
-        - **datestart** (*string*), should be assigned to column name for associated O&M event start-date
-        - **dateend** (*string*), should be assigned to column name for associated O&M event end-date
-        - **eventdur** (*string*), should be assigned to column name desired for calculated event duration (calculated here, in hours)
-        - **modatestart** (*string*), should be assigned to column name desired for month of event start (calculated here)
-        - **agedatestart** (*string*), should be assigned to column name desired for calculated age of site when event started (calculated here, in days)
+        - **datestart** (*string*), should be assigned to column name for associated O&M event
+          start-date
+        - **dateend** (*string*), should be assigned to column name for associated O&M event
+          end-date
+        - **eventdur** (*string*), should be assigned to column name desired for calculated
+          event duration (calculated here, in hours)
+        - **modatestart** (*string*), should be assigned to column name desired for month of
+          event start (calculated here)
+        - **agedatestart** (*string*), should be assigned to column name desired for calculated
+          age of site when event started (calculated here, in days)
 
     meta_col_dict: dict
         A dictionary that contains the column names relevant for the meta-data
 
         - **siteid** (*string*), should be assigned to associated site-ID column name in meta_df
-        - **COD** (*string*), should be asigned to column name corresponding to associated commisioning dates for all sites captured in om_df
+        - **COD** (*string*), should be asigned to column name corresponding to associated
+          commisioning dates for all sites captured in om_df
 
 
     Returns
@@ -252,7 +276,8 @@ def om_summary_stats(om_df, meta_df, om_col_dict, meta_col_dict):
     meta_df = meta_df.set_index(meta_site)
 
     # =========================================================================
-    # Extracting commissioning dates of only the sites in the O&M data-frame (in case meta_df has more sites)
+    # Extracting commissioning dates of only the sites in the O&M data-frame
+    # (in case meta_df has more sites)
     cod_dates = pd.to_datetime(meta_df.loc[om_df.index.unique()][meta_cod].copy())
 
     # Adding age column to om_df, but first initiating a COD column in the
@@ -261,9 +286,8 @@ def om_summary_stats(om_df, meta_df, om_col_dict, meta_col_dict):
     for i in cod_dates.index:
         om_df.loc[i, meta_cod] = cod_dates[i]
     om_df[meta_cod] = pd.to_datetime(om_df[meta_cod])
-    om_df[meta_cod] = om_df[meta_cod].dt.floor(
-        "D"
-    )  # hour on commisioning data is unimportant for this analysis
+    om_df[meta_cod] = om_df[meta_cod].dt.floor("D")  # hour on commisioning data is
+    # unimportant for this analysis
     om_df[om_age_st] = om_df.loc[:, om_date_s] - om_df.loc[:, meta_cod]
     # =========================================================================
 
@@ -306,16 +330,21 @@ def overlapping_data(prod_df, om_df, prod_col_dict, om_col_dict):
         A dictionary that contains the column names relevant for the production data
 
         - **siteid** (*string*), should be assigned to associated site-ID column name in prod_df
-        - **timestamp** (*string*), should be assigned to associated time-stamp column name in prod_df
-        - **energyprod** (*string*), should be assigned to associated production column name in prod_df
-        - **irradiance** (*string*), should be assigned to associated irradiance column name in prod_df
+        - **timestamp** (*string*), should be assigned to associated time-stamp
+          column name in prod_df
+        - **energyprod** (*string*), should be assigned to associated production
+          column name in prod_df
+        - **irradiance** (*string*), should be assigned to associated irradiance
+          column name in prod_df
 
     om_col_dict: dict of {str : str}
         A dictionary that contains the column names relevant for the O&M data
 
         - **siteid** (*string*), should be assigned to associated site-ID column name in om_df
-        - **datestart** (*string*), should be assigned to associated O&M event start-date column name in om_df
-        - **dateend** (*string*), should be assigned to associated O&M event end-date column name in om_df
+        - **datestart** (*string*), should be assigned to associated O&M event start-date
+          column name in om_df
+        - **dateend** (*string*), should be assigned to associated O&M event end-date
+          column name in om_df
 
     Returns
 
@@ -380,7 +409,8 @@ def overlapping_data(prod_df, om_df, prod_col_dict, om_col_dict):
                 om_dateend_check
             )
 
-            # Creating NEW DataFrames using masks generated above and concatenate to "_commondates" DFs
+            # Creating NEW DataFrames using masks generated above and concatenate to
+            # "_commondates" DFs
             if isinstance(pd.to_datetime(om_df.loc[rid][om_date_s]), pd.Series):
                 om_overlap_section = om_df.loc[rid][
                     (omtail_gt_phead_mask) & (omhead_lt_ptail_mask)
@@ -412,7 +442,8 @@ def prod_anomalies(prod_df, prod_col_dict, minval=1.0, repval=np.nan, ffill=True
     For production data with cumulative energy entries, 1) addresses time-stamps where production
     unexpectedly drops to near zero and 2) replaces unexpected production drops with NANs or with
     user-specified value.  If unexpected production drops are replaced with NANs and if 'ffill'
-    is set to 'True' in the input argument, a forward-fill method is used to replace the unexpected drops.
+    is set to 'True' in the input argument, a forward-fill method is used to replace the
+    unexpected drops.
 
 
     Parameters
@@ -423,9 +454,11 @@ def prod_anomalies(prod_df, prod_col_dict, minval=1.0, repval=np.nan, ffill=True
         a cumulative basis.
 
     prod_col_dict: dict of {str : str}
-        A dictionary that contains the column names associated with the production data, which consist of at least:
+        A dictionary that contains the column names associated with the production data,
+        which consist of at least:
 
-        - **energyprod** (*string*), should be assigned to the associated cumulative production column name in prod_df
+        - **energyprod** (*string*), should be assigned to the associated cumulative
+          production column name in prod_df
 
     minval: float
         Cutoff value for production data that determines where anomalies are defined. Any production
@@ -482,11 +515,16 @@ def prod_quant(prod_df, prod_col_dict, comp_type, ecumu=True):
         A dictionary that contains the column names relevant for the production data
 
         - **siteid** (*string*), should be assigned to associated site-ID column name in prod_df
-        - **timestamp** (*string*), should be assigned to associated time-stamp column name in prod_df
-        - **energyprod** (*string*), should be assigned to associated production column name in prod_df
-        - **baseline** (*string*), should be assigned to associated expected baseline production column name in prod_df
-        - **compared** (*string*), should be assigned to column name desired for quantified production data (calculated here)
-        - **energy_pstep** (*string*), should be assigned to column name desired for energy per time-step (calculated here)
+        - **timestamp** (*string*), should be assigned to associated time-stamp
+          column name in prod_df
+        - **energyprod** (*string*), should be assigned to associated production
+          column name in prod_df
+        - **baseline** (*string*), should be assigned to associated expected baseline
+          production column name in prod_df
+        - **compared** (*string*), should be assigned to column name desired for
+          quantified production data (calculated here)
+        - **energy_pstep** (*string*), should be assigned to column name desired for
+          energy per time-step (calculated here)
 
     comp_type: str
         Flag that specifies how the energy production should be compared to the
