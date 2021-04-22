@@ -113,7 +113,8 @@ class Example:
 
         lst_stopwords = nlp_utils.create_stopwords(
             ["english"],
-            lst_add_words=["dtype", "say", "new", "length", "object", "u", "ha", "wa"],
+            lst_add_words=["dtype", "say", "new",
+                           "length", "object", "u", "ha", "wa"],
             lst_keep_words=["new"],
         )
 
@@ -137,14 +138,16 @@ class Example:
 
     def visualize_freqPlot(self, LBL_CAT=None, DATA_COLUMN="CleanDesc", **graph_aargs):
 
-        if LBL_CAT == None:
+        if LBL_CAT is None:
             words = " ".join(self.df[DATA_COLUMN].tolist())
             num_rows = len(self.df[DATA_COLUMN].index)
         elif LBL_CAT in set(self.df[self.LABEL_COLUMN].tolist()):
             words = " ".join(
-                self.df[self.df[self.LABEL_COLUMN] == LBL_CAT][DATA_COLUMN].tolist()
+                self.df[self.df[self.LABEL_COLUMN]
+                        == LBL_CAT][DATA_COLUMN].tolist()
             )
-            num_rows = len(self.df[self.df[self.LABEL_COLUMN] == LBL_CAT].index)
+            num_rows = len(
+                self.df[self.df[self.LABEL_COLUMN] == LBL_CAT].index)
         else:
             raise Exception(
                 f"An invalid label category (LBL_CAT) was passed. Please pass a value in the following set:\n{set(self.df[self.LABEL_COLUMN].tolist())}"
@@ -160,7 +163,8 @@ class Example:
         all_labels = np.unique(self.df[self.LABEL_COLUMN])
         cluster_words = [
             " ".join(
-                self.df[self.df[self.LABEL_COLUMN] == LBL_CAT][DATA_COLUMN].tolist()
+                self.df[self.df[self.LABEL_COLUMN]
+                        == LBL_CAT][DATA_COLUMN].tolist()
             )
             for LBL_CAT in all_labels
         ]
@@ -172,7 +176,8 @@ class Example:
         return fig
 
     def visualize_attribute_connectivity(self, om_col_dict, **networkxDrawAargs):
-        df_filtered = self.df.dropna(subset=list(om_col_dict.values()), inplace=False)
+        df_filtered = self.df.dropna(subset=list(
+            om_col_dict.values()), inplace=False)
         fig, edges = visualize.visualize_attribute_connectivity(
             df_filtered, om_col_dict, **networkxDrawAargs
         )
@@ -322,12 +327,13 @@ class Example:
         if embedding == "tfidf":
             pipeline_steps = [("tfidf", TfidfVectorizer()), ("clf", None)]
         elif embedding == "doc2vec":
-            pipeline_steps = [("doc2vec", nlp_utils.Doc2VecModel()), ("clf", None)]
+            pipeline_steps = [
+                ("doc2vec", nlp_utils.Doc2VecModel()), ("clf", None)]
 
         scoring = make_scorer(f1_score, average="weighted")
         self.greater_is_better = True
 
-        if user_defined_classes == None or user_defined_search_space == None:
+        if user_defined_classes is None or user_defined_search_space is None:
             # Utilize a subset of the pre-determined classifiers
             (
                 search_space,
@@ -390,8 +396,8 @@ class Example:
         Second, you can pass your own definitions of supervised classifiers, just as found in
         `supervised_classifier_defs.py`. To do this, two objects are required as input: `classes`
         and `search_space`. The `classes` object is a dictionary with a key as the name of the
-        classifier and a value as the classifier object. The `search_space` specifies the hyperparameters
-        which the grid search protocol will iterate through. For example,
+        classifier and a value as the classifier object. The `search_space` specifies the 
+        hyperparameters which the grid search protocol will iterate through. For example,
 
         ```
         user_defined_classes = {
@@ -431,7 +437,7 @@ class Example:
         scoring = make_scorer(homogeneity_score)
         self.greater_is_better = True
 
-        if user_defined_classes == None or user_defined_search_space == None:
+        if user_defined_classes is None or user_defined_search_space is None:
             # Utilize a subset of the pre-determined classifiers
             y = self.df[self.LABEL_COLUMN].tolist()
             n_clusters = len(np.unique(y))
@@ -483,16 +489,16 @@ class Example:
             print("Best algorithm found:\n", self.unsupervised_best_model)
             pred_y = self.unsupervised_best_model.predict(X)
 
-        if eval_func == None:
+        if eval_func is None:
             if ml_type == "supervised":
                 score = f1_score(y, pred_y, average="weighted")
                 self.greater_is_better = True
-                if PREDICTION_OUTPUT_COL == None:
+                if PREDICTION_OUTPUT_COL is None:
                     output_col = f"Supervised_Pred_{self.LABEL_COLUMN}"
             elif ml_type == "unsupervised":
                 score = homogeneity_score(y, pred_y, *eval_aargs)
                 self.greater_is_better = True
-                if PREDICTION_OUTPUT_COL == None:
+                if PREDICTION_OUTPUT_COL is None:
                     output_col = f"Unsupervised_Pred_{self.LABEL_COLUMN}"
 
         self.df[output_col] = pred_y
