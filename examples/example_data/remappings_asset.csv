@@ -1,0 +1,58 @@
+in,out_
+Inverter,inverter
+Recloser,recloser
+Transformer,transformer
+Switchgear,switchgear
+Combiner,combiner
+DC Disconnect,combiner
+Recombiner,combiner
+Feeder (Dip Pole/Array),wiring
+Ground-Mount PV System,module
+Module,module
+Tracker,tracker
+Met station,met station
+Weather Station,met station
+Pyranometer,met station
+Temperature sensor,met station
+Met station battery,met station
+Anemometer,met station
+Reference cell,met station
+Relative humidity sensor,met station
+Relay,relay
+Energy Meter,energy meter
+Meter,energy meter
+Substation,substation
+Energy Storage/Battery,energy storage
+Facility,facility
+AC Combiner,combiner
+Battery (Solar + storage facilities),energy storage
+Block,transformer
+Central Inverter,inverter
+Circuit,wiring
+Combiner Box,combiner
+DAS System,facility
+DC Combiner,combiner
+Data logger,facility
+Disconnect switch,relay
+Energy Storage/Battery,energy meter
+Inverter Module,inverter
+Inverter module,inverter
+Inverter/String Inverter,inverter
+Modules,module
+Other,other
+PCS Transformer,transformer
+POI/Medium Voltage,other
+Pad,transformer
+Plant,other
+Point of Interconnection,other
+Racking/Trackers,tracker
+Rooftop PV System,other
+Site,other
+String,other
+String Inverter,inverter
+Subarray,other
+Substation,substation
+Summary,other
+Switchgear,transformer
+Tracker control unit,tracker
+Tracking System,tracker

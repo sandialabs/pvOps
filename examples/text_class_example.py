@@ -50,6 +50,7 @@ class Example:
         col_dict = {"date": DATE_COLUMN, "label": self.LABEL_COLUMN}
         df = self.df.copy()
         df[DATE_COLUMN] = pd.to_datetime(df[DATE_COLUMN])
+        df = df[df[DATE_COLUMN].notnull()]
         fig = visualize.visualize_attribute_timeseries(
             df, col_dict
         )
@@ -74,6 +75,7 @@ class Example:
         EVENTSTART_COLUMN,
         SAVE_DATA_COLUMN="CleanDesc",
         SAVE_DATE_COLUMN="ExtractedDates",
+        print_info = False,
     ):
 
         col_dict = {
@@ -85,7 +87,7 @@ class Example:
 
         try:
             self.df = preprocess.preprocessor(
-                self.df, None, col_dict, print_info=False, extract_dates_only=True
+                self.df, None, col_dict, print_info=print_info, extract_dates_only=True
             )
         except Exception as e:
             print(e)
@@ -106,6 +108,7 @@ class Example:
         self.SAVE_DATE_COLUMN = SAVE_DATE_COLUMN
 
         self.df = self.df.dropna(subset=[self.LABEL_COLUMN])
+        self.df = self.df[~self.df[self.DATA_COLUMN].isna()]
         for lbl in set(self.df[self.LABEL_COLUMN].tolist()):
             if len(self.df[self.df[self.LABEL_COLUMN] == lbl].index) <= 1:
                 self.df = self.df[self.df[self.LABEL_COLUMN] != lbl]
