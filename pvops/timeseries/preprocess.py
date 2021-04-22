@@ -1,3 +1,5 @@
+# A set of preprocessing methods, both based on photovoltaic-specific physics and data quality methods.
+
 import pvlib
 import pvanalytics
 from timezonefinder import TimezoneFinder
