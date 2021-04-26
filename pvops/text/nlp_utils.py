@@ -39,6 +39,7 @@ class Doc2VecModel(BaseEstimator):
         self.dv_mapfile = dv_mapfile
         self.comment = comment
         self.trim_rule = trim_rule
+        self.callbacks = callbacks
         self.window = window
         self.epochs = epochs
 
@@ -70,7 +71,7 @@ class Doc2VecModel(BaseEstimator):
         self.d2v_model.train(
             tagged_documents,
             total_examples=len(tagged_documents),
-            epochs=self.d2v_model.iter,
+            epochs=self.d2v_model.epochs,
         )
         return self
 
