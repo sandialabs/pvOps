@@ -489,7 +489,7 @@ class Example:
                     output_col = f"Unsupervised_Pred_{self.LABEL_COLUMN}"
 
         self.df[output_col] = pred_y
-        print(f"Predictions stored to {output_col} in `df` attribute")
+        print(f"Predictions stored to {output_col} in `df`")
 
         print(f"Score: {score}")
 
