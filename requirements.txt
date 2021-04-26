@@ -7,5 +7,5 @@ datefinder
 matplotlib
 seaborn
 plotly
-gensim
+gensim>=4.0.0
 networkx

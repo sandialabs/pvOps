@@ -31,10 +31,10 @@ def summarize_text_data(om_df, colname):
     tokenized = [sentence.split() for sentence in nonan_text]
     avg_n_words = np.array([len(tokens) for tokens in tokenized]).mean()
     sum_n_words = np.array([len(tokens) for tokens in tokenized]).sum()
-    model = Word2Vec(tokenized, min_count=1, size=64)
+    model = Word2Vec(tokenized, min_count=1)
 
     # Total vocabulary
-    vocab = model.wv.vocab
+    vocab = model.wv
 
     # Bold title.
     print("\033[1m" + "DETAILS" + "\033[0m")
