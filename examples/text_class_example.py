@@ -1,9 +1,3 @@
-import numpy as np
-import pandas as pd
-import pickle
-import traceback
-import nltk
-
 import sys
 import os
 
@@ -11,32 +5,22 @@ sys.path.append("..")
 pvops_directory = os.path.join("..", "pvops")
 sys.path.append(pvops_directory)
 
-# Utilities
+# pvOps subpackages
 from pvops.text import nlp_utils
 from pvops.text import utils
-
-# Visualizations
 from pvops.text import visualize
-
-# Preprocessing
 from pvops.text import preprocess
-
-# Classification
 from pvops.text import classify
-
-# Library example definitions
 from pvops.text import defaults
 
-# Embedding
+import nltk
+import traceback
+import pandas as pd
+import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
 from gensim.models.doc2vec import Doc2Vec
-
-# Clustering
 from sklearn.cluster import KMeans
-
-# Scoring
 from sklearn.metrics import make_scorer, f1_score, homogeneity_score
-
 
 class Example:
     def __init__(self, df, LABEL_COLUMN):
@@ -75,7 +59,7 @@ class Example:
         EVENTSTART_COLUMN,
         SAVE_DATA_COLUMN="CleanDesc",
         SAVE_DATE_COLUMN="ExtractedDates",
-        print_info = False,
+        print_info=False,
     ):
 
         col_dict = {
@@ -519,9 +503,6 @@ if __name__ == "__main__":
     df = pd.read_csv(folder + filename)
 
     e = Example(df, LABEL_COLUMN)
-    # df = e.extract_dates(DATA_COLUMN, DATE_COLUMN, SAVE_DATE_COLUMN='ExtractedDates')
-    e.prep_data_for_ML(DATA_COLUMN, DATE_COLUMN)
-    # e.test_doc2vec()
-    # Setting few cross validation splits because of few example data
-    e.classify_supervised(n_cv_splits=2, embedding="doc2vec")
-    e.predict_best_model()
+    e.summarize_text_data(DATA_COLUMN)
+
+    print("\nMessage from pvOps team: See `tutorial_textmodule.ipynb` for a more in-depth demonstration of the text module's functionality.")
