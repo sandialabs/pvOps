@@ -8,7 +8,7 @@ import nltk
 import os
 import sys
 
-text_directory = os.path.join("..", "text")
+text_directory = os.path.join("pvops", "text")
 sys.path.append(text_directory)
 
 # from text_remove_nondate_nums import text_remove_nondate_nums

@@ -7,8 +7,8 @@ import os
 import pandas.api.types as ptypes
 
 #Set sytem paths
-#T2time_path = os.path.join('..', 'pvops', 'text2time')
-T2time_path = os.path.join('.', 'text2time')
+T2time_path = os.path.join('pvops', 'text2time')
+#T2time_path = os.path.join('.', 'text2time')
 
 #sys.path.append('..')
 #os.sys.path.clear()
@@ -28,7 +28,8 @@ import preprocess, utils
 
 
 #Define csv paths
-datadir = os.path.join('.','..','examples','example_data')
+datadir = os.path.join('examples','example_data')
+test_datadir = os.path.join('pvops','tests')
 example_OMpath = os.path.join(datadir, 'example_om_data2.csv')
 example_prodpath = os.path.join(datadir, 'example_prod_data_cumE2.csv')
 example_metapath = os.path.join(datadir, 'example_metadata2.csv')
@@ -161,8 +162,8 @@ def test_summarize_overlaps():
     prod_summary, om_summary = utils.summarize_overlaps(prod_data_datena_d, om_data_datena_d, prod_col_dict, om_col_dict)
     
     #import expected pickled DFs
-    prod_summ_pick = pd.read_pickle(os.path.join('.', 'tests', 'prod_summ_pick.pkl'))
-    om_summ_pick = pd.read_pickle(os.path.join('.', 'tests', 'om_summ_pick.pkl'))
+    prod_summ_pick = pd.read_pickle(os.path.join(test_datadir, 'prod_summ_pick.pkl'))
+    om_summ_pick = pd.read_pickle(os.path.join(test_datadir, 'om_summ_pick.pkl'))
     
     assert prod_summary.equals(prod_summ_pick) and om_summary.equals(om_summ_pick)
     
@@ -206,8 +207,15 @@ def test_iec_calc():
     prod_data_clean_iec = utils.iec_calc(prod_data_clean, prod_col_dict, metadata, metad_col_dict, gi_ref=1000.)
     
     #import expected pickled DFs
-    prod_data_clean_iec_pick = pd.read_pickle(os.path.join('.', 'tests', 'prod_data_clean_iec_pick.pkl'))
+    print(os.path.join(test_datadir, 'prod_data_clean_iec_pick.pkl'))
+    prod_data_clean_iec_pick = pd.read_pickle(os.path.join(test_datadir, 'prod_data_clean_iec_pick.pkl'))
     
+    print(type(prod_data_clean_iec))
+    print(type(prod_data_clean_iec_pick))
+
+    print(prod_data_clean_iec)
+    print(prod_data_clean_iec_pick)
+
     assert prod_data_clean_iec.equals(prod_data_clean_iec_pick)
 
 
@@ -234,7 +242,7 @@ def test_prod_quant():
     prod_data_quant = utils.prod_quant(prod_data_clean_iec, prod_col_dict, comp_type='norm', ecumu=True)
     
     #import expected pickled DFs
-    prod_data_quant_pick = pd.read_pickle(os.path.join('.', 'tests', 'prod_data_quant_pick.pkl'))
+    prod_data_quant_pick = pd.read_pickle(os.path.join(test_datadir, 'prod_data_quant_pick.pkl'))
     
     assert prod_data_quant.equals(prod_data_quant_pick)
     
@@ -259,7 +267,8 @@ def test_om_summary_stats():
     om_data_update = utils.om_summary_stats(om_data_clean, metadata, om_col_dict, metad_col_dict)
     
     #import expected pickled DF
-    om_data_update_pick = pd.read_pickle(os.path.join('.', 'tests', 'om_data_update_pick.pkl'))
+    om_data_update_pick = pd.read_pickle(os.path.join(test_datadir, 'om_data_update_pick.pkl'))
     
     assert om_data_update.equals(om_data_update_pick)
 
+test_iec_calc()
