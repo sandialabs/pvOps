@@ -247,6 +247,7 @@ class Example:
         setting="normal",
         user_defined_classes=None,
         user_defined_search_space=None,
+        verbose = 0,
     ):
         """A wrapper function which evaluates the performance of many supervised classifiers
 
@@ -340,6 +341,11 @@ class Example:
             search_space = user_defined_search_space
             classes = user_defined_classes
 
+        if verbose > 2:
+            print('search_space',search_space)
+            print('classes',classes)
+            print('pipeline_steps',pipeline_steps)
+            print('embedding',embedding)
         self.supervised_results, self.supervised_best_model = self._classify(
             embedding,
             pipeline_steps,
@@ -347,6 +353,7 @@ class Example:
             search_space,
             classes,
             n_cv_splits=n_cv_splits,
+            verbose = verbose
         )
         return self.supervised_results, self.supervised_best_model
 
