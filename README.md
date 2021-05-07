@@ -22,7 +22,7 @@ The package is delineated into the following directories. Refer to the `examples
     └───text2time       : └─── Text2Timeseries functions
 ```
 
-More information about theses modules is available in the documentation at [readthedocs](https://pvops.readthedocs.io/en/latest/).
+More information about these modules is available in the documentation at [readthedocs](https://pvops.readthedocs.io/en/latest/).
 
 Contributing
 ============
