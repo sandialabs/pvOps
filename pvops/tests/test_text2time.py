@@ -268,7 +268,12 @@ def test_om_summary_stats():
     
     #import expected pickled DF
     om_data_update_pick = pd.read_pickle(os.path.join(test_datadir, 'om_data_update_pick.pkl'))
+    om_data_update_pick = om_data_update_pick.round({'EventDur':2})
+    om_data_update = om_data_update.round({'EventDur':2})
+
+    print(om_data_update)
+    print(om_data_update_pick)
     
     assert om_data_update.equals(om_data_update_pick)
 
-test_iec_calc()
+test_om_summary_stats()
