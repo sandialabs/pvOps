@@ -7,12 +7,12 @@ import os
 import pandas.api.types as ptypes
 
 #Set sytem paths
-T2time_path = os.path.join('pvops', 'text2time')
+pvops_path = os.path.join('pvops')#, 'text2time')
 #T2time_path = os.path.join('.', 'text2time')
 
 #sys.path.append('..')
 #os.sys.path.clear()
-sys.path.append(T2time_path)
+sys.path.append(pvops_path)
 
 
 #from om_data_convert import om_data_convert
@@ -24,7 +24,7 @@ sys.path.append(T2time_path)
 #overlapping_data, prod_anomalies, prod_date_convert, prod_quant,\
 #summarize_overlaps, viz_om_prod, prod_nadate_process
 
-import preprocess, utils
+from text2time import preprocess, utils
 
 
 #Define csv paths
@@ -272,5 +272,3 @@ def test_om_summary_stats():
     om_data_update = om_data_update.round({'EventDur':2})
     
     assert om_data_update.equals(om_data_update_pick)
-
-test_om_summary_stats()
