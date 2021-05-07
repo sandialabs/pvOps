@@ -176,6 +176,7 @@ def create_stopwords(lst_langs=["english"], lst_add_words=[], lst_keep_words=[])
             stopwords = nltk.corpus.stopwords.words(lang)
         except LookupError:
             nltk.download("stopwords")
+            stopwords = nltk.corpus.stopwords.words(lang)
         lst_stopwords = lst_stopwords.union(stopwords)
     lst_stopwords = lst_stopwords.union(lst_add_words)
     lst_stopwords = list(set(lst_stopwords) - set(lst_keep_words))
