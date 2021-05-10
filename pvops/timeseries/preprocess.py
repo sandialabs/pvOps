@@ -138,7 +138,7 @@ def prod_irradiance_filter(prod_df, prod_col_dict, meta_df, meta_col_dict,
         return prod_df, mask_series
 
     if drop:
-        prod_df = prod_df[prod_df['mask'] is False]
+        prod_df = prod_df[prod_df['mask'] == False]
         prod_df.drop(columns=['mask'], inplace=True)
         return prod_df, mask_series
 
