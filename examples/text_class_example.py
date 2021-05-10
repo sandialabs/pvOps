@@ -362,7 +362,7 @@ class Example:
                         del search_space[clf_str]
                     else:
                         raise Exception(
-                            "All components of subset_example_classifiers" +\
+                            "All components of subset_example_classifiers" +
                             f"must be keys in {classes}"
                         )
         else:
@@ -482,7 +482,7 @@ class Example:
                         del search_space[clf_str]
                     else:
                         raise Exception(
-                            "All components of subset_example_classifiers "+
+                            "All components of subset_example_classifiers " +
                             "must be keys in "
                         )
         else:

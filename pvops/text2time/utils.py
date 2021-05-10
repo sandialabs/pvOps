@@ -582,7 +582,7 @@ def prod_quant(prod_df, prod_col_dict, comp_type, ecumu=True):
     for rid in prod_df.index.unique():
         # adding per timestep column for energy production if energy format is cumulative
         if ecumu:
-            prod_df.loc[rid, pstep_ener] = prod_df.loc[rid, prod_ener].diff()
+        prod_df.loc[rid, pstep_ener] = prod_df.loc[rid, prod_ener].diff()
         else:
             prod_df.loc[rid, pstep_ener] = prod_df.loc[rid, prod_ener]
 

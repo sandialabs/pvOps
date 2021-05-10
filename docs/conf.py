@@ -15,7 +15,7 @@ import sys
 
 import mock
 MODULES = ['numpy', 'nltk', 'sklearn.pipeline', 'sklearn.model_selection',
-           'scipy.sparse', 'pandas',  'scipy', 'sklearn.base',
+           'scipy.sparse', 'pandas', 'scipy', 'sklearn.base',
            'gensim.models.doc2vec', 'nltk.tokenize', 'datefinder',
            'text_remove_nondate_nums', 'text_remove_numbers_stopwords',
            'get_dates', 'gensim.models', 'sklearn.svm', 'sklearn.tree',
