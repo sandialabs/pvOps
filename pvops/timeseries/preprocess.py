@@ -5,12 +5,13 @@ import pvanalytics
 from timezonefinder import TimezoneFinder
 import pandas as pd
 
+
 def prod_irradiance_filter(prod_df, prod_col_dict, meta_df, meta_col_dict,
                            drop=True, irradiance_type='ghi', csi_max=1.1
                            ):
     """
     Filter rows of production data frame according to performance and data quality.
-    
+
     THIS METHOD IS CURRENTLY IN DEVELOPMENT.
 
     Parameters
@@ -73,11 +74,14 @@ def prod_irradiance_filter(prod_df, prod_col_dict, meta_df, meta_col_dict,
         site_prod_mask = prod_df.loc[:, prod_col_dict["siteid"]] == site
 
         # Save times in object
-        prod_times = prod_df.loc[site_prod_mask, prod_col_dict['timestamp']].tolist()
-        
+        prod_times = prod_df.loc[site_prod_mask,
+                                 prod_col_dict['timestamp']].tolist()
+
         # Extract site's position
-        latitude = meta_df.loc[site_meta_mask, meta_col_dict['latitude']].tolist()[0]
-        longitude = meta_df.loc[site_meta_mask, meta_col_dict['longitude']].tolist()[0]
+        latitude = meta_df.loc[site_meta_mask, meta_col_dict['latitude']].tolist()[
+            0]
+        longitude = meta_df.loc[site_meta_mask, meta_col_dict['longitude']].tolist()[
+            0]
 
         # Derive
         tf = TimezoneFinder()
@@ -102,19 +106,19 @@ def prod_irradiance_filter(prod_df, prod_col_dict, meta_df, meta_col_dict,
                 "POA is currently not configured because it requires `surface_tilt` and `surface_azimuth`, \
                 a trait which is not usually in the meta data.")
             # Establish solarposition
-            solpos = pvlib.solarposition.get_solarposition(prod_times,
-                                                           latitude, longitude)
+            # solpos = pvlib.solarposition.get_solarposition(prod_times,
+            #                                                latitude, longitude)
 
-            # Returns dataframe with columns:
-            # 'poa_global', 'poa_direct', 'poa_diffuse', 'poa_sky_diffuse', 'poa_ground_diffuse'
-            cs_POA_irradiance = pvlib.irradiance.get_total_irradiance(
-                surface_tilt=20,
-                surface_azimuth=180,
-                dni=cs['dni'],
-                ghi=cs['ghi'],
-                dhi=cs['dhi'],
-                solar_zenith=solpos['apparent_zenith'].tolist(),
-                solar_azimuth=solpos['azimuth'])
+            # # Returns dataframe with columns:
+            # # 'poa_global', 'poa_direct', 'poa_diffuse', 'poa_sky_diffuse', 'poa_ground_diffuse'
+            # cs_POA_irradiance = pvlib.irradiance.get_total_irradiance(
+            #     surface_tilt=20,
+            #     surface_azimuth=180,
+            #     dni=cs['dni'],
+            #     ghi=cs['ghi'],
+            #     dhi=cs['dhi'],
+            #     solar_zenith=solpos['apparent_zenith'].tolist(),
+            #     solar_azimuth=solpos['azimuth'])
 
             # df = pd.merge(df, POA_irradiance, how="inner", left_index=True, right_index=True)
 
@@ -134,7 +138,7 @@ def prod_irradiance_filter(prod_df, prod_col_dict, meta_df, meta_col_dict,
         return prod_df, mask_series
 
     if drop:
-        prod_df = prod_df[prod_df['mask'] == False]
+        prod_df = prod_df[prod_df['mask'] is False]
         prod_df.drop(columns=['mask'], inplace=True)
         return prod_df, mask_series
 
@@ -199,7 +203,7 @@ def prod_inverter_clipping_filter(prod_df, prod_col_dict, meta_df, meta_col_dict
         if model == 'geometric':
             window = kwargs.get('window')
             slope_max = kwargs.get('slope_max') or 0.2
-            freq = kwargs.get('freq') # Optional
+            freq = kwargs.get('freq')  # Optional
             tracking = kwargs.get('tracking') or False
             prod_df.loc[site_prod_mask, "mask"] = pvanalytics.features.clipping.geometric(
                 ac_power, window=window, slope_max=slope_max, freq=freq, tracking=tracking)
@@ -208,7 +212,7 @@ def prod_inverter_clipping_filter(prod_df, prod_col_dict, meta_df, meta_col_dict
             slope_max = kwargs.get('slope_max') or 0.0035
             power_min = kwargs.get('power_min') or 0.75
             power_quantile = kwargs.get('power_quantile') or 0.995
-            freq = kwargs.get('freq') # Optional
+            freq = kwargs.get('freq')  # Optional
             prod_df.loc[site_prod_mask, "mask"] = pvanalytics.features.clipping.threshold(
                 ac_power, slope_max=slope_max, power_min=power_min, power_quantile=power_quantile, freq=freq)
 
