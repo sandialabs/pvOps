@@ -9,8 +9,7 @@ import pandas as pd
 def prod_irradiance_filter(prod_df, prod_col_dict, meta_df, meta_col_dict,
                            drop=True, irradiance_type='ghi', csi_max=1.1
                            ):
-    """
-    Filter rows of production data frame according to performance and data quality.
+    """Filter rows of production data frame according to performance and data quality.
 
     THIS METHOD IS CURRENTLY IN DEVELOPMENT.
 
@@ -144,8 +143,7 @@ def prod_irradiance_filter(prod_df, prod_col_dict, meta_df, meta_col_dict,
 
 
 def prod_inverter_clipping_filter(prod_df, prod_col_dict, meta_df, meta_col_dict, model, **kwargs):
-    """
-    Filter rows of production data frame according to performance and data quality
+    """Filter rows of production data frame according to performance and data quality
 
     Parameters
 

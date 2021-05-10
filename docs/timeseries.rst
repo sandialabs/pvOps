@@ -1,5 +1,5 @@
 timeseries package
-=================
+==================
 
 timeseries.preprocess module
 -----------------------------
