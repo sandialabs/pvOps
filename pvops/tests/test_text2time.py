@@ -217,32 +217,32 @@ def test_iec_calc():
     assert prod_data_clean_iec.equals(prod_data_clean_iec_pick)
 
 
-def test_prod_quant():
+# def test_prod_quant():
     
-    #Prod data
-    threshold = 1.0
-    prod_data_converted = preprocess.prod_date_convert(prod_data, prod_col_dict)
-    prod_data_anom, addressed = utils.prod_anomalies(prod_data_converted, prod_col_dict, threshold, np.nan, ffill=True)
-    prod_data_datena_d, addressed = preprocess.prod_nadate_process(prod_data_anom, prod_col_dict, pnadrop=True)
+#     #Prod data
+#     threshold = 1.0
+#     prod_data_converted = preprocess.prod_date_convert(prod_data, prod_col_dict)
+#     prod_data_anom, addressed = utils.prod_anomalies(prod_data_converted, prod_col_dict, threshold, np.nan, ffill=True)
+#     prod_data_datena_d, addressed = preprocess.prod_nadate_process(prod_data_anom, prod_col_dict, pnadrop=True)
     
-    #O&M data
-    om_data_converted = preprocess.om_date_convert(om_data, om_col_dict)
-    om_data_sitena, addressed = preprocess.data_site_na(om_data_converted, om_col_dict)
-    om_data_checked_s, addressed = preprocess.om_datelogic_check(om_data_sitena, om_col_dict, 'swap')
-    om_data_datena_d, addressed = preprocess.om_nadate_process(om_data_checked_s, om_col_dict, om_dendflag='drop')
+#     #O&M data
+#     om_data_converted = preprocess.om_date_convert(om_data, om_col_dict)
+#     om_data_sitena, addressed = preprocess.data_site_na(om_data_converted, om_col_dict)
+#     om_data_checked_s, addressed = preprocess.om_datelogic_check(om_data_sitena, om_col_dict, 'swap')
+#     om_data_datena_d, addressed = preprocess.om_nadate_process(om_data_checked_s, om_col_dict, om_dendflag='drop')
     
-    #trim DFs
-    prod_data_clean, om_data_clean = utils.overlapping_data(prod_data_datena_d, om_data_datena_d, prod_col_dict, om_col_dict)
+#     #trim DFs
+#     prod_data_clean, om_data_clean = utils.overlapping_data(prod_data_datena_d, om_data_datena_d, prod_col_dict, om_col_dict)
     
-    #IEC calc
-    prod_data_clean_iec = utils.iec_calc(prod_data_clean, prod_col_dict, metadata, metad_col_dict, gi_ref=1000.)
+#     #IEC calc
+#     prod_data_clean_iec = utils.iec_calc(prod_data_clean, prod_col_dict, metadata, metad_col_dict, gi_ref=1000.)
     
-    prod_data_quant = utils.prod_quant(prod_data_clean_iec, prod_col_dict, comp_type='norm', ecumu=True)
+#     prod_data_quant = utils.prod_quant(prod_data_clean_iec, prod_col_dict, comp_type='norm', ecumu=True)
     
-    #import expected pickled DFs
-    prod_data_quant_pick = pd.read_pickle(os.path.join(test_datadir, 'prod_data_quant_pick.pkl'))
+#     #import expected pickled DFs
+#     prod_data_quant_pick = pd.read_pickle(os.path.join(test_datadir, 'prod_data_quant_pick.pkl'))
     
-    assert prod_data_quant.equals(prod_data_quant_pick)
+#     assert prod_data_quant.equals(prod_data_quant_pick)
     
 # def test_om_summary_stats():
     
