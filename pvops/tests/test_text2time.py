@@ -64,7 +64,14 @@ om_data = pd.read_csv(example_OMpath, error_bad_lines=False, engine='python')
 metadata = pd.read_csv(example_metapath, error_bad_lines=False, engine='python')
 
 def check_same(df1,df2,col):
-    assert df1[col].tolist() == df2[col].tolist()    
+    if (df1[col].isnull().all() and df2[col].isnull().all()):
+        # If both are all nan in col, then assert True
+        assert True
+    if ptypes.is_numeric_dtype(df1[col]):
+        # If numeric, do rounding
+        df1 = df1.round({col:2})
+        df2 = df2.round({col:2})
+    assert df1[col].equals(df2[col])
 
 def test_om_data_convert_s():
     om_data_converted = preprocess.om_date_convert(om_data, om_col_dict)
@@ -265,8 +272,8 @@ def test_om_summary_stats():
     om_data_update_pick = pd.read_pickle(os.path.join(test_datadir, 'om_data_update_pick.pkl'))
     om_data_update_pick = om_data_update_pick.round({'EventDur':2})
     om_data_update = om_data_update.round({'EventDur':2})
-   
+    
+    om_data_update = om_data_update.astype({'MonthStart': 'int64'})
+    
     for col in om_data_update_pick.columns:
         check_same(om_data_update,om_data_update_pick,col)
-
-test_om_summary_stats()
