@@ -1,8 +1,6 @@
 import pandas as pd
 import numpy as np
-
 from gensim.models import Word2Vec
-import numpy as np
 
 
 def summarize_text_data(om_df, colname):
@@ -26,7 +24,7 @@ def summarize_text_data(om_df, colname):
     df = om_df.copy()
     text = df[colname].tolist()
 
-    nonan_text = [x for x in text if (str(x) != "nan" and x != None)]
+    nonan_text = [x for x in text if (str(x) != "nan" and x is not None)]
 
     tokenized = [sentence.split() for sentence in nonan_text]
     avg_n_words = np.array([len(tokens) for tokens in tokenized]).mean()

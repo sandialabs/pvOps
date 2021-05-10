@@ -176,7 +176,6 @@ class Example:
             )
             for LBL_CAT in all_labels
         ]
-        num_rows = len(self.df[DATA_COLUMN].index)
         cluster_tokens = [nltk.word_tokenize(words) for words in cluster_words]
         fig = visualize.visualize_document_clusters(
             cluster_tokens, min_frequency=min_frequency
@@ -268,6 +267,7 @@ class Example:
         setting="normal",
         user_defined_classes=None,
         user_defined_search_space=None,
+        verbose=2,
     ):
         """A wrapper function which evaluates the performance of many 
         supervised classifiers
@@ -355,14 +355,14 @@ class Example:
                 classes,
             ) = defaults.supervised_classifier_defs(setting)
 
-            if subset_example_classifiers != None:
+            if subset_example_classifiers not in None:
                 for clf_str in subset_example_classifiers:
                     if clf_str not in classes:
                         del classes[clf_str]
                         del search_space[clf_str]
                     else:
                         raise Exception(
-                            "All components of subset_example_classifiers" + \
+                            "All components of subset_example_classifiers" +
                             f"must be keys in {classes}"
                         )
         else:
@@ -370,10 +370,10 @@ class Example:
             classes = user_defined_classes
 
         if verbose > 2:
-            print('search_space',search_space)
-            print('classes',classes)
-            print('pipeline_steps',pipeline_steps)
-            print('embedding',embedding)
+            print('search_space', search_space)
+            print('classes', classes)
+            print('pipeline_steps', pipeline_steps)
+            print('embedding', embedding)
         self.supervised_results, self.supervised_best_model = self._classify(
             embedding,
             pipeline_steps,
@@ -393,6 +393,7 @@ class Example:
         setting="normal",
         user_defined_classes=None,
         user_defined_search_space=None,
+        verbose=2,
     ):
         """A wrapper function which evaluates the performance of many unsupervised 
         classifiers
@@ -488,6 +489,11 @@ class Example:
             search_space = user_defined_search_space
             classes = user_defined_classes
 
+        if verbose > 2:
+            print('search_space', search_space)
+            print('classes', classes)
+            print('pipeline_steps', pipeline_steps)
+            print('embedding', embedding)
         self.unsupervised_results, self.unsupervised_best_model = self._classify(
             embedding,
             pipeline_steps,
@@ -495,6 +501,7 @@ class Example:
             search_space,
             classes,
             n_cv_splits=n_cv_splits,
+            verbose = verbose
         )
         return self.unsupervised_results, self.unsupervised_best_model
 
