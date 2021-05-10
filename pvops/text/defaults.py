@@ -29,16 +29,19 @@ from sklearn.ensemble import (
 
 
 def supervised_classifier_defs(settings_flag):
-    """Esablish supervised classifier definitions which are non-specific to embeddor,
-    and therefore, non-specific to the natural language processing application
+    """Esablish supervised classifier definitions 
+    which are non-specific to embeddor, and therefore, 
+    non-specific to the natural language processing application
 
     Parameters
 
     ----------
     settings_flag : str
-      Either 'light', 'normal' or 'detailed'; a setting which determines the number of hyperparameter combinations
-      tested during the grid search. For instance, a dataset of 50 thousand samples may run for hours on the
-      'normal' setting but for days on 'detailed'.
+      Either 'light', 'normal' or 'detailed'; a setting which 
+      determines the number of hyperparameter combinations
+      tested during the grid search. For instance, a dataset 
+      of 50 thousand samples may run for hours on the 'normal' 
+      setting but for days on 'detailed'.
 
     Returns
 
@@ -253,18 +256,22 @@ def supervised_classifier_defs(settings_flag):
 
 
 def unsupervised_classifier_defs(setting_flag, n_clusters):
-    """Establish supervised classifier definitions which are non-specific to embeddor,
-    and therefore, non-specific to the natural language processing application
+    """Establish supervised classifier definitions which are 
+    non-specific to embeddor, and therefore, non-specific to 
+    the natural language processing application
 
     Parameters
 
     ----------
     setting_flag : str
-      Either 'normal' or 'detailed'; a setting which determines the number of hyperparameter combinations
-      tested during the grid search. For instance, a dataset of 50,000 samples may run for hours on the
-      'normal' setting but for days on 'detailed'.
+      Either 'normal' or 'detailed'; a setting which determines 
+      the number of hyperparameter combinations tested during 
+      the grid search. For instance, a dataset of 50,000 samples 
+      may run for hours on the 'normal' setting but for days 
+      on 'detailed'.
     n_clusters : int,
-      Number of clusters to organize the text data into. Usually set to the number of unique categories within data.
+      Number of clusters to organize the text data into. Usually 
+      set to the number of unique categories within data.
 
     Returns
 

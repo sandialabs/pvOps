@@ -190,7 +190,7 @@ def visualize_om_prod_overlap(
         samp_freq="H",
         pshift=0.0,
         baselineflag=True
-        ):
+    ):
     """
     Creates Plotly figures of performance data overlaid with coinciding O&M tickets.
     A separate figure for each site in the production data frame (prod_df) is generated.

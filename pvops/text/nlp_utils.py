@@ -39,6 +39,7 @@ class Doc2VecModel(BaseEstimator):
         self.dv_mapfile = dv_mapfile
         self.comment = comment
         self.trim_rule = trim_rule
+        self.callbacks = callbacks
         self.window = window
         self.epochs = epochs
 
@@ -70,7 +71,7 @@ class Doc2VecModel(BaseEstimator):
         self.d2v_model.train(
             tagged_documents,
             total_examples=len(tagged_documents),
-            epochs=self.d2v_model.iter,
+            epochs=self.d2v_model.epochs,
         )
         return self
 
@@ -175,6 +176,7 @@ def create_stopwords(lst_langs=["english"], lst_add_words=[], lst_keep_words=[])
             stopwords = nltk.corpus.stopwords.words(lang)
         except LookupError:
             nltk.download("stopwords")
+            stopwords = nltk.corpus.stopwords.words(lang)
         lst_stopwords = lst_stopwords.union(stopwords)
     lst_stopwords = lst_stopwords.union(lst_add_words)
     lst_stopwords = list(set(lst_stopwords) - set(lst_keep_words))

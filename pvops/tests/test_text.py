@@ -1,15 +1,19 @@
-import pytest
+import os
+import sys
+
+text_directory = os.path.join("pvops", "text")
+sys.path.append(text_directory)
+
+from visualize import *
+from utils import *
+from preprocess import *
+from nlp_utils import *
+from classify import *
 import pandas as pd
 import numpy as np
 import datetime
 import matplotlib
 import nltk
-
-import os
-import sys
-
-text_directory = os.path.join("..", "text")
-sys.path.append(text_directory)
 
 # from text_remove_nondate_nums import text_remove_nondate_nums
 # from text_remove_numbers_stopwords import text_remove_numbers_stopwords
@@ -20,11 +24,6 @@ sys.path.append(text_directory)
 # from visualize_attribute_connectivity import visualize_attribute_connectivity
 # from summarize_text_data import summarize_text_data
 
-from classify import *
-from nlp_utils import *
-from preprocess import *
-from utils import *
-from visualize import *
 
 def test_text_remove_nondate_nums():
     example = r"This is a test example https://www.google.com 10% #10 101 1-1-1 a-e4 13-1010 10.1 123456789 123/12 executed on 2/4/2020"
@@ -237,9 +236,11 @@ def test_get_dates():
         ]
     )
 
-    answer = [datetime.datetime.strptime("2020/01/23 12:34:56", "%Y/%m/%d %H:%M:%S")]
+    answer = [datetime.datetime.strptime(
+        "2020/01/23 12:34:56", "%Y/%m/%d %H:%M:%S")]
     assert answer == get_dates(
-        df["Document"].iloc[0], df, 0, {"data": "Document", "eventstart": "Date"}, False
+        df["Document"].iloc[0], df, 0, {
+            "data": "Document", "eventstart": "Date"}, False
     )
 
     answer = [
@@ -247,7 +248,8 @@ def test_get_dates():
         datetime.datetime.strptime("2022/04/07 00:00:00", "%Y/%m/%d %H:%M:%S"),
     ]
     assert answer == get_dates(
-        df["Document"].iloc[1], df, 1, {"data": "Document", "eventstart": "Date"}, False
+        df["Document"].iloc[1], df, 1, {
+            "data": "Document", "eventstart": "Date"}, False
     )
 
 
@@ -263,7 +265,8 @@ def test_visualize_attribute_timeseries():
 
     dates = pd.to_datetime(dates).tolist()
 
-    df = pd.DataFrame({"labels": ["A word", "B word", "C word"], "date": dates})
+    df = pd.DataFrame(
+        {"labels": ["A word", "B word", "C word"], "date": dates})
 
     fig = visualize_attribute_timeseries(
         df, {"label": "labels", "date": "date"}, date_structure="%Y-%m-%d"

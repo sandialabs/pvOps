@@ -21,7 +21,6 @@ Relative humidity sensor,met station
 Relay,relay
 Energy Meter,energy meter
 Meter,energy meter
-Substation,substation
 Energy Storage/Battery,energy storage
 Facility,facility
 AC Combiner,combiner
@@ -34,7 +33,6 @@ DAS System,facility
 DC Combiner,combiner
 Data logger,facility
 Disconnect switch,relay
-Energy Storage/Battery,energy meter
 Inverter Module,inverter
 Inverter module,inverter
 Inverter/String Inverter,inverter
@@ -53,6 +51,5 @@ String Inverter,inverter
 Subarray,other
 Substation,substation
 Summary,other
-Switchgear,transformer
 Tracker control unit,tracker
 Tracking System,tracker

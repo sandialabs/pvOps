@@ -1,58 +1,74 @@
 """
-These helper functions focus on performing secondary calcuations from the O&M and
-production data to create visualizations of the merged data
+These helper functions focus on performing secondary 
+calcuations from the O&M and production data to create
+visualizations of the merged data
 """
 import pandas as pd
 import numpy as np
 
-def iec_calc(prod_df, prod_col_dict, meta_df, meta_col_dict, gi_ref=1000.0):
+
+def iec_calc(prod_df, prod_col_dict, meta_df, meta_col_dict,
+             gi_ref=1000.0):
     """
-    Calculates expected energy using measured irradiance based on IEC calculations
+    Calculates expected energy using measured irradiance
+    based on IEC calculations
 
 
     Parameters
 
     ----------
     prod_df: DataFrame
-        A data frame corresponding to the production data after having been
-        processed by the perf_om_NA_qc and overlappingDFs functions. This data
-        frame needs at least the columns specified in prod_col_dict.
+        A data frame corresponding to the production data
+        after having been processed by the perf_om_NA_qc
+        and overlappingDFs functions. This data frame needs
+        at least the columns specified in prod_col_dict.
 
     prod_col_dict: dict of {str : str}
-        A dictionary that contains the column names relevant for the production data
+        A dictionary that contains the column names relevant
+        for the production data
 
-        - **siteid** (*string*), should be assigned to site-ID column name in prod_df
-        - **timestamp** (*string*), should be assigned to time-stamp column name in prod_df
-        - **irradiance** (*string*), should be assigned to irradiance column name in prod_df,
-          where data should be in [W/m^2]
-        - **baseline** (*string*), should be assigned to preferred column name to capture
-          IEC calculations in prod_df
-        - **dcsize**, (*string*), should be assigned to preferred column name for site capacity in
-          prod_df
+        - **siteid** (*string*), should be assigned to 
+          site-ID column name in prod_df
+        - **timestamp** (*string*), should be assigned to
+          time-stamp column name in prod_df
+        - **irradiance** (*string*), should be assigned to
+          irradiance column name in prod_df, where data
+          should be in [W/m^2]
+        - **baseline** (*string*), should be assigned to
+          preferred column name to capture IEC calculations
+          in prod_df
+        - **dcsize**, (*string*), should be assigned to
+          preferred column name for site capacity in prod_df
 
     meta_df: DataFrame
         A data frame corresponding to site metadata.
-        At the least, the columns in meta_col_dict be present.
+        At the least, the columns in meta_col_dict be
+        present.
 
     meta_col_dict: dict of {str : str}
-        A dictionary that contains the column names relevant for the meta-data
+        A dictionary that contains the column names relevant
+        for the meta-data
 
-        - **siteid** (*string*), should be assigned to site-ID column name
-        - **dcsize** (*string*), should be assigned to column name corresponding to site capacity,
-          where data is in [kW]
+        - **siteid** (*string*), should be assigned to site-ID
+          column name
+        - **dcsize** (*string*), should be assigned to
+          column name corresponding to site capacity, where
+          data is in [kW]
 
     gi_ref: float
-        reference plane of array irradiance in W/m^2 at which a site capacity is determined
-        (default value is 1000 [W/m^2])
+        reference plane of array irradiance in W/m^2 at
+        which a site capacity is determined (default value
+        is 1000 [W/m^2])
 
 
     Returns
 
     -------
     DataFrame
-        A data frame for production data with a new column, iecE,
-        which is the predicted energy calculated based on the IEC standard
-        using measured irradiance data
+        A data frame for production data with a new column,
+        iecE, which is the predicted energy calculated
+        based on the IEC standard using measured irradiance
+        data
 
     """
     # assigning dictionary items to local variables for cleaner code
@@ -81,7 +97,8 @@ def iec_calc(prod_df, prod_col_dict, meta_df, meta_col_dict, gi_ref=1000.0):
 
     for sid in prod_df.loc[:, prod_site].unique():
         mask = prod_df.loc[:, prod_site] == sid
-        tstep = prod_df.loc[mask, prod_ts].iloc[1] - prod_df.loc[mask, prod_ts].iloc[0]
+        tstep = prod_df.loc[mask, prod_ts].iloc[1] - \
+            prod_df.loc[mask, prod_ts].iloc[0]
         tstep = tstep / np.timedelta64(
             1, "h"
         )  # Converting the time-step to float (representing hours) to
@@ -96,6 +113,7 @@ def iec_calc(prod_df, prod_col_dict, meta_df, meta_col_dict, gi_ref=1000.0):
     prod_df.drop(columns=[prod_dcsize], inplace=True)
 
     return prod_df
+
 
 def summarize_overlaps(prod_df, om_df, prod_col_dict, om_col_dict):
     """
@@ -160,7 +178,8 @@ def summarize_overlaps(prod_df, om_df, prod_col_dict, om_col_dict):
     """
 
     # Obtaining new DFs to extract statistics by using overlapping_data function
-    prod_df, om_df = overlapping_data(prod_df, om_df, prod_col_dict, om_col_dict)
+    prod_df, om_df = overlapping_data(
+        prod_df, om_df, prod_col_dict, om_col_dict)
 
     om_site = om_col_dict["siteid"]
     om_date_s = om_col_dict["datestart"]
@@ -180,7 +199,8 @@ def summarize_overlaps(prod_df, om_df, prod_col_dict, om_col_dict):
 
     # concatenating
     om_output = pd.concat([min_date, max_date, num_om_events], axis=1)
-    om_output.columns = ["Earliest Event Start", "Latest Event End", "Total Events"]
+    om_output.columns = ["Earliest Event Start",
+                         "Latest Event End", "Total Events"]
 
     # production data timestep frequency in number of hours
     prod_max_ts = prod_df[[prod_site, prod_ts]].groupby([prod_site]).size()
@@ -278,7 +298,8 @@ def om_summary_stats(om_df, meta_df, om_col_dict, meta_col_dict):
     # =========================================================================
     # Extracting commissioning dates of only the sites in the O&M data-frame
     # (in case meta_df has more sites)
-    cod_dates = pd.to_datetime(meta_df.loc[om_df.index.unique()][meta_cod].copy())
+    cod_dates = pd.to_datetime(
+        meta_df.loc[om_df.index.unique()][meta_cod].copy())
 
     # Adding age column to om_df, but first initiating a COD column in the
     # OM-data (using NANs) to be able to take the difference between two columns
@@ -286,7 +307,8 @@ def om_summary_stats(om_df, meta_df, om_col_dict, meta_col_dict):
     for i in cod_dates.index:
         om_df.loc[i, meta_cod] = cod_dates[i]
     om_df[meta_cod] = pd.to_datetime(om_df[meta_cod])
-    om_df[meta_cod] = om_df[meta_cod].dt.floor("D")  # hour on commisioning data is
+    om_df[meta_cod] = om_df[meta_cod].dt.floor(
+        "D")  # hour on commisioning data is
     # unimportant for this analysis
     om_df[om_age_st] = om_df.loc[:, om_date_s] - om_df.loc[:, meta_cod]
     # =========================================================================
@@ -415,17 +437,20 @@ def overlapping_data(prod_df, om_df, prod_col_dict, om_col_dict):
                 om_overlap_section = om_df.loc[rid][
                     (omtail_gt_phead_mask) & (omhead_lt_ptail_mask)
                 ]
-                om_df_commondates = pd.concat([om_df_commondates, om_overlap_section])
+                om_df_commondates = pd.concat(
+                    [om_df_commondates, om_overlap_section])
             else:
                 om_overlap_section = om_df.loc[[rid]][
                     [(omtail_gt_phead_mask) & (omhead_lt_ptail_mask)]
                 ]
-                om_df_commondates = pd.concat([om_df_commondates, om_overlap_section])
+                om_df_commondates = pd.concat(
+                    [om_df_commondates, om_overlap_section])
 
             perf_overlap_section = prod_df.loc[rid][
                 (perf_gt_omhead_mask) & (perf_lt_omtail_mask)
             ]
-            prod_df_commondates = pd.concat([prod_df_commondates, perf_overlap_section])
+            prod_df_commondates = pd.concat(
+                [prod_df_commondates, perf_overlap_section])
 
     # resetting index of DFs before return
     prod_df_commondates.reset_index(inplace=True)
@@ -498,6 +523,7 @@ def prod_anomalies(prod_df, prod_col_dict, minval=1.0, repval=np.nan, ffill=True
 
     return prod_df, addressed
 
+
 def prod_quant(prod_df, prod_col_dict, comp_type, ecumu=True):
     """
     Compares performance of observed production data in relation to an expected baseline
@@ -544,7 +570,6 @@ def prod_quant(prod_df, prod_col_dict, comp_type, ecumu=True):
     """
 
     prod_site = prod_col_dict["siteid"]
-    prod_ts = prod_col_dict["timestamp"]
     prod_ener = prod_col_dict["energyprod"]
     baseline_ener = prod_col_dict["baseline"]
     quant_ener = prod_col_dict["compared"]

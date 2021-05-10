@@ -1,9 +1,3 @@
-import numpy as np
-import pandas as pd
-import pickle
-import traceback
-import nltk
-
 import sys
 import os
 
@@ -27,6 +21,12 @@ from pvops.text import classify
 # Library example definitions
 from pvops.text import defaults
 
+# Utility dependencies
+import numpy as np
+import pandas as pd
+import traceback
+import nltk
+
 # Embedding
 from sklearn.feature_extraction.text import TfidfVectorizer
 from gensim.models.doc2vec import Doc2Vec
@@ -36,7 +36,6 @@ from sklearn.cluster import KMeans
 
 # Scoring
 from sklearn.metrics import make_scorer, f1_score, homogeneity_score
-
 
 class Example:
     def __init__(self, df, LABEL_COLUMN):
@@ -75,7 +74,7 @@ class Example:
         EVENTSTART_COLUMN,
         SAVE_DATA_COLUMN="CleanDesc",
         SAVE_DATE_COLUMN="ExtractedDates",
-        print_info = False,
+        print_info=False,
     ):
 
         col_dict = {
@@ -87,7 +86,9 @@ class Example:
 
         try:
             self.df = preprocess.preprocessor(
-                self.df, None, col_dict, print_info=print_info, extract_dates_only=True
+                self.df, None, col_dict,
+                print_info=print_info,
+                extract_dates_only=True
             )
         except Exception as e:
             print(e)
@@ -139,7 +140,8 @@ class Example:
         self.DATA_COLUMN = SAVE_DATA_COLUMN
         return self.df[[DATA_COLUMN, SAVE_DATA_COLUMN]]
 
-    def visualize_freqPlot(self, LBL_CAT=None, DATA_COLUMN="CleanDesc", **graph_aargs):
+    def visualize_freqPlot(self, LBL_CAT=None, DATA_COLUMN="CleanDesc", 
+                           **graph_aargs):
 
         if LBL_CAT is None:
             words = " ".join(self.df[DATA_COLUMN].tolist())
@@ -153,12 +155,15 @@ class Example:
                 self.df[self.df[self.LABEL_COLUMN] == LBL_CAT].index)
         else:
             raise Exception(
-                f"An invalid label category (LBL_CAT) was passed. Please pass a value in the following set:\n{set(self.df[self.LABEL_COLUMN].tolist())}"
+                "An invalid label category (LBL_CAT) was passed." +
+                "Please pass a value in the following set:\n" +
+                f"{set(self.df[self.LABEL_COLUMN].tolist())}"
             )
 
         tokenized = nltk.word_tokenize(words)
         fig = visualize.visualize_word_frequency_plot(
-            tokenized, title=str(LBL_CAT) + f" (Num. Docs: {num_rows})", **graph_aargs
+            tokenized, title=str(LBL_CAT) + f" (Num. Docs: {num_rows})",
+            **graph_aargs
         )
         return fig
 
@@ -171,7 +176,6 @@ class Example:
             )
             for LBL_CAT in all_labels
         ]
-        num_rows = len(self.df[DATA_COLUMN].index)
         cluster_tokens = [nltk.word_tokenize(words) for words in cluster_words]
         fig = visualize.visualize_document_clusters(
             cluster_tokens, min_frequency=min_frequency
@@ -263,40 +267,48 @@ class Example:
         setting="normal",
         user_defined_classes=None,
         user_defined_search_space=None,
+        verbose=2,
     ):
-        """A wrapper function which evaluates the performance of many supervised classifiers
+        """A wrapper function which evaluates the performance of many 
+        supervised classifiers
 
             embedding : str
-                Definition of document embedding strategy with following options:
-                'tfidf':
+                Definition of document embedding strategy with "tfidf" and 
+                "doc2vec" options
 
             setting : str
-                Thoroughness of supervised classification investigation with following options:
+                Thoroughness of supervised classification investigation with 
+                following options:
                 'normal': a smaller subset of settings used in grid search
                 'detailed': a comprehensive set of settings used in grid search
-                For specifics, view the `supervised_classifier_defs.py` file located in `/pvops/text/`.
-                To specify your own classifier pipeline, use `user_defined_classes` and `user_defined_search_space` parameters.
+                For specifics, view the `supervised_classifier_defs.py` file 
+                located in `/pvops/text/`. To specify your own classifier pipeline, 
+                use `user_defined_classes` and `user_defined_search_space` 
+                parameters.
 
 
-        Two options are permitted when specifying the utilized supervised classifiers.
+        Two options are permitted when specifying the utilized supervised 
+        classifiers.
 
         First, you can use the classifiers established in this library (found in
-        `supervised_classifier_defs`). These classifiers can be subset if wanted by specifying
-        a list of classifier names (strings). For example,
+        `supervised_classifier_defs`). These classifiers can be subset if wanted by 
+        specifying a list of classifier names (strings). For example,
 
         ```
-        subset_example_classifiers = ['LinearSVC', 'AdaBoostClassifier', 'RidgeClassifier']
+        subset_example_classifiers = ['LinearSVC', 'AdaBoostClassifier', 
+                                      'RidgeClassifier']
         e.classify_supervised(
                         n_cv_splits=5,
                         subset_example_classifiers=subset_example_classifiers
                     )
         ```
 
-        Second, you can pass your own definitions of supervised classifiers, just as found in
-        `supervised_classifier_defs.py`. To do this, two objects are required as input: `classes`
-        and `search_space`. The `classes` object is a dictionary with a key as the name of the
-        classifier and a value as the classifier object. The `search_space` specifies the hyperparameters
-        which the grid search protocol will iterate through. For example,
+        Second, you can pass your own definitions of supervised classifiers,
+        just as found in `supervised_classifier_defs.py`. To do this, two objects are 
+        required as input: `classes` and `search_space`. The `classes` object is a 
+        dictionary with a key as the name of the classifier and a value as the 
+        classifier object. The `search_space` specifies the hyperparameters which the 
+        grid search protocol will iterate through. For example,
 
         ```
         user_defined_classes = {
@@ -343,19 +355,25 @@ class Example:
                 classes,
             ) = defaults.supervised_classifier_defs(setting)
 
-            if subset_example_classifiers != None:
+            if subset_example_classifiers not in None:
                 for clf_str in subset_example_classifiers:
                     if clf_str not in classes:
                         del classes[clf_str]
                         del search_space[clf_str]
                     else:
                         raise Exception(
-                            "All components of subset_example_classifiers must be keys in "
+                            "All components of subset_example_classifiers" +
+                            f"must be keys in {classes}"
                         )
         else:
             search_space = user_defined_search_space
             classes = user_defined_classes
 
+        if verbose > 2:
+            print('search_space', search_space)
+            print('classes', classes)
+            print('pipeline_steps', pipeline_steps)
+            print('embedding', embedding)
         self.supervised_results, self.supervised_best_model = self._classify(
             embedding,
             pipeline_steps,
@@ -363,6 +381,7 @@ class Example:
             search_space,
             classes,
             n_cv_splits=n_cv_splits,
+            verbose=verbose
         )
         return self.supervised_results, self.supervised_best_model
 
@@ -374,33 +393,38 @@ class Example:
         setting="normal",
         user_defined_classes=None,
         user_defined_search_space=None,
+        verbose=2,
     ):
-        """A wrapper function which evaluates the performance of many unsupervised classifiers
+        """A wrapper function which evaluates the performance of many unsupervised 
+        classifiers
 
             setting : str
                 Thoroughness of classification investigation.
                 'normal': a smaller subset of settings used in grid search
                 'detailed': a comprehensive set of settings used in grid search
 
-        Two options are permitted when specifying the utilized unsupervised classifiers.
+        Two options are permitted when specifying the utilized unsupervised 
+        classifiers.
 
         First, you can use the classifiers established in this library (found in
-        `unsupervised_classifier_defs`). These classifiers can be subset if wanted by specifying
-        a list of classifier names (strings). For example,
+        `unsupervised_classifier_defs`). These classifiers can be subset if wanted 
+        by specifying a list of classifier names (strings). For example,
 
         ```
-        subset_example_classifiers = ['LinearSVC', 'AdaBoostClassifier', 'RidgeClassifier']
+        subset_example_classifiers = ['LinearSVC', 'AdaBoostClassifier', 
+                                      'RidgeClassifier']
         e.classify_unsupervised(
                         n_cv_splits=5,
                         subset_example_classifiers=subset_example_classifiers
                     )
         ```
 
-        Second, you can pass your own definitions of supervised classifiers, just as found in
-        `supervised_classifier_defs.py`. To do this, two objects are required as input: `classes`
-        and `search_space`. The `classes` object is a dictionary with a key as the name of the
-        classifier and a value as the classifier object. The `search_space` specifies the 
-        hyperparameters which the grid search protocol will iterate through. For example,
+        Second, you can pass your own definitions of supervised classifiers, just 
+        as found in `supervised_classifier_defs.py`. To do this, two objects are 
+        required as input: `classes` and `search_space`. The `classes` object is 
+        a dictionary with a key as the name of the classifier and a value as the 
+        classifier object. The `search_space` specifies the hyperparameters which 
+        the grid search protocol will iterate through. For example,
 
         ```
         user_defined_classes = {
@@ -451,19 +475,25 @@ class Example:
                 setting, n_clusters
             )
 
-            if subset_example_classifiers != None:
+            if subset_example_classifiers not in None:
                 for clf_str in subset_example_classifiers:
                     if clf_str not in classes:
                         del classes[clf_str]
                         del search_space[clf_str]
                     else:
                         raise Exception(
-                            "All components of subset_example_classifiers must be keys in "
+                            "All components of subset_example_classifiers " +
+                            "must be keys in "
                         )
         else:
             search_space = user_defined_search_space
             classes = user_defined_classes
 
+        if verbose > 2:
+            print('search_space', search_space)
+            print('classes', classes)
+            print('pipeline_steps', pipeline_steps)
+            print('embedding', embedding)
         self.unsupervised_results, self.unsupervised_best_model = self._classify(
             embedding,
             pipeline_steps,
@@ -471,6 +501,7 @@ class Example:
             search_space,
             classes,
             n_cv_splits=n_cv_splits,
+            verbose=verbose
         )
         return self.unsupervised_results, self.unsupervised_best_model
 
@@ -519,9 +550,9 @@ if __name__ == "__main__":
     df = pd.read_csv(folder + filename)
 
     e = Example(df, LABEL_COLUMN)
-    # df = e.extract_dates(DATA_COLUMN, DATE_COLUMN, SAVE_DATE_COLUMN='ExtractedDates')
-    e.prep_data_for_ML(DATA_COLUMN, DATE_COLUMN)
-    # e.test_doc2vec()
-    # Setting few cross validation splits because of few example data
-    e.classify_supervised(n_cv_splits=2, embedding="doc2vec")
-    e.predict_best_model()
+    e.summarize_text_data(DATA_COLUMN)
+
+    print("\nMessage from pvOps team: See " +
+          "`tutorial_textmodule.ipynb` for a" +
+          "more in-depth demonstration of the" +
+          "text module's functionality.")
