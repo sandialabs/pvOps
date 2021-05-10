@@ -297,6 +297,8 @@ def text_remove_nondate_nums(document, PRINT_INFO=False):
     string
         string of processed document
     """
+    
+    nltk.download('punkt')
 
     if PRINT_INFO:
         print()
@@ -429,6 +431,8 @@ def text_remove_numbers_stopwords(document, lst_stopwords):
     string
         string of processed document
     """
+    
+    nltk.download('punkt')
 
     for char in "<>,.*?!/\\:\"'@#$%^&(){}[]|~`_-":
         document = document.replace(char, " ")
