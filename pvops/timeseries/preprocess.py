@@ -3,13 +3,15 @@
 import pvlib
 import pvanalytics
 from timezonefinder import TimezoneFinder
-
+import pandas as pd
 
 def prod_irradiance_filter(prod_df, prod_col_dict, meta_df, meta_col_dict,
                            drop=True, irradiance_type='ghi', csi_max=1.1
                            ):
     """
-    Filter rows of production data frame according to performance and data quality
+    Filter rows of production data frame according to performance and data quality.
+    
+    THIS METHOD IS CURRENTLY IN DEVELOPMENT.
 
     Parameters
 
@@ -72,10 +74,11 @@ def prod_irradiance_filter(prod_df, prod_col_dict, meta_df, meta_col_dict,
 
         # Save times in object
         prod_times = prod_df.loc[site_prod_mask, prod_col_dict['timestamp']].tolist()
-
+        
         # Extract site's position
-        latitude, longitude = meta_df[meta_col_dict['latitude']
-                                      ], meta_df[meta_col_dict['longitude']]
+        latitude = meta_df.loc[site_meta_mask, meta_col_dict['latitude']].tolist()[0]
+        longitude = meta_df.loc[site_meta_mask, meta_col_dict['longitude']].tolist()[0]
+
         # Derive
         tf = TimezoneFinder()
         derived_timezone = tf.timezone_at(lng=longitude, lat=latitude)
@@ -96,7 +99,8 @@ def prod_irradiance_filter(prod_df, prod_col_dict, meta_df, meta_col_dict,
         if irradiance_type == 'poa':
 
             raise ValueError(
-                "POA is currently not configured because it requires `surface_tilt` and `surface_azimuth`, a trait which is not usually in the meta data.")
+                "POA is currently not configured because it requires `surface_tilt` and `surface_azimuth`, \
+                a trait which is not usually in the meta data.")
             # Establish solarposition
             solpos = pvlib.solarposition.get_solarposition(prod_times,
                                                            latitude, longitude)
@@ -152,7 +156,7 @@ def prod_inverter_clipping_filter(prod_df, prod_col_dict, meta_df, meta_col_dict
         - **timestamp** (*string*), should be assigned to associated time-stamp
         column name in prod_df
         - **siteid** (*string*), should be assigned to site-ID column name in prod_df
-        - **energyprod** (*string*), should be assigned to associated production column name in prod_df
+        - **power** (*string*), should be assigned to associated power production column name in prod_df
 
     meta_df: DataFrame
         A data frame corresponding to site metadata.
@@ -185,15 +189,17 @@ def prod_inverter_clipping_filter(prod_df, prod_col_dict, meta_df, meta_col_dict
 
     for site in individual_sites:
 
-        # ac_power = prod_df[prod_col_dict["energyprod"]]
         site_prod_mask = prod_df.loc[:, prod_col_dict["siteid"]] == site
+        ac_power = prod_df.loc[site_prod_mask, prod_col_dict["power"]]
 
-        ac_power = prod_df.loc[site_prod_mask, prod_col_dict["energyprod"]]
+        if len(ac_power) == 0:
+            # If no rows exist for this company, skip it.
+            continue
 
         if model == 'geometric':
             window = kwargs.get('window')
             slope_max = kwargs.get('slope_max') or 0.2
-            freq = kwargs.get('freq')
+            freq = kwargs.get('freq') # Optional
             tracking = kwargs.get('tracking') or False
             prod_df.loc[site_prod_mask, "mask"] = pvanalytics.features.clipping.geometric(
                 ac_power, window=window, slope_max=slope_max, freq=freq, tracking=tracking)
@@ -202,8 +208,9 @@ def prod_inverter_clipping_filter(prod_df, prod_col_dict, meta_df, meta_col_dict
             slope_max = kwargs.get('slope_max') or 0.0035
             power_min = kwargs.get('power_min') or 0.75
             power_quantile = kwargs.get('power_quantile') or 0.995
+            freq = kwargs.get('freq') # Optional
             prod_df.loc[site_prod_mask, "mask"] = pvanalytics.features.clipping.threshold(
-                ac_power, slope_max=slope_max, power_min=power_min, power_quantile=power_quantile, freq=None)
+                ac_power, slope_max=slope_max, power_min=power_min, power_quantile=power_quantile, freq=freq)
 
         elif model == 'levels':
             window = kwargs.get('window') or 4
