@@ -45,8 +45,7 @@ jobs:
       uses: actions/setup-python@v1
       with:
         python-version: ${{ matrix.python-version }}
-        args:
-          - --max-line-length=88
+        args: "--max-line-length=88"
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
