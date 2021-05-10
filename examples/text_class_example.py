@@ -267,7 +267,7 @@ class Example:
         setting="normal",
         user_defined_classes=None,
         user_defined_search_space=None,
-        verbose=2,
+        verbose=0,
     ):
         """A wrapper function which evaluates the performance of many 
         supervised classifiers
@@ -355,7 +355,7 @@ class Example:
                 classes,
             ) = defaults.supervised_classifier_defs(setting)
 
-            if subset_example_classifiers not in None:
+            if not isinstance(subset_example_classifiers, type(None)):
                 for clf_str in subset_example_classifiers:
                     if clf_str not in classes:
                         del classes[clf_str]
@@ -393,7 +393,7 @@ class Example:
         setting="normal",
         user_defined_classes=None,
         user_defined_search_space=None,
-        verbose=2,
+        verbose=0,
     ):
         """A wrapper function which evaluates the performance of many unsupervised 
         classifiers
@@ -475,7 +475,7 @@ class Example:
                 setting, n_clusters
             )
 
-            if subset_example_classifiers not in None:
+            if not isinstance(subset_example_classifiers, type(None)):
                 for clf_str in subset_example_classifiers:
                     if clf_str not in classes:
                         del classes[clf_str]
