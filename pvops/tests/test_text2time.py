@@ -244,29 +244,29 @@ def test_prod_quant():
     
     assert prod_data_quant.equals(prod_data_quant_pick)
     
-def test_om_summary_stats():
+# def test_om_summary_stats():
     
-    #Prod data
-    threshold = 1.0
-    prod_data_converted = preprocess.prod_date_convert(prod_data, prod_col_dict)
-    prod_data_anom, addressed = utils.prod_anomalies(prod_data_converted, prod_col_dict, threshold, np.nan, ffill=True)
-    prod_data_datena_d, addressed = preprocess.prod_nadate_process(prod_data_anom, prod_col_dict, pnadrop=True)
+#     #Prod data
+#     threshold = 1.0
+#     prod_data_converted = preprocess.prod_date_convert(prod_data, prod_col_dict)
+#     prod_data_anom, addressed = utils.prod_anomalies(prod_data_converted, prod_col_dict, threshold, np.nan, ffill=True)
+#     prod_data_datena_d, addressed = preprocess.prod_nadate_process(prod_data_anom, prod_col_dict, pnadrop=True)
     
-    #O&M data
-    om_data_converted = preprocess.om_date_convert(om_data, om_col_dict)
-    om_data_sitena, addressed = preprocess.data_site_na(om_data_converted, om_col_dict)
-    om_data_checked_s, addressed = preprocess.om_datelogic_check(om_data_sitena, om_col_dict, 'swap')
-    om_data_datena_d, addressed = preprocess.om_nadate_process(om_data_checked_s, om_col_dict, om_dendflag='drop')
+#     #O&M data
+#     om_data_converted = preprocess.om_date_convert(om_data, om_col_dict)
+#     om_data_sitena, addressed = preprocess.data_site_na(om_data_converted, om_col_dict)
+#     om_data_checked_s, addressed = preprocess.om_datelogic_check(om_data_sitena, om_col_dict, 'swap')
+#     om_data_datena_d, addressed = preprocess.om_nadate_process(om_data_checked_s, om_col_dict, om_dendflag='drop')
     
-    #trim DFs
-    prod_data_clean, om_data_clean = utils.overlapping_data(prod_data_datena_d, om_data_datena_d, prod_col_dict, om_col_dict)
+#     #trim DFs
+#     prod_data_clean, om_data_clean = utils.overlapping_data(prod_data_datena_d, om_data_datena_d, prod_col_dict, om_col_dict)
     
-    #OM Stats Calc
-    om_data_update = utils.om_summary_stats(om_data_clean, metadata, om_col_dict, metad_col_dict)
+#     #OM Stats Calc
+#     om_data_update = utils.om_summary_stats(om_data_clean, metadata, om_col_dict, metad_col_dict)
     
-    #import expected pickled DF
-    om_data_update_pick = pd.read_pickle(os.path.join(test_datadir, 'om_data_update_pick.pkl'))
-    om_data_update_pick = om_data_update_pick.round({'EventDur':2})
-    om_data_update = om_data_update.round({'EventDur':2})
+#     #import expected pickled DF
+#     om_data_update_pick = pd.read_pickle(os.path.join(test_datadir, 'om_data_update_pick.pkl'))
+#     om_data_update_pick = om_data_update_pick.round({'EventDur':2})
+#     om_data_update = om_data_update.round({'EventDur':2})
     
-    assert om_data_update.equals(om_data_update_pick)
+#     assert om_data_update.equals(om_data_update_pick)
