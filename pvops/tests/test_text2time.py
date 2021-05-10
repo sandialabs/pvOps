@@ -238,6 +238,9 @@ def test_iec_calc():
     # import expected pickled DFs
     prod_data_clean_iec_pick = pd.read_pickle(os.path.join(test_datadir, 'prod_data_clean_iec_pick.pkl'))
 
+    print(prod_data_clean_iec.dtypes)
+    print(prod_data_clean_iec_pick.dtypes)
+
     for col in prod_data_clean_iec_pick.columns:
         check_same(prod_data_clean_iec, prod_data_clean_iec_pick, col)
 
@@ -333,4 +336,5 @@ def test_om_summary_stats():
     for col in om_data_update_pick.columns:
         check_same(om_data_update, om_data_update_pick, col)
 
+test_iec_calc()
 # test_prod_quant()
