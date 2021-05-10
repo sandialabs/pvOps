@@ -2,8 +2,8 @@ import os
 import sys
 import pandas as pd
 
-sys.path.append(timeseries_directory)
 timeseries_directory = os.path.join("pvops")
+sys.path.append(timeseries_directory)
 
 from timeseries import preprocess as tprep
 from text2time import preprocess as t2tprep
