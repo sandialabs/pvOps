@@ -10,8 +10,6 @@ import pandas.api.types as ptypes
 pvops_path = os.path.join('pvops')#, 'text2time')
 #T2time_path = os.path.join('.', 'text2time')
 
-#sys.path.append('..')
-#os.sys.path.clear()
 sys.path.append(pvops_path)
 
 
