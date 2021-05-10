@@ -1,25 +1,28 @@
 def filter():
     return
 
-def preprocess(input_df, resmpl_resolution, resmpl_cutoff = 0.03, correct_gt = True, normalize = True, CECmodule_parameters = None, n_mods = None):
+
+def preprocess(input_df, resmpl_resolution, resmpl_cutoff=0.03, correct_gt=True, normalize=True, CECmodule_parameters=None, n_mods=None):
     """IV processing function which supports irradiance & temperature correction
     """
 
     # Correct for irradiance and temperature
     if correct_gt:
         Vs, Is = [], []
-        for ind,row in input_df.iterrows():
+        for ind, row in input_df.iterrows():
             if CECmodule_parameters is None or n_mods is None:
-                raise ValueError("You must specify CECmodule_parameters and n_mods if you want to correct the IV curves for irradiance and temperature.")
-            Vt, It = gt_correction(row['voltage'],row['current'],row['E'],row['T'],
-                                   cecparams=CECmodule_parameters,n_units=n_mods)
+                raise ValueError(
+                    "You must specify CECmodule_parameters and n_mods if you want to correct the IV curves for irradiance and temperature.")
+            Vt, It = gt_correction(row['voltage'], row['current'], row['E'], row['T'],
+                                   cecparams=CECmodule_parameters, n_units=n_mods)
             Vs.append(Vt)
             Is.append(It)
     else:
         Is = input_df['current'].tolist()
         Vs = input_df['voltage'].tolist()
 
-    v_interps = np.arange(resmpl_cutoff,1+resmpl_resolution,resmpl_resolution)
+    v_interps = np.arange(
+        resmpl_cutoff, 1+resmpl_resolution, resmpl_resolution)
 
     procVs = []
     procIs = []
@@ -33,7 +36,7 @@ def preprocess(input_df, resmpl_resolution, resmpl_cutoff = 0.03, correct_gt = T
             interpolated_I = np.interp(v_interps, Vnorm, Is[iii])
             isc_iter = interpolated_I.max()
             procIs.append(interpolated_I / isc_iter)
-        
+
         else:
             interpolated_I = np.interp(v_interps, Vs[iii], Is[iii])
             procIs.append(interpolated_I)
