@@ -7,41 +7,41 @@ import os
 import pandas.api.types as ptypes
 
 #Set sytem paths
-pvops_path = os.path.join('pvops')#, 'text2time')
-#T2time_path = os.path.join('.', 'text2time')
+pvops_path = os.path.join('pvops')
+# T2time_path = os.path.join('.', 'text2time')
 
 sys.path.append(pvops_path)
 
 
-#from om_data_convert import om_data_convert
-#Import modules
-#from pvops.text2time 
+# from om_data_convert import om_data_convert
+# Import modules
+# from pvops.text2time 
 
-#import catscat_fig, count_fig, data_site_na, iec_calc,\
-#om_date_convert, om_datelogic_check, om_nadate_process, om_summary_stats,\
-#overlapping_data, prod_anomalies, prod_date_convert, prod_quant,\
-#summarize_overlaps, viz_om_prod, prod_nadate_process
+# import catscat_fig, count_fig, data_site_na, iec_calc,\
+# om_date_convert, om_datelogic_check, om_nadate_process, om_summary_stats,\
+# overlapping_data, prod_anomalies, prod_date_convert, prod_quant,\
+# summarize_overlaps, viz_om_prod, prod_nadate_process
 
 from text2time import preprocess, utils
 
 
-#Define csv paths
+# Define csv paths
 datadir = os.path.join('examples','example_data')
 test_datadir = os.path.join('pvops','tests')
 example_OMpath = os.path.join(datadir, 'example_om_data2.csv')
 example_prodpath = os.path.join(datadir, 'example_prod_data_cumE2.csv')
 example_metapath = os.path.join(datadir, 'example_metadata2.csv')
 
-#Assigning dictionaries to connect pvops variables with User's column names
-#Format for dictionaries is {pvops variable: user-specific column names}
+# Assigning dictionaries to connect pvops variables with User's column names
+# Format for dictionaries is {pvops variable: user-specific column names}
 prod_col_dict = {'siteid': 'randid', 
                  'timestamp': 'Date', 
                  'energyprod': 'Energy',
                  'irradiance':'Irradiance',
-                 'baseline': 'IEC_pstep', #user's name choice for new column (baseline expected energy defined by user or calculated based on IEC)
-                 'dcsize': 'dcsize', #user's name choice for new column (System DC-size, extracted from meta-data)
-                 'compared': 'Compared',#user's name choice for new column
-                 'energy_pstep': 'Energy_pstep'} #user's name choice for new column
+                 'baseline': 'IEC_pstep', # user's name choice for new column (baseline expected energy defined by user or calculated based on IEC)
+                 'dcsize': 'dcsize', # user's name choice for new column (System DC-size, extracted from meta-data)
+                 'compared': 'Compared', # user's name choice for new column
+                 'energy_pstep': 'Energy_pstep'} # user's name choice for new column
 
 om_col_dict = {'siteid': 'randid', 
                'datestart': 'date_start',
@@ -49,9 +49,9 @@ om_col_dict = {'siteid': 'randid',
                'workID': 'WONumber',
                'worktype': 'WOType',
                'asset': 'Asset',
-               'eventdur': 'EventDur', #user's name choice for new column (Repair Duration)
-               'modatestart': 'MonthStart', #user's name choice for new column (Month when an event begins)
-               'agedatestart': 'AgeStart'} #user's name choice for new column (Age of system when event begins)
+               'eventdur': 'EventDur', # user's name choice for new column (Repair Duration)
+               'modatestart': 'MonthStart', # user's name choice for new column (Month when an event begins)
+               'agedatestart': 'AgeStart'} # user's name choice for new column (Age of system when event begins)
 
 metad_col_dict = {'siteid': 'randid',
                   'dcsize': 'DC_Size_kW',
@@ -72,7 +72,6 @@ def check_same(df1, df2, col):
         df1 = df1.round({col:2})
         df2 = df2.round({col:2})
     assert df1[col].equals(df2[col])
-    # assert df1[col].tolist() == df2[col].tolist()
 
 def test_om_data_convert_s():
     om_data_converted = preprocess.om_date_convert(om_data, om_col_dict)
