@@ -24,7 +24,6 @@ from pvops.text import defaults
 # Utility dependencies
 import numpy as np
 import pandas as pd
-import pickle
 import traceback
 import nltk
 
