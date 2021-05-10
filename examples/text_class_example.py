@@ -155,8 +155,8 @@ class Example:
                 self.df[self.df[self.LABEL_COLUMN] == LBL_CAT].index)
         else:
             raise Exception(
-                f"An invalid label category (LBL_CAT) was passed." +
-                f"Please pass a value in the following set:\n" +
+                "An invalid label category (LBL_CAT) was passed." + \
+                "Please pass a value in the following set:\n" + \
                 f"{set(self.df[self.LABEL_COLUMN].tolist())}"
             )
 
@@ -362,7 +362,7 @@ class Example:
                         del search_space[clf_str]
                     else:
                         raise Exception(
-                            f"All components of subset_example_classifiers" +
+                            "All components of subset_example_classifiers" + \
                             f"must be keys in {classes}"
                         )
         else:
@@ -545,8 +545,7 @@ if __name__ == "__main__":
     e = Example(df, LABEL_COLUMN)
     e.summarize_text_data(DATA_COLUMN)
 
-    print("\nMessage from pvOps team: See " +
-          "`tutorial_textmodule.ipynb` for a" +
-          "more in-depth demonstration of the" +
+    print("\nMessage from pvOps team: See " + \
+          "`tutorial_textmodule.ipynb` for a" + \
+          "more in-depth demonstration of the" + \
           "text module's functionality.")
-

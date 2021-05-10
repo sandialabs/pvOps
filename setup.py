@@ -5,7 +5,7 @@ try:
 except ImportError:
     raise RuntimeError('setuptools is required')
 
-DESCRIPTION = ('pvops is a python library for the analysis of ' +
+DESCRIPTION = ('pvops is a python library for the analysis of ' + \
                'field collected operational data for photovoltaic systems.')
 
 LONG_DESCRIPTION = """
