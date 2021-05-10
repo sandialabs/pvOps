@@ -1,4 +1,3 @@
-from text2time import preprocess, utils
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -12,7 +11,7 @@ pvops_path = os.path.join('pvops')
 # T2time_path = os.path.join('.', 'text2time')
 
 sys.path.append(pvops_path)
-
+from text2time import preprocess, utils
 
 # from om_data_convert import om_data_convert
 # Import modules
