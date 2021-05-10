@@ -109,66 +109,90 @@ def test_om_datelogic_d():
 def test_prod_anomalies_ffT():
     threshold = 1.0
     prod_data_converted = preprocess.prod_date_convert(prod_data, prod_col_dict)
-    prod_data_anom, addressed = utils.prod_anomalies(prod_data_converted, prod_col_dict, threshold, np.nan, ffill=True)
+    prod_data_anom, addressed = utils.prod_anomalies(prod_data_converted,
+                                                     prod_col_dict, threshold,
+                                                     np.nan, ffill=True)
     mask = prod_data_anom[prod_col_dict['energyprod']] < 1.0
     assert sum(mask) == 0
     
 def test_prod_anomalies_ffF():
     threshold= 1.0
     prod_data_converted = preprocess.prod_date_convert(prod_data, prod_col_dict)
-    prod_data_anom, addressed = utils.prod_anomalies(prod_data_converted, prod_col_dict, threshold, np.nan, ffill=False)
+    prod_data_anom, addressed = utils.prod_anomalies(prod_data_converted,
+                                                     prod_col_dict, threshold,
+                                                     np.nan, ffill=False)
     mask = prod_data_anom[prod_col_dict['energyprod']] < 1.0
     assert sum(mask) == 0
     
 def test_prod_nadate_process_d():
     threshold = 1.0
     prod_data_converted = preprocess.prod_date_convert(prod_data, prod_col_dict)
-    prod_data_anom, addressed = utils.prod_anomalies(prod_data_converted, prod_col_dict, threshold, np.nan, ffill=True)
-    prod_data_datena, addressed = preprocess.prod_nadate_process(prod_data_anom, prod_col_dict, pnadrop=True)
+    prod_data_anom, addressed = utils.prod_anomalies(prod_data_converted,
+                                                     prod_col_dict, threshold,
+                                                     np.nan, ffill=True)
+    prod_data_datena, addressed = preprocess.prod_nadate_process(prod_data_anom,
+                                                                 prod_col_dict,
+                                                                 pnadrop=True)
     mask = prod_data_datena[prod_col_dict['timestamp']].isna()
     assert sum(mask) == 0
     
 def test_prod_nadate_process_id():
     threshold = 1.0
     prod_data_converted = preprocess.prod_date_convert(prod_data, prod_col_dict)
-    prod_data_anom, addressed = utils.prod_anomalies(prod_data_converted, prod_col_dict, threshold, np.nan, ffill=True)
-    prod_data_datena, addressed = preprocess.prod_nadate_process(prod_data_anom, prod_col_dict, pnadrop=False)
+    prod_data_anom, addressed = utils.prod_anomalies(prod_data_converted,
+                                                     prod_col_dict, threshold,
+                                                     np.nan, ffill=True)
+    prod_data_datena, addressed = preprocess.prod_nadate_process(prod_data_anom,
+                                                                 prod_col_dict,
+                                                                 pnadrop=False)
     mask = prod_data_datena[prod_col_dict['timestamp']].isna()
     assert sum(mask) > 0
 
 def test_om_nadate_process_d():
     om_data_converted = preprocess.om_date_convert(om_data, om_col_dict)
     om_data_sitena, addressed = preprocess.data_site_na(om_data_converted, om_col_dict)
-    om_data_checked_s, addressed = preprocess.om_datelogic_check(om_data_sitena, om_col_dict, 'swap')
-    om_data_datena_d, addressed = preprocess.om_nadate_process(om_data_checked_s, om_col_dict, om_dendflag='drop')
+    om_data_checked_s, addressed = preprocess.om_datelogic_check(om_data_sitena, 
+                                                                 om_col_dict, 'swap')
+    om_data_datena_d, addressed = preprocess.om_nadate_process(om_data_checked_s, 
+                                                               om_col_dict, 
+                                                               om_dendflag='drop')
     mask = om_data_datena_d[om_col_dict['dateend']].isna()
     assert sum(mask)==0
 
 def test_om_nadate_process_t():
     om_data_converted = preprocess.om_date_convert(om_data, om_col_dict)
     om_data_sitena, addressed = preprocess.data_site_na(om_data_converted, om_col_dict)
-    om_data_checked_s, addressed = preprocess.om_datelogic_check(om_data_sitena, om_col_dict, 'swap')
-    om_data_datena_t, addressed = preprocess.om_nadate_process(om_data_checked_s, om_col_dict, om_dendflag='today')
+    om_data_checked_s, addressed = preprocess.om_datelogic_check(om_data_sitena,
+                                                                 om_col_dict, 'swap')
+    om_data_datena_t, addressed = preprocess.om_nadate_process(om_data_checked_s,
+                                                               om_col_dict,
+                                                               om_dendflag ='today')
     mask = om_data_datena_t[om_col_dict['dateend']].isna()
     assert sum(mask)==0
 
 def test_summarize_overlaps():
-    #Prod data => Note the flags used
+    # Prod data => Note the flags used
     threshold = 1.0
     prod_data_converted = preprocess.prod_date_convert(prod_data, prod_col_dict)
-    prod_data_anom, addressed = utils.prod_anomalies(prod_data_converted, prod_col_dict, threshold, np.nan, ffill=True)
-    prod_data_datena_d, addressed = preprocess.prod_nadate_process(prod_data_anom, prod_col_dict, pnadrop=True)
+    prod_data_anom, addressed = utils.prod_anomalies(prod_data_converted,
+                                                     prod_col_dict, threshold,
+                                                     np.nan, ffill=True)
+    prod_data_datena_d, addressed = preprocess.prod_nadate_process(prod_data_anom,
+                                                                   prod_col_dict,
+                                                                   pnadrop=True)
     
-    #O&M data => Note the flags used
+    # O&M data => Note the flags used
     om_data_converted = preprocess.om_date_convert(om_data, om_col_dict)
     om_data_sitena, addressed = preprocess.data_site_na(om_data_converted, om_col_dict)
-    om_data_checked_s, addressed = preprocess.om_datelogic_check(om_data_sitena, om_col_dict, 'swap')
-    om_data_datena_d, addressed = preprocess.om_nadate_process(om_data_checked_s, om_col_dict, om_dendflag='drop')
+    om_data_checked_s, addressed = preprocess.om_datelogic_check(om_data_sitena,
+                                                                 om_col_dict,'swap')
+    om_data_datena_d, addressed = preprocess.om_nadate_process(om_data_checked_s, om_col_dict,
+                                                               om_dendflag='drop')
     
-    #summarize overlaps
+    # summarize overlaps
     prod_summary, om_summary = utils.summarize_overlaps(prod_data_datena_d, om_data_datena_d, prod_col_dict, om_col_dict)
     
-    #import expected pickled DFs
+    # import expected pickled DFs
     prod_summ_pick = pd.read_pickle(os.path.join(test_datadir, 'prod_summ_pick.pkl'))
     om_summ_pick = pd.read_pickle(os.path.join(test_datadir, 'om_summ_pick.pkl'))
     
@@ -176,44 +200,44 @@ def test_summarize_overlaps():
     
     
 def test_overlapping_data():
-    #Prod data
+    # Prod data
     threshold = 1.0
     prod_data_converted = preprocess.prod_date_convert(prod_data, prod_col_dict)
     prod_data_anom, addressed = utils.prod_anomalies(prod_data_converted, prod_col_dict, threshold, np.nan, ffill=True)
     prod_data_datena_d, addressed = preprocess.prod_nadate_process(prod_data_anom, prod_col_dict, pnadrop=True)
     
-    #O&M data
+    # O&M data
     om_data_converted = preprocess.om_date_convert(om_data, om_col_dict)
     om_data_sitena, addressed = preprocess.data_site_na(om_data_converted, om_col_dict)
     om_data_checked_s, addressed = preprocess.om_datelogic_check(om_data_sitena, om_col_dict, 'swap')
     om_data_datena_d, addressed = preprocess.om_nadate_process(om_data_checked_s, om_col_dict, om_dendflag='drop')
     
-    #trim DFs
+    # trim DFs
     prod_data_clean, om_data_clean = utils.overlapping_data(prod_data_datena_d, om_data_datena_d, prod_col_dict, om_col_dict)
     
     assert len(prod_data_clean) == 1020 and len(om_data_clean) == 7
 
 
 def test_iec_calc():
-    #Prod data
+    # Prod data
     threshold = 1.0
     prod_data_converted = preprocess.prod_date_convert(prod_data, prod_col_dict)
     prod_data_anom, addressed = utils.prod_anomalies(prod_data_converted, prod_col_dict, threshold, np.nan, ffill=True)
     prod_data_datena_d, addressed = preprocess.prod_nadate_process(prod_data_anom, prod_col_dict, pnadrop=True)
     
-    #O&M data
+    # O&M data
     om_data_converted = preprocess.om_date_convert(om_data, om_col_dict)
     om_data_sitena, addressed = preprocess.data_site_na(om_data_converted, om_col_dict)
     om_data_checked_s, addressed = preprocess.om_datelogic_check(om_data_sitena, om_col_dict, 'swap')
     om_data_datena_d, addressed = preprocess.om_nadate_process(om_data_checked_s, om_col_dict, om_dendflag='drop')
     
-    #trim DFs
+    # trim DFs
     prod_data_clean, om_data_clean = utils.overlapping_data(prod_data_datena_d, om_data_datena_d, prod_col_dict, om_col_dict)
     
-    #IEC calc
+    # IEC calc
     prod_data_clean_iec = utils.iec_calc(prod_data_clean, prod_col_dict, metadata, metad_col_dict, gi_ref=1000.)
     
-    #import expected pickled DFs
+    # import expected pickled DFs
     prod_data_clean_iec_pick = pd.read_pickle(os.path.join(test_datadir, 'prod_data_clean_iec_pick.pkl'))
     
     for col in prod_data_clean_iec_pick.columns:
@@ -254,25 +278,25 @@ def test_iec_calc():
     
 def test_om_summary_stats():
     
-    #Prod data
+    # Prod data
     threshold = 1.0
     prod_data_converted = preprocess.prod_date_convert(prod_data, prod_col_dict)
     prod_data_anom, addressed = utils.prod_anomalies(prod_data_converted, prod_col_dict, threshold, np.nan, ffill=True)
     prod_data_datena_d, addressed = preprocess.prod_nadate_process(prod_data_anom, prod_col_dict, pnadrop=True)
     
-    #O&M data
+    # O&M data
     om_data_converted = preprocess.om_date_convert(om_data, om_col_dict)
     om_data_sitena, addressed = preprocess.data_site_na(om_data_converted, om_col_dict)
     om_data_checked_s, addressed = preprocess.om_datelogic_check(om_data_sitena, om_col_dict, 'swap')
     om_data_datena_d, addressed = preprocess.om_nadate_process(om_data_checked_s, om_col_dict, om_dendflag='drop')
     
-    #trim DFs
+    # trim DFs
     prod_data_clean, om_data_clean = utils.overlapping_data(prod_data_datena_d, om_data_datena_d, prod_col_dict, om_col_dict)
     
-    #OM Stats Calc
+    # OM Stats Calc
     om_data_update = utils.om_summary_stats(om_data_clean, metadata, om_col_dict, metad_col_dict)
     
-    #import expected pickled DF
+    # import expected pickled DF
     om_data_update_pick = pd.read_pickle(os.path.join(test_datadir, 'om_data_update_pick.pkl'))
     om_data_update_pick = om_data_update_pick.round({'EventDur':2})
     om_data_update = om_data_update.round({'EventDur':2})
