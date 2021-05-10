@@ -184,7 +184,7 @@ def test_overlapping_data():
     prod_data_clean, om_data_clean = utils.overlapping_data(prod_data_datena_d, om_data_datena_d, prod_col_dict, om_col_dict)
     
     assert len(prod_data_clean) == 1020 and len(om_data_clean) == 7
-    
+
 
 def test_iec_calc():
     #Prod data
@@ -208,7 +208,8 @@ def test_iec_calc():
     #import expected pickled DFs
     prod_data_clean_iec_pick = pd.read_pickle(os.path.join(test_datadir, 'prod_data_clean_iec_pick.pkl'))
     
-    assert prod_data_clean_iec.equals(prod_data_clean_iec_pick)
+    for col in prod_data_clean_iec_pick.columns:
+        check_same(prod_data_clean_iec_pick,prod_data_clean_iec_pick,col)
 
 
 def test_prod_quant():
@@ -236,7 +237,9 @@ def test_prod_quant():
     #import expected pickled DFs
     prod_data_quant_pick = pd.read_pickle(os.path.join(test_datadir, 'prod_data_quant_pick.pkl'))
     
-    assert prod_data_quant.equals(prod_data_quant_pick)
+    for col in prod_data_quant_pick.columns:
+        check_same(prod_data_quant,prod_data_quant_pick,col)
+    
     
 def test_om_summary_stats():
     
