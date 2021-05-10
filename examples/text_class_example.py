@@ -155,8 +155,8 @@ class Example:
                 self.df[self.df[self.LABEL_COLUMN] == LBL_CAT].index)
         else:
             raise Exception(
-                "An invalid label category (LBL_CAT) was passed." + \
-                "Please pass a value in the following set:\n" + \
+                "An invalid label category (LBL_CAT) was passed." +
+                "Please pass a value in the following set:\n" +
                 f"{set(self.df[self.LABEL_COLUMN].tolist())}"
             )
 
@@ -362,7 +362,7 @@ class Example:
                         del search_space[clf_str]
                     else:
                         raise Exception(
-                            "All components of subset_example_classifiers" +
+                            "All components of subset_example_classifiers" +\
                             f"must be keys in {classes}"
                         )
         else:
@@ -381,7 +381,7 @@ class Example:
             search_space,
             classes,
             n_cv_splits=n_cv_splits,
-            verbose = verbose
+            verbose=verbose
         )
         return self.supervised_results, self.supervised_best_model
 
@@ -475,7 +475,7 @@ class Example:
                 setting, n_clusters
             )
 
-            if subset_example_classifiers != None:
+            if subset_example_classifiers not in None:
                 for clf_str in subset_example_classifiers:
                     if clf_str not in classes:
                         del classes[clf_str]
@@ -501,7 +501,7 @@ class Example:
             search_space,
             classes,
             n_cv_splits=n_cv_splits,
-            verbose = verbose
+            verbose=verbose
         )
         return self.unsupervised_results, self.unsupervised_best_model
 
@@ -552,7 +552,7 @@ if __name__ == "__main__":
     e = Example(df, LABEL_COLUMN)
     e.summarize_text_data(DATA_COLUMN)
 
-    print("\nMessage from pvOps team: See " + \
-          "`tutorial_textmodule.ipynb` for a" + \
-          "more in-depth demonstration of the" + \
+    print("\nMessage from pvOps team: See " +
+          "`tutorial_textmodule.ipynb` for a" +
+          "more in-depth demonstration of the" +
           "text module's functionality.")

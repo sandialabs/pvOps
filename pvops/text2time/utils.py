@@ -570,7 +570,6 @@ def prod_quant(prod_df, prod_col_dict, comp_type, ecumu=True):
     """
 
     prod_site = prod_col_dict["siteid"]
-    prod_ts = prod_col_dict["timestamp"]
     prod_ener = prod_col_dict["energyprod"]
     baseline_ener = prod_col_dict["baseline"]
     quant_ener = prod_col_dict["compared"]
