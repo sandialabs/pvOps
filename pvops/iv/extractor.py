@@ -297,7 +297,7 @@ class BruteForceExtractor():
         io = cell_parameters['I_o_ref']
         rs = cell_parameters['R_s']
         rsh = cell_parameters['R_sh_ref']
-        nnsvth = cell_parameters['a_ref']  # * (Tcell_K / Tref_K)
+        nnsvth = cell_parameters['a_ref']
 
         self.start_conds = (iph, io, rs, rsh, nnsvth)
 
