@@ -53,7 +53,7 @@ def calculate_IVparams(v, c):
         voc_size = voc_lim
 
     voc_lm = sklearn.linear_model.LinearRegression().fit(c[::-1][:voc_size].reshape(-1, 1),
-                                                 v[::-1][:voc_size].reshape(-1, 1))
+                                                         v[::-1][:voc_size].reshape(-1, 1))
     voc = voc_lm.predict(np.asarray([0]).reshape(-1, 1))[0][0]
     rs = voc_lm.coef_[0][0] * -1
 
@@ -298,10 +298,10 @@ def add_series(voltage_1, current_1, voltage_2=None, current_2=None, v_bypass=No
         all_i = _aggregate_vectors(current_1, current_2)
         all_v = np.zeros_like(all_i)
         f_interp1 = scipy.interpolate.interp1d(np.flipud(current_1), np.flipud(voltage_1),
-                             kind='linear', fill_value='extrapolate')
+                                               kind='linear', fill_value='extrapolate')
         all_v += f_interp1(all_i)
         f_interp2 = scipy.interpolate.interp1d(np.flipud(current_2), np.flipud(voltage_2),
-                             kind='linear', fill_value='extrapolate')
+                                               kind='linear', fill_value='extrapolate')
         all_v += f_interp2(all_i)
     if v_bypass:
         all_v = bypass(all_v, v_bypass)

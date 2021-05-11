@@ -285,8 +285,10 @@ class BruteForceExtractor():
 
         if self.verbose >= 1:
             print('Given 5params:', iph, io, rs, rsh, nnsvth)
-        converged_solution = scipy.optimize.minimize(self.f_multiple_samples, (iph, io, rs, rsh, nnsvth), bounds=bounds,
-                                      method='TNC')
+        converged_solution = scipy.optimize.minimize(self.f_multiple_samples,
+                                                     (iph, io, rs, rsh, nnsvth),
+                                                     bounds=bounds,
+                                                     method='TNC')
 
         if self.verbose >= 1:
             print('bounds', bounds)
