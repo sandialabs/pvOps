@@ -1,10 +1,26 @@
-def calculate_params(v, c):
-    """Calculate parameters of IV curve
+def calculate_IVparams(v, c):
+    """Calculate parameters of IV curve. 
 
-       This needs to be reworked: extrapolate parameters from linear region instead of 
-       hardcoded regions.
+    This needs to be reworked: extrapolate parameters from linear region instead of 
+    hardcoded regions.
+
+    Parameters
+
+    ----------
+    x : numpy array
+        X-axis data
+    y : numpy array
+        Y-axis data
+    npts : int
+        Optional, number of points to resample curve
+    deg : int
+        Optional, polyfit degree
+
+    Returns
+
+    -------
+    Dictionary of IV curve parameters
     """
-
     isc_lim = 0.1
     voc_lim = 0.01
 
@@ -51,8 +67,35 @@ def calculate_params(v, c):
     }
 
 
+def smooth_curve(x, y, npts=50, deg=12):
+    """Smooth curve using a polyfit
+
+    Parameters
+
+    ----------
+    x : numpy array
+        X-axis data
+    y : numpy array
+        Y-axis data
+    npts : int
+        Optional, number of points to resample curve
+    deg : int
+        Optional, polyfit degree
+
+    Returns
+
+    -------
+    smoothed x array
+    smoothed y array
+    """
+    xx = np.linspace(1, np.max(x), npts)
+    yhat = np.poly1d(np.polyfit(x, y, deg))
+    yh = yhat(xx)
+    return xx, yh
+
+
 def iv_cutoff(V, I, val):
-    ''' Cut IV curve greater than voltage `val` (usually 0)
+    """Cut IV curve greater than voltage `val` (usually 0)
 
     Parameters
 
@@ -67,14 +110,31 @@ def iv_cutoff(V, I, val):
     Returns
     -------
     V_cutoff, I_cutoff
-    '''
+    """
     msk = V > val
     return V[msk], I[msk]
 
 
 def intersection(x1, y1, x2, y2):
     """Compute intersection of curves, y1=f(x1) and y2=f(x2).
-       Adapted from https://stackoverflow.com/a/5462917
+    Adapted from https://stackoverflow.com/a/5462917
+
+    Parameters
+
+    ----------
+    x1: numpy array
+        X-axis data for curve 1
+    y1: numpy array
+        Y-axis data for curve 1
+    x2: numpy array
+        X-axis data for curve 2
+    y2: numpy array
+        Y-axis data for curve 2
+
+    Returns
+
+    -------
+    intersection coordinates
     """
     x1 = np.asarray(x1)
     x2 = np.asarray(x2)
@@ -133,16 +193,6 @@ def intersection(x1, y1, x2, y2):
     return xy0[:, 0], xy0[:, 1]
 
 
-def get_intersection(x1, y1, x2, y2):
-    '''Get intersection of two curves.
-
-    In this package, used to find the effective Isc when adding cells 
-    which are in series within a bypass diode's coverage. Call found 
-    in _simulate_module(self)
-    '''
-    return intersection(x1, y1, x2, y2)
-
-
 def T_to_tcell(POA, T, WS, T_type, a=-3.56, b=-0.0750, delTcnd=3):
     ''' Ambient temperature to cell temperature according to NREL weather-correction
 
@@ -158,6 +208,7 @@ def T_to_tcell(POA, T, WS, T_type, a=-3.56, b=-0.0750, delTcnd=3):
         Describe input temperature, either 'ambient' or 'module'
 
     Returns
+
     -------          
     numerical
         Cell temperature, in Celcius
@@ -328,7 +379,7 @@ def gt_correction(v, i, gact, tact, cecparams, n_units=1, option=1):
 
     beta *= n_units
 
-    params = calculate_params(v, i)
+    params = calculate_IVparams(v, i)
     isc = params['isc']
     voc = params['voc']
     rs = params['rs']
