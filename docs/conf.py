@@ -24,7 +24,7 @@ MODULES = ['numpy', 'nltk', 'sklearn.pipeline', 'sklearn.model_selection',
            "matplotlib.pyplot", "gensim.models.doc2vec",
            "sklearn.feature_extraction.text", "nltk.tokenize",
            "plotly.graph_objects", "scipy.signal", 'matplotlib.colors',
-           'seaborn', 'matplotlib.ticker', 'scipy.signal.find_peaks', 
+           'seaborn', 'matplotlib.ticker', 'scipy.signal.find_peaks',
            'pvlib', 'pvanalytics']
 
 for module in MODULES:
@@ -33,6 +33,8 @@ for module in MODULES:
 sys.path.insert(0, os.path.abspath("../pvops"))
 sys.path.insert(0, os.path.abspath("../pvops/text2time"))
 sys.path.insert(0, os.path.abspath("../pvops/text"))
+sys.path.insert(0, os.path.abspath("../pvops/timeseries"))
+sys.path.insert(0, os.path.abspath("../pvops/iv"))
 
 
 # -- Project information -----------------------------------------------------

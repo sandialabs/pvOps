@@ -280,9 +280,10 @@ def get_dates(
 
 
 def text_remove_nondate_nums(document, PRINT_INFO=False):
-    """Conduct initial text processing steps to prepare the text for date extractions.
-    Function mostly uses regex-based text substitution to remove numerical structures
-    within the text, which may be mistaken as a date by the date extractor.
+    """Conduct initial text processing steps to prepare the text for date
+    extractions. Function mostly uses regex-based text substitution to
+    remove numerical structures within the text, which may be mistaken
+    as a date by the date extractor.
 
     Parameters
 
@@ -290,7 +291,8 @@ def text_remove_nondate_nums(document, PRINT_INFO=False):
     document : str
         String representation of a document
     PRINT_INFO : bool
-        Flag indicating whether to print information about the preprocessing progress
+        Flag indicating whether to print information about the preprocessing
+        progress
 
     Returns
 
@@ -391,10 +393,12 @@ def text_remove_nondate_nums(document, PRINT_INFO=False):
         # 4DIGIT-[1-12]  allowed only: 4301/43
         r"\s\d{4}[-/]\b(0|00|1[3-9]|[2-9]\d)\b\s",
         r"\s\d+\[.]\d+\s",  # e.g.: ' 10.1 ' and 10.2
-        # Take out numbers longer than 8 digits (8 because datetimes 20190320 should stay)
+        # Take out numbers longer than 8 digits (8 because datetimes
+        # 20190320 should stay)
         r"\d{9,}",
         r"\s\D[.]\s",  # Take out " m. " for maybe, ' c. ' for cerca, etc.
-        # Take out 123/29 because not a date format, usually indicating temperature/etc.
+        # Take out 123/29 because not a date format, usually indicating
+        # temperature/etc.
         r"\s\d{3}\/\d{2}\s",
         r"\s[a-zA-Z]+-[a-zA-Z]+\d\s",  # this and next one: e-a4 they are e7-1
         r"\s[a-zA-Z]\d+-\d+\s",
