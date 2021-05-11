@@ -59,12 +59,12 @@ def test_simulation():
                     }
              }
     sim.generate_many_samples('heavy_shade', N, dicts)
-    dicts = {'E':       {'mean': 800,
-                         'std': 500,
-                         'low': 600,
-                         'upp': 1000
-                        }
-            }
+    dicts = {'E': {'mean': 800,
+                   'std': 500,
+                   'low': 600,
+                   'upp': 1000
+                   }
+             }
     sim.generate_many_samples('light_shade', N, distributions=dicts)
 
     # test building strings
