@@ -1,3 +1,8 @@
+import numpy as np
+from scipy.interpolate import interp1d
+from sklearn import linear_model
+
+
 def calculate_IVparams(v, c):
     """Calculate parameters of IV curve. 
 
@@ -108,6 +113,7 @@ def iv_cutoff(V, I, val):
         Filter threshold
 
     Returns
+
     -------
     V_cutoff, I_cutoff
     """

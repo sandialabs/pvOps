@@ -8,10 +8,7 @@ import seaborn as sns
 from sklearn import linear_model
 import statsmodels.api as sm
 
-from scipy.optimize import minimize
-from sklearn.metrics import mean_squared_error
 from scipy.stats import truncnorm, norm
-from scipy.interpolate import interp1d
 from pyDOE import lhs
 import itertools
 from scipy.spatial import cKDTree
@@ -23,8 +20,9 @@ import time
 from tqdm import tqdm
 
 import pvlib
-from pvlib import pvsystem
-from pvlib.pvsystem import PVSystem
+
+from utils import get_CEC_params
+from physics_utils import voltage_pts, add_series, bypass, intersection, iv_cutoff
 
 
 class Simulator():
@@ -189,7 +187,7 @@ class Simulator():
                                         'a_ref': 2.54553421e-02}
     )
 
-    condition = {'identifier':'light_shade','E':shading_condition}
+    condition = {'identifier':'light_shade','E':925}
     sim.add_preset_conditions('complete', condition, save_name = f'Complete_lightshading')
 
     sim.build_strings({'Partial_lightshading': ['pristine']*6 + ['Complete_lightshading']*6})
@@ -902,12 +900,12 @@ class Simulator():
             Module name as defined in condiction_dict and modcells
         """
         if self.simulation_method == 1:
-            self.PVOPS_simulate_module(mod_key)
-        elif self.simulate_method == 2:
             self.BISHOP88_simulate_module(mod_key)
+        elif self.simulation_method == 2:
+            self.PVOPS_simulate_module(mod_key)
         else:
             raise ValueError(
-                "Invalid value passed to `simulate_method`. Must be either 1 or 2.")
+                "Invalid value passed to `simulation_method`. Must be either 1 or 2.")
 
     def simulate_modules(self):
         """Simulates all instantiated modules
@@ -940,7 +938,6 @@ class Simulator():
 
             combs = list(itertools.product(*cell_defs))
             for instance in combs:
-                print(f'Module {mod_key}, definition {md_idx}')
                 # Iterate through all combinations of cell conditions in a modcell combination
 
                 # create lookup index: In tuple, index j corresponds with cond k_cond
@@ -966,7 +963,6 @@ class Simulator():
                 modEs, modTs = list(), list()
                 # module: loop through substrings, cells in substring
                 for s in range(self.module_parameters['nsubstrings']):
-                    print(f'substring:{s}')
                     substr_v, substr_i = None, None
                     prist_substr_v, prist_substr_i = None, None
                     temps = list()
@@ -1603,10 +1599,10 @@ class Simulator():
         for idx, ident in enumerate(list(self.modcells.keys())):
             if idx == 0:
                 ax = self.visualize_specific_iv(
-                    string_identifier=None, module_identifier=ident, substring=None)
+                    string_identifier=None, module_identifier=ident, substring_identifier=None)
             else:
                 ax = self.visualize_specific_iv(
-                    ax=ax, string_identifier=None, module_identifier=ident, substring=None)
+                    ax=ax, string_identifier=None, module_identifier=ident, substring_identifier=None)
         plt.title('Module IV curves')
 
         plt.legend(loc='center left', bbox_to_anchor=(1, 0.5))
@@ -1618,10 +1614,10 @@ class Simulator():
             for idx, str_key in enumerate(self.string_cond):
                 if idx == 0:
                     ax = self.visualize_specific_iv(
-                        string_identifier=str_key, module_identifier=None, substring=None)
+                        string_identifier=str_key, module_identifier=None, substring_identifier=None)
                 else:
                     ax = self.visualize_specific_iv(
-                        ax=ax, string_identifier=str_key, module_identifier=None, substring=None)
+                        ax=ax, string_identifier=str_key, module_identifier=None, substring_identifier=None)
             plt.title('String IV curves')
             plt.legend(loc='center left', bbox_to_anchor=(1, 0.5))
             if lim:
@@ -1788,7 +1784,7 @@ class Simulator():
         Parameters
 
         ----------
-        cell_identifier : int
+        cell_identifier : str
             Cell identifier. Call `self.print_info()` for full list.
         cutoff : bool
             If True, only visualize IV curves in positive voltage domain

@@ -1,3 +1,9 @@
+import pvlib
+from pvlib import pvsystem
+from pvlib.pvsystem import PVSystem
+import copy
+
+
 def get_CEC_params(name, mod_spec):
     '''Query module-level parameters from CEC database and derive cell-level parameters
 
@@ -31,8 +37,6 @@ def get_CEC_params(name, mod_spec):
         module_parameters['ncols']
     # module_parameters['R_sh_ref'] *= rsh_premultiply # What should this value be? Dynamic.
     # TODO: Adjust Io smaller
-
-    #module_parameters['R_s'] /= 1.5
 
     # set up cell-level parameters
     cell_parameters = copy.copy(module_parameters)

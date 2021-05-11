@@ -7,9 +7,14 @@ import numpy as np
 import statsmodels.api as sm
 import matplotlib.pyplot as plt
 from physics_utils import calculate_IVparams
+from scipy.optimize import minimize
+from sklearn.metrics import mean_squared_error
+from simulator import Simulator
+import time
+from physics_utils import iv_cutoff
 
 
-class NumericalExtractor():
+class BruteForceExtractor():
     '''Process measured IV curves
         Requires a set of curves to create Isc vs Irr and Voc vs Temp vs Isc(Irr)
     '''
@@ -125,9 +130,12 @@ class NumericalExtractor():
                 elif self.n_mods != 1:
                     raise Exception(
                         f"Input a valid number of modules, n_mods. You inputted {self.n_mods}")
-            elif isinstance(self.n_mods, (tuple, list, np.ndarray)):
-                sim.build_strings({f'str_case_{self.counter}_{sample_i}': [
-                                  f'mod_case_{self.counter}_{sample_i}']*self.n_mods})
+            # elif isinstance(self.n_mods, (tuple, list, np.ndarray)):
+            #     sim.build_strings({f'str_case_{self.counter}_{sample_i}': [
+            #                       f'mod_case_{self.counter}_{sample_i}']*self.n_mods[0] + ['pristine'] * (self.n_mods[1]-self.n_mods[0])})
+            else:
+                raise ValueError(
+                    f"Expected n_mods to be a integer. Got: {type(self.n_mods)}")
 
         start_t = time.time()
         sim.simulate()
@@ -242,32 +250,40 @@ class NumericalExtractor():
         self.msses.append(msse_tot)
         return msse_tot
 
-    def fit_params(self, cell_parameters, n_mods, user_func=None, verbose=0):
+    def fit_params(self, cell_parameters, n_mods, bounds_func, user_func=None, verbose=0):
         """Fit diode parameters from a set of IV curves.
 
         Parameters
 
         ----------
-        cell_parameters: dict
+        cell_parameters : dict
             Cell-level parameters, usually extracted from the CEC database, which will be used as the
             initial guesses in the optimization process.
-        n_mods: int or tuple
+        n_mods : int
             if int, defines the number of modules in a string(1=simulate a single module)
-            if tuple, define(n_mods_affected, total_mods)
-        user_func: function
-            A function similar to `self.create_string_object` which has the following inputs:
-            `self, iph, io, rs, rsh, nnsvth`. This can be used to extract unique failure parameterization.
-        verbose: int
+        bounds_func : function
+            Function to establish the bounded search space
+            See below for an example:
 
+            .. code-block:: python
+
+                def bounds_func(iph,io,rs,rsh,nnsvth,perc_adjust=0.5):
+                    return ((iph - 0.5*iph*perc_adjust, iph + 2*iph*perc_adjust),
+                            (io - 40*io*perc_adjust, io + 40*io*perc_adjust),
+                            (rs - 20*rs*perc_adjust, rs + 20*rs*perc_adjust),
+                            (rsh - 150*rsh*perc_adjust, rsh + 150*rsh*perc_adjust),
+                            (nnsvth - 10*nnsvth*perc_adjust, nnsvth + 10*nnsvth*perc_adjust))
+
+        user_func : function
+            Optional, a function similar to `self.create_string_object` which has the following inputs:
+            `self, iph, io, rs, rsh, nnsvth`. This can be used to extract unique failure parameterization.
+        verbose : int
+            if verbose >= 1, print information about fitting
+            if verbose >= 2, plot information about each iteration
         """
-        #
-        # n_mods: if int, defines number of modules in string
-        #         if tuple, define (n_mods_affected, total_mods)
-        # if verbose >= 1, print information about fitting
-        # if verbose >= 2, plot information about each iteration
 
         self.user_func = user_func
-
+        self.verbose = verbose
         self.n_mods = n_mods
         self.g = 1000
         self.t = 25
@@ -281,30 +297,19 @@ class NumericalExtractor():
         io = cell_parameters['I_o_ref']
         rs = cell_parameters['R_s']
         rsh = cell_parameters['R_sh_ref']
-        Tref_K = 25 + 273.15
-        Tcell_K = 25 + 273.15
         nnsvth = cell_parameters['a_ref']  # * (Tcell_K / Tref_K)
 
-        perc_adjust = 0.5
         self.start_conds = (iph, io, rs, rsh, nnsvth)
+
+        bounds = bounds_func(*self.start_conds)
 
         if self.verbose >= 1:
             print('Given 5params:', iph, io, rs, rsh, nnsvth)
-        converged_solution = minimize(self.f_multiple_samples, (iph, io, rs, rsh, nnsvth), bounds=((0, 2*iph),
-                                                                                                   (io - 40*io*perc_adjust, io + 40*io*perc_adjust),
-                                                                                                   (rs - 20*rs*perc_adjust, rs + 20*rs*perc_adjust),
-                                                                                                   (rsh - 150*rsh*perc_adjust, rsh + 150*rsh*perc_adjust),
-                                                                                                   (nnsvth - 10*nnsvth*perc_adjust, nnsvth + 10*nnsvth*perc_adjust)),
+        converged_solution = minimize(self.f_multiple_samples, (iph, io, rs, rsh, nnsvth), bounds=bounds,
                                       method='TNC')
 
         if self.verbose >= 1:
-            print('bounds')
-            print(((iph - iph*perc_adjust, iph + iph*perc_adjust),
-                   (io - io*perc_adjust, io + io*perc_adjust),
-                   (rs - rs*perc_adjust, rs + rs*perc_adjust),
-                   (rsh - rsh*perc_adjust, rsh + rsh*perc_adjust),
-                   (nnsvth - nnsvth*perc_adjust, nnsvth + nnsvth*perc_adjust)))
-
+            print('bounds', bounds)
             print('initial: ', (iph, io, rs, rsh, nnsvth))
             print('solution: ', converged_solution)
 
