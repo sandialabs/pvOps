@@ -12,3 +12,4 @@ networkx
 pvlib
 pvanalytics
 timezonefinder
+pyDOE
