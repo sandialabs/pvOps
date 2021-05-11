@@ -19,7 +19,9 @@ The package is delineated into the following directories. Refer to the `examples
 └───pvops               : Source function library
     ├───tests           : ├─── Library stability tests
     ├───text            : ├─── Text processing functions
-    └───text2time       : └─── Text2Timeseries functions
+    ├───text2time       : ├─── Text2Timeseries functions
+    ├───timeseries      : ├─── Timeseries functions
+    └───iv              : └─── Current-voltage functions
 ```
 
 More information about these modules is available at [readthedocs](https://pvops.readthedocs.io/en/latest/).

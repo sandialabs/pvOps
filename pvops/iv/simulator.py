@@ -1,26 +1,15 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-import matplotlib.patches as patches
-from matplotlib import gridspec
+import matplotlib
 import seaborn as sns
-
-from sklearn import linear_model
-import statsmodels.api as sm
-
-from scipy.stats import truncnorm, norm
-from pyDOE import lhs
+import scipy
+import pyDOE
 import itertools
-from scipy.spatial import cKDTree
-from scipy import interpolate
-
 import copy
 import random
-import time
 from tqdm import tqdm
-
 import pvlib
-
 from utils import get_CEC_params
 from physics_utils import voltage_pts, add_series, bypass, intersection, iv_cutoff, gt_correction
 
@@ -289,16 +278,17 @@ class Simulator():
         Parameters
         ----------
         fault_name: str
-            1) 'complete': entire module has fault_condition (e.g. Full module shading)
+            Options:
+            - 'complete': entire module has fault_condition (e.g. Full module shading)
                 Requires no other specifications
                 e.g. add_preset_conditions('complete', fault_condition)
-            2) 'landscape': entire rows are affected by fault_condition (e.g. interrow shading)
+            - 'landscape': entire rows are affected by fault_condition (e.g. interrow shading)
                 Requires specification of rows_aff
                 e.g. add_preset_conditions('landscape', fault_condition, rows_aff = 2)
-            3) 'portrait': entire columns are affected by fault_condition (e.g. vegetation growth shading)
+            - 'portrait': entire columns are affected by fault_condition (e.g. vegetation growth shading)
                 Requires specification of cols_aff
                 e.g. add_preset_conditions('portrait', fault_condition, cols_aff = 2)
-            4) 'pole': Place pole shadow over module
+            - 'pole': Place pole shadow over module
                 Requires specification of width (integer), which designates the width of main shadow and \\
                 requires light_shading fault_condition specification which specifies less intense shading \\
                 on edges of shadow
@@ -306,7 +296,7 @@ class Simulator():
                             where left is number in the first column and right is number in last column
                     if pos not specified, the positions are chosen randomly
                 e.g. add_preset_conditions('pole', fault_condition, light_shading = light_fault_condition, width = 2, pos = (5, 56))
-            5) 'bird_droppings': Random positions are chosen for bird_dropping simulations
+            - 'bird_droppings': Random positions are chosen for bird_dropping simulations
                 Optional specification is n_droppings. If not specified, chosen as random number between 
                 1 and the number of cells in a column
                 e.g. add_preset_conditions('bird_droppings', fault_condition, n_droppings = 3)
@@ -1338,14 +1328,14 @@ class Simulator():
 
         n_features = len(validated_keys)
         design = []
-        design = lhs(n_features, samples=N)
+        design = pyDOE.lhs(n_features, samples=N)
 
         for idx, k in enumerate(validated_keys):
             dict_iter = distribs[k]
             if ('low' in dict_iter.keys()) and ('upp' in dict_iter.keys()):
                 # use truncnorm distribution
                 mean, std, low, upp = dict_iter['mean'], dict_iter['std'], dict_iter['low'], dict_iter['upp']
-                design[:, idx] = truncnorm(
+                design[:, idx] = scipy.stats.truncnorm(
                     (low - mean) / std,
                     (upp - mean) / std,
                     loc=mean,
@@ -1354,7 +1344,7 @@ class Simulator():
             else:
                 # use normal distribution
                 mean, std = dict_iter['mean'], dict_iter['std']
-                design[:, idx] = norm(
+                design[:, idx] = scipy.stats.norm(
                     loc=mean,
                     scale=std,
                 ).ppf(design[:, idx])
@@ -1492,13 +1482,13 @@ class Simulator():
             return None
         # Manipulate each axes object in the left. Try to tune some parameters and you'll know how each command works.
         fig = plt.figure(figsize=(12, 7))
-        gs = gridspec.GridSpec(nrows=number_gp,
-                               ncols=1,
-                               figure=fig,
-                               width_ratios=[1],
-                               height_ratios=[1] * number_gp,
-                               wspace=0.2, hspace=0.05
-                               )
+        gs = matplotlib.gridspec.GridSpec(nrows=number_gp,
+                                          ncols=1,
+                                          figure=fig,
+                                          width_ratios=[1],
+                                          height_ratios=[1] * number_gp,
+                                          wspace=0.2, hspace=0.05
+                                          )
         ax = [None] * (number_gp + 1)
 
         # Create a figure, partition the figure into 7*2 boxes, set up an ax array to store axes objects, and create a list of age group names.
@@ -1986,7 +1976,7 @@ class Simulator():
                     i = int(n / self.module_parameters['nrows'])
                     j = int(n % self.module_parameters['nrows'])
                     modtype = int(modcell_samples[m][n])
-                    rect = patches.Rectangle(
+                    rect = matplotlib.patches.Rectangle(
                         (i + 1, j + 1), 1, 1, linewidth=1, edgecolor='red', facecolor=colors[modtype])
                     ax.add_patch(rect)
                     ax.text(i + 1.2, j + 1.2, str(num))

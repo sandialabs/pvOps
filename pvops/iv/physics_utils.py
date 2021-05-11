@@ -1,6 +1,6 @@
 import numpy as np
-from scipy.interpolate import interp1d
-from sklearn import linear_model
+import scipy
+import sklearn
 import math
 
 def calculate_IVparams(v, c):
@@ -41,7 +41,7 @@ def calculate_IVparams(v, c):
         isc_size = int(len(c) * isc_lim)
     else:
         isc_size = isc_lim
-    isc_lm = linear_model.LinearRegression().fit(
+    isc_lm = sklearn.linear_model.LinearRegression().fit(
         v[:isc_size].reshape(-1, 1), c[:isc_size].reshape(-1, 1))
     isc = isc_lm.predict(np.asarray([0]).reshape(-1, 1))[0][0]
     rsh = 1 / (isc_lm.coef_[0][0] * -1)
@@ -52,7 +52,7 @@ def calculate_IVparams(v, c):
     else:
         voc_size = voc_lim
 
-    voc_lm = linear_model.LinearRegression().fit(c[::-1][:voc_size].reshape(-1, 1),
+    voc_lm = sklearn.linear_model.LinearRegression().fit(c[::-1][:voc_size].reshape(-1, 1),
                                                  v[::-1][:voc_size].reshape(-1, 1))
     voc = voc_lm.predict(np.asarray([0]).reshape(-1, 1))[0][0]
     rs = voc_lm.coef_[0][0] * -1
@@ -215,7 +215,7 @@ def T_to_tcell(POA, T, WS, T_type, a=-3.56, b=-0.0750, delTcnd=3):
 
     Returns
 
-    -------          
+    -------
     numerical
         Cell temperature, in Celcius
 
@@ -297,10 +297,10 @@ def add_series(voltage_1, current_1, voltage_2=None, current_2=None, v_bypass=No
     else:
         all_i = _aggregate_vectors(current_1, current_2)
         all_v = np.zeros_like(all_i)
-        f_interp1 = interp1d(np.flipud(current_1), np.flipud(voltage_1),
+        f_interp1 = scipy.interpolate.interp1d(np.flipud(current_1), np.flipud(voltage_1),
                              kind='linear', fill_value='extrapolate')
         all_v += f_interp1(all_i)
-        f_interp2 = interp1d(np.flipud(current_2), np.flipud(voltage_2),
+        f_interp2 = scipy.interpolate.interp1d(np.flipud(current_2), np.flipud(voltage_2),
                              kind='linear', fill_value='extrapolate')
         all_v += f_interp2(all_i)
     if v_bypass:

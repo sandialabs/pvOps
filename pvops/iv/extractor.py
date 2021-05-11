@@ -2,13 +2,11 @@
 Derive the effective diode parameters from a set of input curves.
 """
 
-from sklearn import linear_model
 import numpy as np
-import statsmodels.api as sm
 import matplotlib.pyplot as plt
 from physics_utils import calculate_IVparams, smooth_curve
-from scipy.optimize import minimize
-from sklearn.metrics import mean_squared_error
+import scipy
+import sklearn
 from simulator import Simulator
 import time
 from physics_utils import iv_cutoff, T_to_tcell
@@ -163,7 +161,7 @@ class BruteForceExtractor():
             # resample to same voltage domain as measured
             simI_interp = np.interp(sample['V'], Varr, Iarr)
 
-            msse = mean_squared_error(sample['I'], simI_interp)
+            msse = sklearn.metrics.mean_squared_error(sample['I'], simI_interp)
             msse_tot += msse
 
             if self.verbose >= 2:
@@ -287,7 +285,7 @@ class BruteForceExtractor():
 
         if self.verbose >= 1:
             print('Given 5params:', iph, io, rs, rsh, nnsvth)
-        converged_solution = minimize(self.f_multiple_samples, (iph, io, rs, rsh, nnsvth), bounds=bounds,
+        converged_solution = scipy.optimize.minimize(self.f_multiple_samples, (iph, io, rs, rsh, nnsvth), bounds=bounds,
                                       method='TNC')
 
         if self.verbose >= 1:

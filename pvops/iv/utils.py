@@ -1,6 +1,4 @@
 import pvlib
-from pvlib import pvsystem
-from pvlib.pvsystem import PVSystem
 import copy
 
 
@@ -22,7 +20,7 @@ def get_CEC_params(name, mod_spec):
     module_parameters (dict), cell_parameters (dict)
     '''
 
-    moddb = pvsystem.retrieve_sam('CECMod')
+    moddb = pvlib.pvsystem.retrieve_sam('CECMod')
     module_parameters = moddb[name].to_dict()
 
     # add reverse bias parameters
