@@ -22,7 +22,7 @@ from tqdm import tqdm
 import pvlib
 
 from utils import get_CEC_params
-from physics_utils import voltage_pts, add_series, bypass, intersection, iv_cutoff
+from physics_utils import voltage_pts, add_series, bypass, intersection, iv_cutoff, gt_correction
 
 
 class Simulator():
@@ -253,7 +253,7 @@ class Simulator():
                 else:
                     self.module_parameters[k] = v
 
-                if k is 'R_sh_ref':
+                if k == 'R_sh_ref':
                     self.cell_parameters[k] = v
                 else:
                     self.cell_parameters[k] = v
@@ -328,10 +328,10 @@ class Simulator():
             modcell, new_id, savename = self._simulate_soiling_cases(
                 fault_name, kwargs)
             svname = save_name or savename
-            if fault_name is 'pole':
+            if fault_name == 'pole':
                 self._add_conditions({svname: modcell},
                                      {new_id: fault_condition,
-                                      new_id+1: kwargs['light_shading']})
+                                      new_id + 1: kwargs['light_shading']})
             else:
                 self._add_conditions({svname: modcell}, {
                                      new_id: fault_condition})
@@ -342,33 +342,32 @@ class Simulator():
         new_id = max(self.condition_dict.keys()) + 1
 
         # Case 1: Complete shading
-        if case is 'complete':
+        if case == 'complete':
             return np.array([new_id] * self.module_parameters['N_s']), new_id, 'complete'
 
         modcell = np.zeros(self.module_parameters['N_s'])
 
         # Case 2: Landscape shading, shade by row (e.g. Interrow shading )
-        if case is 'landscape':
+        if case == 'landscape':
             idx = self._simulate_landscape(vardict['rows_aff'])
             modcell[idx] = new_id
-            #print('landscape', modcell)
             savename = f'landscape_{vardict["rows_aff"]}rows'
 
         # Case 3: Portrait shading, shade by column (e.g. Vegetation shading)
-        if case is 'portrait':
+        if case == 'portrait':
             idx = self._simulate_portrait(vardict['cols_aff'])
             modcell[idx] = new_id
             savename = f'portrait_{vardict["cols_aff"]}cols'
 
         # Case 4: Pole shading
-        if case is 'pole':
+        if case == 'pole':
             dark_idx, light_idx = self._simulate_pole_shading(vardict['width'])
             modcell[np.array(dark_idx)] = new_id
             modcell[np.array(light_idx)] = new_id + 1
             savename = f'pole_{vardict["width"]}width'
 
         # Case 5: Bird droppings
-        if case is 'bird_droppings':
+        if case == 'bird_droppings':
             if 'n_droppings' in vardict.keys():
 
                 idx, n_droppings = self._simulate_bird_droppings(
@@ -511,10 +510,10 @@ class Simulator():
         -------
         A reformatted dictionary
         """
-        l = {}
+        dct = {}
         for k in list(d):
-            l[k] = d[k][0][key]
-        return l
+            dct[k] = d[k][0][key]
+        return dct
 
     def _add_conditions(self, modcells, condition_dict):
         """Organize all failure conditions into objects
@@ -540,7 +539,7 @@ class Simulator():
                 found_empty_dict_flag = True
             else:
                 if 'identifier' in list(iter_cond_dict):
-                    if iter_cond_dict['identifier'] is 'pristine':
+                    if iter_cond_dict['identifier'] == 'pristine':
                         found_empty_dict_flag = True
 
             if found_empty_dict_flag:
@@ -648,8 +647,8 @@ class Simulator():
         all_keys = list(modcells.keys())
         for idx in range(len(all_keys)):
             module_identifier = all_keys[idx]
-            if (module_identifier is 'V') or (module_identifier is 'I'):
-                raise Exception(
+            if (module_identifier == 'V') or (module_identifier == 'I'):
+                raise ValueError(
                     f"Invalid module identifier, {module_identifier}. It cannot be 'I' or 'V'")
 
             modcell_list = modcells[module_identifier]
@@ -733,7 +732,7 @@ class Simulator():
                 try:
                     print(
                         f"\t[{str_key}]: {len(self.multilevel_ivdata['string'][str_key]['V'])} definition(s)")
-                except Exception as e:
+                except:
                     passed = False
                     continue
             if not passed:
@@ -870,7 +869,7 @@ class Simulator():
             for mod_ident in mods_set:
                 self.multilevel_ivdata['module'][mod_ident] = {
                     'V': list(), 'I': list(), 'E': list(), 'T': list()}
-                for sbstr_id in range(1, self.module_parameters['nsubstrings']+1):
+                for sbstr_id in range(1, self.module_parameters['nsubstrings'] + 1):
                     self.multilevel_ivdata['module'][mod_ident][f'substr{sbstr_id}'] = {
                         'V': list(), 'I': list(), 'E': list(), 'T': list()}
             all_mods_sampled += mods_set
@@ -883,7 +882,7 @@ class Simulator():
             if mod not in all_mods_set:
                 self.multilevel_ivdata['module'][mod] = {
                     'V': list(), 'I': list(), 'E': list(), 'T': list()}
-                for sbstr_id in range(1, self.module_parameters['nsubstrings']+1):
+                for sbstr_id in range(1, self.module_parameters['nsubstrings'] + 1):
                     self.multilevel_ivdata['module'][mod][f'substr{sbstr_id}'] = {
                         'V': list(), 'I': list(), 'E': list(), 'T': list()}
 
@@ -950,12 +949,10 @@ class Simulator():
                     lookup[k_cond] = j
 
                 # Get pristine I and V
-                found = False
                 for key in self.condition_dict:
                     ident = self.condition_dict[key][0]['identifier']
                     if ident is self.pristine_condition['identifier']:
                         id_save = key
-                        found = True
                         break
                 pristineIV = self.condition_dict[id_save][0]
 
@@ -985,9 +982,9 @@ class Simulator():
                     self.multilevel_ivdata['module'][mod_key][f'substr{s+1}']['I'].append(
                         substr_i)
                     self.multilevel_ivdata['module'][mod_key][f'substr{s+1}']['T'].append(
-                        sum(temps)/len(temps))
+                        sum(temps) / len(temps))
                     self.multilevel_ivdata['module'][mod_key][f'substr{s+1}']['E'].append(
-                        sum(irrs)/len(irrs))
+                        sum(irrs) / len(irrs))
 
                     mod_v, mod_i = add_series(substr_v, substr_i, mod_v, mod_i)
                     modEs += irrs
@@ -996,9 +993,9 @@ class Simulator():
                 self.multilevel_ivdata['module'][mod_key]['V'].append(mod_v)
                 self.multilevel_ivdata['module'][mod_key]['I'].append(mod_i)
                 self.multilevel_ivdata['module'][mod_key]['E'].append(
-                    sum(modEs)/len(modEs))
+                    sum(modEs) / len(modEs))
                 self.multilevel_ivdata['module'][mod_key]['T'].append(
-                    sum(modTs)/len(modTs))
+                    sum(modTs) / len(modTs))
 
     def PVOPS_simulate_module(self, mod_key):
         cells_per_substring = self.module_parameters['N_s'] // self.module_parameters['nsubstrings']
@@ -1035,12 +1032,10 @@ class Simulator():
                     lookup[k_cond] = j
 
                 # Get pristine I and V
-                found = False
                 for key in self.condition_dict:
                     ident = self.condition_dict[key][0]['identifier']
                     if ident is self.pristine_condition['identifier']:
                         id_save = key
-                        found = True
                         break
                 pristineIV = self.condition_dict[id_save][0]
 
@@ -1147,7 +1142,7 @@ class Simulator():
                             substr_v, substr_i = add_series(
                                 substr_v, substr_i, iter_V, iter_I)
 
-                    #substr_v = bypass(substr_v, self.module_parameters['v_bypass'])
+                    substr_v = bypass(substr_v, self.module_parameters['v_bypass'])
                     self.multilevel_ivdata['module'][mod_key][f'substr{s+1}']['V'].append(
                         substr_v)
                     self.multilevel_ivdata['module'][mod_key][f'substr{s+1}']['I'].append(
@@ -1162,12 +1157,12 @@ class Simulator():
                         plt.xlabel('V (Volts)')
                         plt.ylabel('I (Amps)')
                         plt.ylim(0, 9.5)
-                        plt.xlim(-13.5, max(substr_v)+2.)
+                        plt.xlim(-13.5, max(substr_v) + 2.)
                         plt.show()
 
                         plt.plot(substr_v, substr_i, label=f'{cellseries}')
                         plt.legend()
-                        plt.title(f'Final substring plot')
+                        plt.title('Final substring plot')
                         plt.xlabel('V (Volts)')
                         plt.ylabel('I (Amps)')
                         plt.grid()
@@ -1186,9 +1181,9 @@ class Simulator():
                 self.multilevel_ivdata['module'][mod_key]['V'].append(mod_v)
                 self.multilevel_ivdata['module'][mod_key]['I'].append(mod_i)
                 self.multilevel_ivdata['module'][mod_key]['E'].append(
-                    sum(modEs)/len(modEs))
+                    sum(modEs) / len(modEs))
                 self.multilevel_ivdata['module'][mod_key]['T'].append(
-                    sum(modTs)/len(modTs))
+                    sum(modTs) / len(modTs))
 
     def _simulate_string(self, str_key, sample_limit=None):
 
@@ -1201,7 +1196,7 @@ class Simulator():
         # list of strings, strings are modcells
         modstring = self.string_cond[str_key]
         module_set = set(modstring)
-        #cell: condition_dict[ID][n]
+        # cell: condition_dict[ID][n]
 
         # only simulate the discrete modules
         # get conditions
@@ -1242,8 +1237,8 @@ class Simulator():
                         mod_v, mod_i, string_v, string_i)
                     temps.append(mod_T)
                     irrs.append(mod_E)
-            avgE = sum(irrs)/len(irrs)
-            avgT = sum(temps)/len(temps)
+            avgE = sum(irrs) / len(irrs)
+            avgT = sum(temps) / len(temps)
 
             self.multilevel_ivdata['string'][str_key]['V'].append(string_v)
             self.multilevel_ivdata['string'][str_key]['I'].append(string_i)
@@ -1290,14 +1285,14 @@ class Simulator():
             the pristine condition as a reference.
         """
 
-        dicts = {'E':       {'mean': 800,
-                             'std': 500,
-                             'low': 200,
-                             'upp': 1250
-                             },
-                 'Tc':       {'mean': 35,
-                              'std': 10,
-                              },
+        dicts = {'E': {'mean': 800,
+                       'std': 500,
+                       'low': 200,
+                       'upp': 1250
+                    },
+                 'Tc': {'mean': 35,
+                        'std': 10,
+                    },
                  'Rsh_mult': {'mean': 0.9,
                               'std': 0.3,
                               'low': 0.1,
@@ -1351,8 +1346,8 @@ class Simulator():
                 # use truncnorm distribution
                 mean, std, low, upp = dict_iter['mean'], dict_iter['std'], dict_iter['low'], dict_iter['upp']
                 design[:, idx] = truncnorm(
-                    (low-mean)/std,
-                    (upp-mean)/std,
+                    (low - mean) / std,
+                    (upp - mean) / std,
                     loc=mean,
                     scale=std
                 ).ppf(design[:, idx])
@@ -1401,14 +1396,13 @@ class Simulator():
         for idx in range(len(all_[0])):
             args = []
             for inp in all_:
-                args.append(condition_list[inp[idx]][0])
+                args.append(condition_dict[inp[idx]][0])
             combined.append(_addition_soiling(args))
         return combined
 
     def _simulate_all_cells(self):
         """Simulates the set of unique conditions on PV cells
         """
-        formatted_conds = []
         for ID in tqdm(self.condition_dict, desc='Simulating cells'):
             for n in range(len(self.condition_dict[ID])):
                 cond_dict = self.condition_dict[ID][n]
@@ -1425,8 +1419,8 @@ class Simulator():
                                                                          R_sh_ref=self.cell_parameters['R_sh_ref'],
                                                                          R_s=self.cell_parameters['R_s'],
                                                                          Adjust=self.cell_parameters['Adjust'])
-                rs, rsh, io, iph, nnsvth = rs*rs_mult, rsh * \
-                    rsh_mult, io*Io_mult, iph*Il_mult, nnsvth*nnsvth_mult
+                rs, rsh, io, iph, nnsvth = rs * rs_mult, rsh * \
+                    rsh_mult, io * Io_mult, iph * Il_mult, nnsvth * nnsvth_mult
 
                 # calculate cell IV curves by condition, rather than by cell index
                 voc_est = pvlib.singlediode.estimate_voc(iph, io, nnsvth)
@@ -1466,10 +1460,10 @@ class Simulator():
         # iterate through cells
         for c_id in list(self.condition_dict.keys()):
             cell_ids += [c_id] * (len(self.condition_dict[c_id]) * number_gp)
-            for l in self.condition_dict[c_id]:
+            for dct in self.condition_dict[c_id]:
                 for parm in self.acceptible_keys:
                     params.append(parm)
-                    vals.append(l[parm])
+                    vals.append(dct[parm])
 
         print(len(params), len(cell_ids), len(vals))
         df_gp = pd.DataFrame()
@@ -1500,14 +1494,13 @@ class Simulator():
                                ncols=1,
                                figure=fig,
                                width_ratios=[1],
-                               height_ratios=[1]*number_gp,
+                               height_ratios=[1] * number_gp,
                                wspace=0.2, hspace=0.05
                                )
-        ax = [None]*(number_gp + 1)
+        ax = [None] * (number_gp + 1)
 
         # Create a figure, partition the figure into 7*2 boxes, set up an ax array to store axes objects, and create a list of age group names.
         for i in range(number_gp):
-            # print(i)
             ax[i] = fig.add_subplot(gs[i, 0])
 
             ax_settings(ax[i], 'Variable: ' +
@@ -1517,7 +1510,7 @@ class Simulator():
             for cellid_iter in list(self.condition_dict.keys()):
                 print('id', cellid_iter)
                 sns.kdeplot(data=df_gp[(df_gp.cell_id == cellid_iter) & (df_gp.param_names == self.acceptible_keys[i])].value,
-                            ax=ax[i], shade=True, color=colors[cell_idx],  bw=300, legend=False)
+                            ax=ax[i], shade=True, color=colors[cell_idx], bw=300, legend=False)
                 cell_idx += 1
 
             if i < (number_gp - 1):
@@ -1540,7 +1533,6 @@ class Simulator():
     def visualize(self, lim=False, correct_gt=False):
         """Run visualization suite to visualize information about the simulated curves.
         """
-        cell_ids = []
         d = {}
 
         for c_id in list(self.condition_dict.keys()):
@@ -1555,10 +1547,10 @@ class Simulator():
         for c_id in list(self.condition_dict.keys()):
             iden = self.condition_dict[c_id][0]['identifier']
             keys = []
-            for l in self.condition_dict[c_id]:
+            for dct in self.condition_dict[c_id]:
                 for k in self.acceptible_keys:
                     keys.append(k)
-                    d[iden][k].append(l[k])
+                    d[iden][k].append(dct[k])
             dict_keys[iden] = keys
             if len(keys) > maxL:
                 maxIdent = iden
@@ -1661,45 +1653,53 @@ class Simulator():
         if string_identifier is not None:
             Vs = self.multilevel_ivdata['string'][string_identifier]['V']
             Is = self.multilevel_ivdata['string'][string_identifier]['I']
+            Es = self.multilevel_ivdata['string'][string_identifier]['E']
+            Ts = self.multilevel_ivdata['string'][string_identifier]['T']
             label = string_identifier
 
         if module_identifier is not None:
             if substring_identifier is None:
                 Vs = self.multilevel_ivdata['module'][module_identifier]['V']
                 Is = self.multilevel_ivdata['module'][module_identifier]['I']
+                Es = self.multilevel_ivdata['module'][module_identifier]['E']
+                Ts = self.multilevel_ivdata['module'][module_identifier]['T']
                 label = module_identifier
 
             if substring_identifier is not None:
                 Vs = self.multilevel_ivdata['module'][module_identifier][substring_identifier]['V']
                 Is = self.multilevel_ivdata['module'][module_identifier][substring_identifier]['I']
+                Es = self.multilevel_ivdata['module'][module_identifier][substring_identifier]['E']
+                Ts = self.multilevel_ivdata['module'][module_identifier][substring_identifier]['T']
                 label = f'module: {module_identifier}, substring: {substring_identifier}'
 
         for idx in range(len(Vs)):
-            v = Vs[idx]
-            i = Is[idx]
+            varr = Vs[idx]
+            iarr = Is[idx]
+            Eval = Es[idx]
+            Tval = Ts[idx]
 
             if cutoff:
-                v, i = iv_cutoff(v, i, 0)
+                varr, iarr = iv_cutoff(varr, iarr, 0)
 
             if correct_gt:
                 if cutoff:
                     # get average g&tc for
-                    v, i = gt_correction(v, i, g, tc, self.cell_parameters)
+                    varr, iarr = gt_correction(varr, iarr, Eval, Tval, self.cell_parameters)
 
                 else:
                     # raise issue
                     raise ValueError(
                         "If pass `correct_gt = True` in `visualize_specific_iv`, must also have `cutoff = True`.")
 
-            p = (v * i).tolist()
-            maxidx = p.index(max(p))
-            imax = i.tolist()[maxidx]
-            vmax = v.tolist()[maxidx]
+            parr = (varr * iarr).tolist()
+            maxidx = parr.index(max(p))
+            imax = iarr.tolist()[maxidx]
+            vmax = varr.tolist()[maxidx]
 
-            pmpp_defected = (v * i).max()
+            # pmpp_defected = (varr * iarr).max()
 
             ax.plot(vmax, imax, 'ko')
-            ax.plot(v, i, color=color)
+            ax.plot(varr, iarr, color=color)
             ax.set_xlabel('V (Volts)')
             ax.set_ylabel('I (Amps)')
 
@@ -1769,7 +1769,7 @@ class Simulator():
             imax = i.tolist()[maxidx]
             vmax = v.tolist()[maxidx]
 
-            pmpp_defected = (v * i).max()
+            # pmpp_defected = (v * i).max()
 
             axs.plot(vmax, imax, 'ko', markersize=4)
             axs.plot(v, i, color, label=cell_identifier)
@@ -1835,7 +1835,7 @@ class Simulator():
             imax = i.tolist()[maxidx]
             vmax = v.tolist()[maxidx]
 
-            pmpp_defected = (v * i).max()
+            # pmpp_defected = (v * i).max()
 
             if plotting_table:
                 axs[0].plot(vmax, imax, 'ko', markersize=4)
@@ -1923,7 +1923,7 @@ class Simulator():
         """
 
         if n_plots_atonce is None:
-            #n_samples = min(n_plots_atonce,len(self.modcells[module_identifier]))
+            # n_samples = min(n_plots_atonce,len(self.modcells[module_identifier]))
             n_samples = len(self.modcells[module_identifier])
             n_iter_samples = [n_samples]
 
@@ -1948,16 +1948,16 @@ class Simulator():
                     raise Exception(
                         f"If inputting array of titles for all figures to have own title, make sure that the title array ({len(title)}) is the same length as the n_samples ({n_samples}).")
 
-        #print(np.arange(0.5,1,(1-0.5)/max(map(max, self.modcells[module_identifier]))))
+        # print(np.arange(0.5,1,(1-0.5)/max(map(max, self.modcells[module_identifier]))))
         # TODO: replace this with colors used in cell IV curve visualization
         allcells_conds = [item for sublist in self.modcells[module_identifier]
                           for item in sublist]
         # print(allcells_conds)
         set_conds = set(allcells_conds)
         # print(set_conds)
-        #colors = ['white'] + [str(i) for i in np.arange(0.5,1,(1-0.5)/max(map(max, self.modcells[module_identifier])))]
+        # colors = ['white'] + [str(i) for i in np.arange(0.5, 1, (1 - 0.5) / max(map(max, self.modcells[module_identifier])))]
         clrs = ['white'] + [str(i)
-                            for i in np.arange(0.5, 1, (1-0.5)/len(set_conds))]
+                            for i in np.arange(0.5, 1, (1 - 0.5) / len(set_conds))]
         clrs = clrs[::-1]
         colors = {}
         for cond, clr in zip(set_conds, clrs):
@@ -1966,26 +1966,26 @@ class Simulator():
         sample_pos = 0
         counter = 0
         for idx, nsample_iter in enumerate(n_iter_samples):
-            modcell_samples = self.modcells[module_identifier][sample_pos:sample_pos+nsample_iter]
-            #nsample_iter = min(nsample_iter, len(modcell_samples))
+            modcell_samples = self.modcells[module_identifier][sample_pos:sample_pos + nsample_iter]
+            # nsample_iter = min(nsample_iter, len(modcell_samples))
             sample_pos += nsample_iter
 
             fig = plt.figure()
-            fig.set_size_inches(3.1*nsample_iter, 5)
+            fig.set_size_inches(3.1 * nsample_iter, 5)
             for m in range(len(modcell_samples)):
-                ax = fig.add_subplot(1, len(modcell_samples), m+1)
+                ax = fig.add_subplot(1, len(modcell_samples), m + 1)
                 ax.set_xlim(0, 8)
                 ax.set_ylim(0, 12)
                 num = 0
                 for n in range(len(modcell_samples[m])):
-                    i = int(n/self.module_parameters['nrows'])
+                    i = int(n / self.module_parameters['nrows'])
                     j = int(n % self.module_parameters['nrows'])
                     modtype = int(modcell_samples[m][n])
                     rect = patches.Rectangle(
-                        (i+1, j+1), 1, 1, linewidth=1, edgecolor='red', facecolor=colors[modtype])
+                        (i + 1, j + 1), 1, 1, linewidth=1, edgecolor='red', facecolor=colors[modtype])
                     ax.add_patch(rect)
-                    ax.text(i+1.2, j+1.2, str(num))
-                    num = num+1
+                    ax.text(i + 1.2, j + 1.2, str(num))
+                    num = num + 1
 
                 if (title is not None) and (isinstance(title, list)):
                     ax.set_title(title[counter])
@@ -2010,13 +2010,13 @@ class Simulator():
 
         # n_cells_row: number cells in row
         # n_cells_col: number cells in column
-        n_cells_row = int(self.module_parameters['N_s']/n)
-        n_cells_col = int(self.module_parameters['N_s']/m)
+        n_cells_row = int(self.module_parameters['N_s'] / n)
+        n_cells_col = int(self.module_parameters['N_s'] / m)
 
         if pos is None:
-            bottom_point = random.randint(0, n_cells_row-1)
+            bottom_point = random.randint(0, n_cells_row - 1)
             top_point = random.randint(
-                (n_cells_col-1)*n_cells_row, (n_cells_col*n_cells_row)-1)
+                (n_cells_col - 1) * n_cells_row, (n_cells_col * n_cells_row) - 1)
         else:
             bottom_point, top_point = pos
 
@@ -2029,16 +2029,16 @@ class Simulator():
         light = []
         for row_id in range(int(n)):
             chosen_cell = int((m * row_id) + bottom_point)
-            chosen_cell_modschemed = chosen_cell + n_cells_row*row_id
+            chosen_cell_modschemed = chosen_cell + n_cells_row * row_id
 
             permitted_set = set(
-                range(row_id*n_cells_row, (row_id+1)*n_cells_row))
+                range(row_id * n_cells_row, (row_id + 1) * n_cells_row))
             if direction:
                 # Grow downwards
                 subdark = list(np.arange(chosen_cell_modschemed -
-                                         width+1, chosen_cell_modschemed+1))
+                                         width + 1, chosen_cell_modschemed + 1))
                 sublight = [chosen_cell_modschemed -
-                            width, chosen_cell_modschemed+1]
+                            width, chosen_cell_modschemed + 1]
 
                 dark += list(set(subdark).intersection(permitted_set))
                 light += list(set(sublight).intersection(permitted_set))
@@ -2060,33 +2060,33 @@ class Simulator():
         if n_droppings is None:
             n_cells_cols = int(n_cells/self.module_parameters['ncols'])
             n_droppings_randomly = random.randint(1, n_cells_cols)
-            idx = [random.randint(1, n_cells-1)
+            idx = [random.randint(1, n_cells - 1)
                    for i in range(n_droppings_randomly)]
             return idx, n_droppings_randomly
         else:
-            idx = [random.randint(1, n_cells-1) for i in range(n_droppings)]
+            idx = [random.randint(1, n_cells - 1) for i in range(n_droppings)]
             return idx, n_droppings
 
     def _simulate_portrait(self, cols_aff):
         # n_cells_row: number cells in row
         # n_cells_col: number cells in column
         n_cells_row = int(
-            self.module_parameters['N_s']/self.module_parameters['ncols'])
+            self.module_parameters['N_s'] / self.module_parameters['ncols'])
         n_cells_col = int(
-            self.module_parameters['N_s']/self.module_parameters['nrows'])
+            self.module_parameters['N_s'] / self.module_parameters['nrows'])
         return [c+(n_cells_row*i) for c in range(cols_aff) for i in range(n_cells_col)]
 
     def _simulate_landscape(self, rows_aff):
         # n_cells_row: number cells in row
         n_cells_row = int(
-            self.module_parameters['N_s']/self.module_parameters['ncols'])
-        return np.arange(0, rows_aff*n_cells_row, 1)
+            self.module_parameters['N_s'] / self.module_parameters['ncols'])
+        return np.arange(0, rows_aff * n_cells_row, 1)
 
 
-def create_df(V, I, POA, T, mode):
+def create_df(Varr, Iarr, POA, T, mode):
     df = pd.DataFrame()
-    df['voltage'] = V
-    df['current'] = I
+    df['voltage'] = Varr
+    df['current'] = Iarr
     df['E'] = POA
     df['T'] = T
     df['mode'] = mode

@@ -6,12 +6,12 @@ from sklearn import linear_model
 import numpy as np
 import statsmodels.api as sm
 import matplotlib.pyplot as plt
-from physics_utils import calculate_IVparams
+from physics_utils import calculate_IVparams, smooth_curve
 from scipy.optimize import minimize
 from sklearn.metrics import mean_squared_error
 from simulator import Simulator
 import time
-from physics_utils import iv_cutoff
+from physics_utils import iv_cutoff, T_to_tcell
 
 
 class BruteForceExtractor():
@@ -49,51 +49,33 @@ class BruteForceExtractor():
         self.T_type = T_type
         self.Tcs = []
 
-        if self.T_type is 'ambient' and windspeed_col is None:
+        if self.T_type == 'ambient' and windspeed_col is None:
             raise Exception(
                 "Wind speed must be specified if passing ambient temperature so that the cell temperature can be derived.")
 
         if windspeed_col is not None:
             self.WSs = input_df[windspeed_col].tolist()
-            if self.T_type is 'ambient':
+            if self.T_type == 'ambient':
                 for irr, temp, ws in zip(self.Irrs, self.Temps, self.WSs):
                     Tc = T_to_tcell(irr, temp, ws, self.T_type)
                     self.Tcs.append(Tc)
 
-        if self.T_type is 'module':
+        if self.T_type == 'module':
             for irr, temp in zip(self.Irrs, self.Temps):
                 Tc = T_to_tcell(irr, temp, [], self.T_type)
                 self.Tcs.append(Tc)
 
         self.measured_info = []
         for i in range(len(self.Is)):
-            V = self.Vs[i]
-            I = self.Is[i]
+            Varray = self.Vs[i]
+            Iarray = self.Is[i]
             Irr = self.Irrs[i]
             T = self.Temps[i]
-            self.measured_info.append({"V": V, "I": I, "E": Irr, "T": T})
+            self.measured_info.append({"V": Varray, "I": Iarray, "E": Irr, "T": T})
 
         self.n_samples = len(input_df.index)
 
         self.params = {}
-
-    def smooth_curve(self):
-
-        lowess = sm.nonparametric.lowess
-
-        xs_string, ys_string = [], []
-        for i in range(self.curve_number):
-
-            x = v[i]
-            y = c[i]
-
-            xs_string.append(xx)
-            ys_string.append(yh)
-
-        self.xs = xs_string
-        self.ys = ys_string
-
-        return xs_string, ys_string
 
     def create_string_object(self, iph, io, rs, rsh, nnsvth):
         kwargs = {}
@@ -125,7 +107,7 @@ class BruteForceExtractor():
             if isinstance(self.n_mods, int):
                 if self.n_mods > 1:
                     sim.build_strings({f'str_case_{self.counter}_{sample_i}': [
-                                      f'mod_case_{self.counter}_{sample_i}']*self.n_mods})
+                                      f'mod_case_{self.counter}_{sample_i}'] * self.n_mods})
 
                 elif self.n_mods != 1:
                     raise Exception(
@@ -150,7 +132,7 @@ class BruteForceExtractor():
 
         iph, io, rs, rsh, nnsvth = params
 
-        if self.user_func == None:
+        if self.user_func is None:
             sim = self.create_string_object(iph, io, rs, rsh, nnsvth)
         else:
             sim = self.user_func(self, iph, io, rs, rsh, nnsvth)
@@ -172,21 +154,21 @@ class BruteForceExtractor():
         for sample_i, sample in enumerate(self.measured_info):
 
             if self.n_mods > 1:
-                V = sim.multilevel_ivdata['string'][f'str_case_{self.counter}_{sample_i}']['V'][0]
-                I = sim.multilevel_ivdata['string'][f'str_case_{self.counter}_{sample_i}']['I'][0]
+                Varr = sim.multilevel_ivdata['string'][f'str_case_{self.counter}_{sample_i}']['V'][0]
+                Iarr = sim.multilevel_ivdata['string'][f'str_case_{self.counter}_{sample_i}']['I'][0]
             elif self.n_mods == 1:
-                V = sim.multilevel_ivdata['module'][f'mod_case_{self.counter}_{sample_i}']['V'][0]
-                I = sim.multilevel_ivdata['module'][f'mod_case_{self.counter}_{sample_i}']['I'][0]
+                Varr = sim.multilevel_ivdata['module'][f'mod_case_{self.counter}_{sample_i}']['V'][0]
+                Iarr = sim.multilevel_ivdata['module'][f'mod_case_{self.counter}_{sample_i}']['I'][0]
 
             # resample to same voltage domain as measured
-            simI_interp = np.interp(sample['V'], V, I)
+            simI_interp = np.interp(sample['V'], Varr, Iarr)
 
             msse = mean_squared_error(sample['I'], simI_interp)
             msse_tot += msse
 
             if self.verbose >= 2:
 
-                Vco, Ico = iv_cutoff(V, I, 0)
+                Vco, Ico = iv_cutoff(Varr, Iarr, 0)
                 sim_params = calculate_IVparams(Vco, Ico)
                 meas_params = calculate_IVparams(sample['V'], sample['I'])
 
@@ -202,13 +184,13 @@ class BruteForceExtractor():
             minpmps_m = min(min(meas_Pmps), min(sim_Pmps))
             maxpmps_m = max(max(meas_Pmps), max(sim_Pmps))
             plt.plot(meas_Pmps, sim_Pmps, 'go')
-            plt.plot(list(range(int(minpmps_m-10), int(maxpmps_m+10+1))),
-                     list(range(int(minpmps_m-10), int(maxpmps_m+10+1))), 'b--')
+            plt.plot(list(range(int(minpmps_m-10), int(maxpmps_m + 10 + 1))),
+                     list(range(int(minpmps_m-10), int(maxpmps_m + 10 + 1))), 'b--')
             plt.title('Measured v. Simulated Pmpp')
             plt.xlabel('Measured (W)')
             plt.ylabel('Simulated (W)')
-            plt.xlim(minpmps_m-5, maxpmps_m+5)
-            plt.ylim(minpmps_m-5, maxpmps_m+5)
+            plt.xlim(minpmps_m - 5, maxpmps_m + 5)
+            plt.ylim(minpmps_m - 5, maxpmps_m + 5)
             plt.show()
 
             minvocs_m = min(min(meas_Vocs), min(sim_Vocs))
@@ -219,20 +201,20 @@ class BruteForceExtractor():
             plt.title('Measured v. Simulated Voc')
             plt.xlabel('Measured (V)')
             plt.ylabel('Simulated (V)')
-            plt.xlim(minvocs_m-5, maxvocs_m+5)
-            plt.ylim(minvocs_m-5, maxvocs_m+5)
+            plt.xlim(minvocs_m - 5, maxvocs_m + 5)
+            plt.ylim(minvocs_m - 5, maxvocs_m + 5)
             plt.show()
 
             miniscs_m = min(min(meas_Iscs), min(sim_Iscs))
             maxiscs_m = max(max(meas_Iscs), max(sim_Iscs))
             plt.plot(meas_Iscs, sim_Iscs, 'ko')
-            plt.plot(list(range(int(miniscs_m-0.5), int(maxiscs_m+0.5+2))),
-                     list(range(int(miniscs_m-0.5), int(maxiscs_m+0.5+2))), 'b--')
+            plt.plot(list(range(int(miniscs_m - 0.5), int(maxiscs_m + 0.5 + 2))),
+                     list(range(int(miniscs_m - 0.5), int(maxiscs_m + 0.5 + 2))), 'b--')
             plt.title('Measured v. Simulated Isc')
             plt.xlabel('Measured (A)')
             plt.ylabel('Simulated (A)')
-            plt.xlim(miniscs_m-0.5, maxiscs_m+0.5)
-            plt.ylim(miniscs_m-0.5, maxiscs_m+0.5)
+            plt.xlim(miniscs_m - 0.5, maxiscs_m + 0.5)
+            plt.ylim(miniscs_m - 0.5, maxiscs_m + 0.5)
             plt.show()
 
             plt.plot(sample['V'], simI_interp, 'r', label='Simulated')

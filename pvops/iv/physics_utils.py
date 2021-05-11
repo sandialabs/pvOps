@@ -99,7 +99,7 @@ def smooth_curve(x, y, npts=50, deg=12):
     return xx, yh
 
 
-def iv_cutoff(V, I, val):
+def iv_cutoff(Varr, Iarr, val):
     """Cut IV curve greater than voltage `val` (usually 0)
 
     Parameters
@@ -117,8 +117,8 @@ def iv_cutoff(V, I, val):
     -------
     V_cutoff, I_cutoff
     """
-    msk = V > val
-    return V[msk], I[msk]
+    msk = Varr > val
+    return Varr[msk], Iarr[msk]
 
 
 def intersection(x1, y1, x2, y2):
@@ -148,8 +148,8 @@ def intersection(x1, y1, x2, y2):
     y2 = np.asarray(y2)
 
     def _rect_inter_inner(x1, x2):
-        n1 = x1.shape[0]-1
-        n2 = x2.shape[0]-1
+        n1 = x1.shape[0] - 1
+        n2 = x2.shape[0] - 1
         X1 = np.c_[x1[:-1], x1[1:]]
         X2 = np.c_[x2[:-1], x2[1:]]
         S1 = np.tile(X1.min(axis=1), (n2, 1)).T
@@ -226,10 +226,10 @@ def T_to_tcell(POA, T, WS, T_type, a=-3.56, b=-0.0750, delTcnd=3):
     '''
     Gstc = 1000
 
-    if T_type is 'ambient':
+    if T_type == 'ambient':
         Tm = POA * np.exp(a + b * WS) + T
         Tcell = Tm + (POA / Gstc) * delTcnd
-    elif T_type is 'module':
+    elif T_type == 'module':
         Tcell = T + (POA / Gstc) * delTcnd
     return Tcell
 
@@ -396,18 +396,18 @@ def gt_correction(v, i, gact, tact, cecparams, n_units=1, option=1):
 
     if option == 1:
         # IEC60891 Procedure 1
-        iref = i + isc * ((gref/gact) - 1) + alpha * (tref - tact)
+        iref = i + isc * ((gref / gact) - 1) + alpha * (tref - tact)
         vref = v - rs * (iref - i) - k1 * iref * \
             (tref - tact) + beta * (tref - tact)
 
     elif option == 2:
         # IEC60891 Procedure 2
-        iref = i * (1 + alpha * (tref-tact)) * (gref / gact)
-        vref = v + voc * (beta * (tref-tact) + alpha * math.log(gref/gact)
-                          ) - rs * (iref-i) - k2 * iref * (tref-tact)
+        iref = i * (1 + alpha * (tref - tact)) * (gref / gact)
+        vref = v + voc * (beta * (tref - tact) + alpha * math.log(gref / gact)
+                          ) - rs * (iref - i) - k2 * iref * (tref - tact)
 
     elif option == 3:
-        vref = (v * (math.log10(gref)/math.log10(gact)) - (beta * (tact-tref)))
-        iref = (i * (gref/gact)) - (alpha*(tact-tref))
+        vref = (v * (math.log10(gref) / math.log10(gact)) - (beta * (tact - tref)))
+        iref = (i * (gref / gact)) - (alpha*(tact - tref))
 
     return vref, iref

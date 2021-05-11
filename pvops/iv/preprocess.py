@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+from physics_utils import gt_correction
 
 
 def preprocess(input_df, resmpl_resolution, resmpl_cutoff=0.03, correct_gt=True, normalize=True, CECmodule_parameters=None, n_mods=None):
@@ -22,14 +23,14 @@ def preprocess(input_df, resmpl_resolution, resmpl_cutoff=0.03, correct_gt=True,
         Vs = input_df['voltage'].tolist()
 
     v_interps = np.arange(
-        resmpl_cutoff, 1+resmpl_resolution, resmpl_resolution)
+        resmpl_cutoff, 1 + resmpl_resolution, resmpl_resolution)
 
     procVs = []
     procIs = []
     # Resample IV curve to static voltage domain
     for iii in range(len(Vs)):
         Voc = max(Vs[iii])
-        Vnorm = Vs[iii]/Voc
+        Vnorm = Vs[iii] / Voc
         procVs.append(v_interps)
 
         if normalize:
