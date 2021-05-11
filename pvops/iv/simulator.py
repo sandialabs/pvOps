@@ -1391,7 +1391,8 @@ class Simulator():
     def _combine_independent_failures(self, *aargs, delete_combined=False):
         # TODO
         # "condition_dict[num]['identifier'] + blah"
-        condition_list = {} # placeholder for linter
+        # placeholder for linter
+        condition_list = {}
         all_ = list(locals()['aargs'])
         combined = []
         for idx in range(len(all_[0])):
@@ -1535,27 +1536,30 @@ class Simulator():
         """Run visualization suite to visualize information about the simulated curves.
         """
         d = {}
-
         for c_id in list(self.condition_dict.keys()):
             iden = self.condition_dict[c_id][0]['identifier']
             d[iden] = {}
             for k in self.acceptible_keys:
                 d[iden][k] = []
 
-        # dict_keys = {}
-        # maxL = 0
-        # maxIdent = ''
-        # for c_id in list(self.condition_dict.keys()):
-        #     iden = self.condition_dict[c_id][0]['identifier']
-        #     keys = []
-        #     for dct in self.condition_dict[c_id]:
-        #         for k in self.acceptible_keys:
-        #             keys.append(k)
-        #             d[iden][k].append(dct[k])
-        #     dict_keys[iden] = keys
-        #     if len(keys) > maxL:
-        #         maxIdent = iden
-        #         maxL = len(keys)
+        dict_keys = {}
+        maxIdent = ''
+        maxL = 0
+        for c_id in list(self.condition_dict.keys()):
+            iden = self.condition_dict[c_id][0]['identifier']
+            keys = []
+            for dct in self.condition_dict[c_id]:
+                for k in self.acceptible_keys:
+                    keys.append(k)
+                    d[iden][k].append(dct[k])
+            dict_keys[iden] = keys
+            if len(keys) > maxL:
+                maxIdent = iden
+                maxL = len(keys)
+
+        # Saved for testing purposes
+        self.maxL = maxL
+        self.maxIdent = maxIdent
 
         # Get variables which were actually changed
         dynamic_vars = []
