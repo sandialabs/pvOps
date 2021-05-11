@@ -1289,10 +1289,10 @@ class Simulator():
                        'std': 500,
                        'low': 200,
                        'upp': 1250
-                    },
+                       },
                  'Tc': {'mean': 35,
                         'std': 10,
-                    },
+                        },
                  'Rsh_mult': {'mean': 0.9,
                               'std': 0.3,
                               'low': 0.1,
@@ -1391,13 +1391,14 @@ class Simulator():
     def _combine_independent_failures(self, *aargs, delete_combined=False):
         # TODO
         # "condition_dict[num]['identifier'] + blah"
+        condition_list = {} # placeholder for linter
         all_ = list(locals()['aargs'])
         combined = []
         for idx in range(len(all_[0])):
             args = []
             for inp in all_:
-                args.append(condition_dict[inp[idx]][0])
-            combined.append(_addition_soiling(args))
+                args.append(condition_list[inp[idx]][0])
+            combined.append(self._addition_soiling(args))
         return combined
 
     def _simulate_all_cells(self):
@@ -1541,20 +1542,20 @@ class Simulator():
             for k in self.acceptible_keys:
                 d[iden][k] = []
 
-        dict_keys = {}
-        maxL = 0
-        maxIdent = ''
-        for c_id in list(self.condition_dict.keys()):
-            iden = self.condition_dict[c_id][0]['identifier']
-            keys = []
-            for dct in self.condition_dict[c_id]:
-                for k in self.acceptible_keys:
-                    keys.append(k)
-                    d[iden][k].append(dct[k])
-            dict_keys[iden] = keys
-            if len(keys) > maxL:
-                maxIdent = iden
-                maxL = len(keys)
+        # dict_keys = {}
+        # maxL = 0
+        # maxIdent = ''
+        # for c_id in list(self.condition_dict.keys()):
+        #     iden = self.condition_dict[c_id][0]['identifier']
+        #     keys = []
+        #     for dct in self.condition_dict[c_id]:
+        #         for k in self.acceptible_keys:
+        #             keys.append(k)
+        #             d[iden][k].append(dct[k])
+        #     dict_keys[iden] = keys
+        #     if len(keys) > maxL:
+        #         maxIdent = iden
+        #         maxL = len(keys)
 
         # Get variables which were actually changed
         dynamic_vars = []
@@ -1692,7 +1693,7 @@ class Simulator():
                         "If pass `correct_gt = True` in `visualize_specific_iv`, must also have `cutoff = True`.")
 
             parr = (varr * iarr).tolist()
-            maxidx = parr.index(max(p))
+            maxidx = parr.index(max(parr))
             imax = iarr.tolist()[maxidx]
             vmax = varr.tolist()[maxidx]
 
@@ -2046,9 +2047,9 @@ class Simulator():
             else:
                 # Grow upwards
                 subdark = list(np.arange(chosen_cell_modschemed,
-                                         chosen_cell_modschemed+width))
+                                         chosen_cell_modschemed + width))
                 sublight = [chosen_cell_modschemed -
-                            1, chosen_cell_modschemed+width]
+                            1, chosen_cell_modschemed + width]
 
                 dark += list(set(subdark).intersection(permitted_set))
                 light += list(set(sublight).intersection(permitted_set))
@@ -2058,7 +2059,7 @@ class Simulator():
     def _simulate_bird_droppings(self, n_droppings):
         n_cells = self.module_parameters['N_s']
         if n_droppings is None:
-            n_cells_cols = int(n_cells/self.module_parameters['ncols'])
+            n_cells_cols = int(n_cells / self.module_parameters['ncols'])
             n_droppings_randomly = random.randint(1, n_cells_cols)
             idx = [random.randint(1, n_cells - 1)
                    for i in range(n_droppings_randomly)]
@@ -2074,7 +2075,7 @@ class Simulator():
             self.module_parameters['N_s'] / self.module_parameters['ncols'])
         n_cells_col = int(
             self.module_parameters['N_s'] / self.module_parameters['nrows'])
-        return [c+(n_cells_row*i) for c in range(cols_aff) for i in range(n_cells_col)]
+        return [c + (n_cells_row * i) for c in range(cols_aff) for i in range(n_cells_col)]
 
     def _simulate_landscape(self, rows_aff):
         # n_cells_row: number cells in row

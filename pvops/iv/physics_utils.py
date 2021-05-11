@@ -1,7 +1,7 @@
 import numpy as np
 from scipy.interpolate import interp1d
 from sklearn import linear_model
-
+import math
 
 def calculate_IVparams(v, c):
     """Calculate parameters of IV curve. 
@@ -44,7 +44,7 @@ def calculate_IVparams(v, c):
     isc_lm = linear_model.LinearRegression().fit(
         v[:isc_size].reshape(-1, 1), c[:isc_size].reshape(-1, 1))
     isc = isc_lm.predict(np.asarray([0]).reshape(-1, 1))[0][0]
-    rsh = 1/(isc_lm.coef_[0][0] * -1)
+    rsh = 1 / (isc_lm.coef_[0][0] * -1)
 
     # voc and rs
     if type(voc_lim) == float:
@@ -408,6 +408,6 @@ def gt_correction(v, i, gact, tact, cecparams, n_units=1, option=1):
 
     elif option == 3:
         vref = (v * (math.log10(gref) / math.log10(gact)) - (beta * (tact - tref)))
-        iref = (i * (gref / gact)) - (alpha*(tact - tref))
+        iref = (i * (gref / gact)) - (alpha * (tact - tref))
 
     return vref, iref

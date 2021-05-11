@@ -184,8 +184,8 @@ class BruteForceExtractor():
             minpmps_m = min(min(meas_Pmps), min(sim_Pmps))
             maxpmps_m = max(max(meas_Pmps), max(sim_Pmps))
             plt.plot(meas_Pmps, sim_Pmps, 'go')
-            plt.plot(list(range(int(minpmps_m-10), int(maxpmps_m + 10 + 1))),
-                     list(range(int(minpmps_m-10), int(maxpmps_m + 10 + 1))), 'b--')
+            plt.plot(list(range(int(minpmps_m - 10), int(maxpmps_m + 10 + 1))),
+                     list(range(int(minpmps_m - 10), int(maxpmps_m + 10 + 1))), 'b--')
             plt.title('Measured v. Simulated Pmpp')
             plt.xlabel('Measured (W)')
             plt.ylabel('Simulated (W)')
@@ -196,8 +196,8 @@ class BruteForceExtractor():
             minvocs_m = min(min(meas_Vocs), min(sim_Vocs))
             maxvocs_m = max(max(meas_Vocs), max(sim_Vocs))
             plt.plot(meas_Vocs, sim_Vocs, 'ro')
-            plt.plot(list(range(int(minvocs_m-10), int(maxvocs_m+10+1))),
-                     list(range(int(minvocs_m-10), int(maxvocs_m+10+1))), 'b--')
+            plt.plot(list(range(int(minvocs_m - 10), int(maxvocs_m + 10 + 1))),
+                     list(range(int(minvocs_m - 10), int(maxvocs_m + 10 + 1))), 'b--')
             plt.title('Measured v. Simulated Voc')
             plt.xlabel('Measured (V)')
             plt.ylabel('Simulated (V)')
