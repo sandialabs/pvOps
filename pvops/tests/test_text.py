@@ -1,12 +1,10 @@
 import os
 import sys
 
-text_directory = os.path.join("pvops", "text")
-sys.path.append(text_directory)
+pvops_path = os.path.join("pvops")
+sys.path.append(pvops_path)
 
-from visualize import visualize_attribute_timeseries, visualize_word_frequency_plot, visualize_attribute_connectivity
-from preprocess import text_remove_nondate_nums, text_remove_numbers_stopwords, get_dates
-from nlp_utils import create_stopwords, summarize_text_data
+from text import visualize, preprocess, nlp_utils
 
 import pandas as pd
 import numpy as np
@@ -17,7 +15,7 @@ import nltk
 def test_text_remove_nondate_nums():
     example = r"This is a test example https://www.google.com 10% #10 101 1-1-1 a-e4 13-1010 10.1 123456789 123/12 executed on 2/4/2020"
     answer = r" this is test example executed on 2/4/2020 "
-    assert text_remove_nondate_nums(example) == answer
+    assert preprocess.text_remove_nondate_nums(example) == answer
 
 
 def test_text_remove_numbers_stopwords():
@@ -206,9 +204,9 @@ def test_text_remove_numbers_stopwords():
         "yourselves",
     ]
 
-    stopwords = create_stopwords()
+    stopwords = nlp_utils.create_stopwords()
     assert stopwords_answer == stopwords
-    assert text_remove_numbers_stopwords(example, stopwords) == answer
+    assert preprocess.text_remove_numbers_stopwords(example, stopwords) == answer
 
 
 def test_get_dates():
@@ -227,7 +225,7 @@ def test_get_dates():
 
     answer = [datetime.datetime.strptime(
         "2020/01/23 12:34:56", "%Y/%m/%d %H:%M:%S")]
-    assert answer == get_dates(
+    assert answer == preprocess.get_dates(
         df["Document"].iloc[0], df, 0, {
             "data": "Document", "eventstart": "Date"}, False
     )
@@ -236,7 +234,7 @@ def test_get_dates():
         datetime.datetime.strptime("2021/03/05 00:00:00", "%Y/%m/%d %H:%M:%S"),
         datetime.datetime.strptime("2022/04/07 00:00:00", "%Y/%m/%d %H:%M:%S"),
     ]
-    assert answer == get_dates(
+    assert answer == preprocess.get_dates(
         df["Document"].iloc[1], df, 1, {
             "data": "Document", "eventstart": "Date"}, False
     )
@@ -257,7 +255,7 @@ def test_visualize_attribute_timeseries():
     df = pd.DataFrame(
         {"labels": ["A word", "B word", "C word"], "date": dates})
 
-    fig = visualize_attribute_timeseries(
+    fig = visualize.visualize_attribute_timeseries(
         df, {"label": "labels", "date": "date"}, date_structure="%Y-%m-%d"
     )
     assert isinstance(fig, matplotlib.figure.Figure)
@@ -270,7 +268,7 @@ def xtest_visualize_word_frequency_plot():
     words = " ".join(documents)
     tokenized_words = nltk.word_tokenize(words)
 
-    fig = visualize_word_frequency_plot(tokenized_words)
+    fig = visualize.visualize_word_frequency_plot(tokenized_words)
 
     assert isinstance(fig, nltk.FreqDist)
 
@@ -283,7 +281,7 @@ def test_visualize_attribute_connectivity():
 
     om_col_dict = {"attribute1_col": "Attr1", "attribute2_col": "Attr2"}
 
-    fig, edges = visualize_attribute_connectivity(
+    fig, edges = visualize.visualize_attribute_connectivity(
         df,
         om_col_dict,
         figsize=(10, 8),
@@ -325,6 +323,6 @@ def test_summarize_text_data():
         "n_total_words": 15.00,
     }
 
-    info = summarize_text_data(df, "Document")
+    info = nlp_utils.summarize_text_data(df, "Document")
 
     assert answer == info
