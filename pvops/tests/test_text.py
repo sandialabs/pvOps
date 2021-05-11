@@ -4,26 +4,16 @@ import sys
 text_directory = os.path.join("pvops", "text")
 sys.path.append(text_directory)
 
-from visualize import *
-from utils import *
-from preprocess import *
-from nlp_utils import *
-from classify import *
+from visualize import visualize_attribute_timeseries, visualize_word_frequency_plot, visualize_attribute_connectivity
+from utils import summarize_text_data
+from preprocess import text_remove_nondate_nums, text_remove_numbers_stopwords, get_dates
+from nlp_utils import create_stopwords
+
 import pandas as pd
 import numpy as np
 import datetime
 import matplotlib
 import nltk
-
-# from text_remove_nondate_nums import text_remove_nondate_nums
-# from text_remove_numbers_stopwords import text_remove_numbers_stopwords
-# from create_stopwords import create_stopwords
-# from get_dates import get_dates
-# from visualize_attribute_timeseries import visualize_attribute_timeseries
-# from visualize_word_frequency_plot import visualize_word_frequency_plot
-# from visualize_attribute_connectivity import visualize_attribute_connectivity
-# from summarize_text_data import summarize_text_data
-
 
 def test_text_remove_nondate_nums():
     example = r"This is a test example https://www.google.com 10% #10 101 1-1-1 a-e4 13-1010 10.1 123456789 123/12 executed on 2/4/2020"
@@ -339,13 +329,3 @@ def test_summarize_text_data():
     info = summarize_text_data(df, "Document")
 
     assert answer == info
-
-
-# Tests!
-# test_text_remove_nondate_nums()
-# test_text_remove_numbers_stopwords()
-# test_get_dates()
-# test_visualize_attribute_timeseries()
-# ###test_visualize_word_frequency_plot()
-# test_visualize_attribute_connectivity()
-# test_summarize_text_data()
