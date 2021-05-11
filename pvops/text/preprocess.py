@@ -6,6 +6,7 @@ import datefinder
 import traceback
 from datetime import datetime, timedelta
 
+nltk.download('punkt')
 
 def preprocessor(
     om_df, lst_stopwords, col_dict, print_info=False, extract_dates_only=False
@@ -89,7 +90,7 @@ def preprocessor(
             try:
                 out = text_remove_numbers_stopwords(document, lst_stopwords)
                 clean_corpus.append(out)
-            except Exception as e:
+            except:
                 print(traceback.format_exc())
                 clean_corpus.append("")
                 n_fails_prep += 1

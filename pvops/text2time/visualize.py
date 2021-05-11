@@ -2,7 +2,7 @@
 import pandas as pd
 import numpy as np
 from scipy.signal import find_peaks
-import plotly.graph_objects as go
+import plotly
 import matplotlib.pyplot as plt
 import seaborn as sns
 from matplotlib.ticker import MaxNLocator
@@ -190,7 +190,7 @@ def visualize_om_prod_overlap(
         samp_freq="H",
         pshift=0.0,
         baselineflag=True
-        ):
+    ):
     """
     Creates Plotly figures of performance data overlaid with coinciding O&M tickets.
     A separate figure for each site in the production data frame (prod_df) is generated.
@@ -365,7 +365,7 @@ def visualize_om_prod_overlap(
             om_reg_hcorr = 1.0
 
         # initializing plotly-figure
-        fig = go.Figure(
+        fig = plotly.graph_objects.Figure(
             layout_yaxis_range=[-5, enrg_site.max() * om_reg_h * om_reg_hcorr]
         )
 
@@ -376,10 +376,11 @@ def visualize_om_prod_overlap(
         elif samp_freq == "H":
             perf_name = "Hourly Energy"
             baseline_name = "Hourly Baseline"
-        fig.add_trace(go.Scatter(x=enrg_site.index, y=enrg_site.values, name=perf_name))
+        fig.add_trace(plotly.graph_objects.Scatter(x=enrg_site.index, y=enrg_site.values, 
+                                                   name=perf_name))
         if baselineflag:
             fig.add_trace(
-                go.Scatter(
+                plotly.graph_objects.Scatter(
                     x=baseline_site.index, y=baseline_site.values, name=baseline_name
                 )
             )
@@ -408,7 +409,7 @@ def visualize_om_prod_overlap(
 
         # Adding EventStart Points with hover-text
         fig.add_trace(
-            go.Scatter(
+            plotly.graph_objects.Scatter(
                 x=om_df.loc[i].index,
                 y=om_df.loc[i, "perfval_plotcol"].values * om_start_h,
                 mode="markers",
@@ -431,7 +432,7 @@ def visualize_om_prod_overlap(
 
         # Adding EventEnd Points with hover-text
         fig.add_trace(
-            go.Scatter(
+            plotly.graph_objects.Scatter(
                 x=om_df.loc[i, om_date_e],
                 y=om_df.loc[i, "perfval_plotcol"].values * om_end_h,
                 mode="markers",

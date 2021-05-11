@@ -1,4 +1,4 @@
-pandas>=1.1.5
+pandas>=0.23.0
 numpy>=1.15.0
 scipy>=1.2.0
 scikit-learn
@@ -7,5 +7,8 @@ datefinder
 matplotlib
 seaborn
 plotly
-gensim>=4.0.0
+gensim
 networkx
+pvlib
+pvanalytics
+timezonefinder
