@@ -5,9 +5,8 @@ text_directory = os.path.join("pvops", "text")
 sys.path.append(text_directory)
 
 from visualize import visualize_attribute_timeseries, visualize_word_frequency_plot, visualize_attribute_connectivity
-from utils import summarize_text_data
 from preprocess import text_remove_nondate_nums, text_remove_numbers_stopwords, get_dates
-from nlp_utils import create_stopwords
+from nlp_utils import create_stopwords, summarize_text_data
 
 import pandas as pd
 import numpy as np
