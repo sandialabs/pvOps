@@ -29,7 +29,7 @@ class Model:
         Least-squares implementation on multiple covariates
         """
         if self.verbose >= 1:
-            print("Begin training.")
+            print("\nBegin training.")
 
         for name, estimator in self.estimators:
             estimator.fit(self.train_X, self.train_y)
@@ -55,12 +55,9 @@ class Model:
                 # For RANSAC and others
                 pass
 
-        if self.verbose >= 1:
-            print()
-
     def predict(self):
         if self.verbose >= 1:
-            print("Begin testing.")
+            print("\nBegin testing.")
 
         for name, estimator in self.estimators:
             self._evaluate(name, estimator, self.test_X, self.test_y)
@@ -88,15 +85,15 @@ class PolynomialModel(Model):
 
     def construct(self, X, y, type='train'):
 
-        num_inputs, len_input = X.shape[1], X.shape[0]
+        num_inputs = X.shape[1]
         # add column of rows in first index of matrix
-        xs = np.hstack((np.ones((len_input, 1), dtype=float), X))
+        xs = np.array(X)
 
         # construct identity matrix
         iden_matrix = []
-        for i in range(num_inputs + 1):
+        for i in range(num_inputs):
             # create np.array of np.zeros
-            row = np.zeros(num_inputs + 1, dtype=int)
+            row = np.zeros(num_inputs, dtype=int)
 
             # add 1 to diagonal index
             row[i] = 1
@@ -109,7 +106,7 @@ class PolynomialModel(Model):
         # list of polynomial powers
         poly_powers = []
         for combination in combinations:
-            sum_arr = np.zeros(num_inputs + 1, dtype=int)
+            sum_arr = np.zeros(num_inputs, dtype=int)
             sum_arr += sum((np.array(j) for j in combination))
             poly_powers.append(sum_arr)
 
@@ -143,20 +140,18 @@ class PolynomialLogEModel(Model):
         # polynomial with included log(POA) parameter
         # Requires POA be first input in xs
 
-        num_inputs, len_input = X.shape[1], X.shape[0]
+        num_inputs = X.shape[1]
         # add column of rows in first index of matrix
         Evals = np.array([row[0] for row in X]) + 1
-        xs = np.hstack(
-            (np.ones((len_input, 1), dtype=float),
-                X, np.vstack(np.log(Evals)))
-        )
+        xs = np.hstack((X, np.vstack(np.log(Evals))))
+
         # construct identity matrix
         iden_matrix = []
 
-        for i in range(num_inputs + 1 + 1):
+        for i in range(num_inputs + 1):
             # for i in range(num_inputs+1+num_inputs):
             # create np.array of np.zeros
-            row = np.zeros(num_inputs + 1 + 1, dtype=int)
+            row = np.zeros(num_inputs + 1, dtype=int)
             # row = np.zeros(num_inputs+1+num_inputs, dtype=int)
             # add 1 to diagonal index
             row[i] = 1
@@ -169,7 +164,7 @@ class PolynomialLogEModel(Model):
         # list of polynomial powers
         poly_powers = []
         for combination in combinations:
-            sum_arr = np.zeros(num_inputs + 1 + 1, dtype=int)
+            sum_arr = np.zeros(num_inputs + 1, dtype=int)
             sum_arr += sum((np.array(j) for j in combination))
 
             poly_powers.append(sum_arr)
@@ -188,6 +183,25 @@ class PolynomialLogEModel(Model):
             self.test_X = A
             self.test_y = y
 
+        return
+
+
+class DiodeInspiredModel(Model):
+    def __init__(self, verbose=0):
+        super().__init__()
+        self.verbose = verbose
+
+    def construct(self, X, y, type='train'):
+        # Diode Inspired
+        # Requires that xs inputs be [POA, Temp], in that order
+        xs = np.hstack((X, np.log(X)))
+
+        if type == 'train':
+            self.train_X = xs
+            self.train_y = y
+        elif type == 'test':
+            self.test_X = xs
+            self.test_y = y
         return
 
 
@@ -265,6 +279,8 @@ def modeller(prod_df,
     if kernel_type == 'polynomial_log':
         try:
             X_parameters.remove(prod_col_dict['irradiance'])
+            # Place irradiance in front.
+            X_parameters = [prod_col_dict['irradiance']] + X_parameters
         except ValueError:
             raise ValueError(
                 "The `prod_col_dict['irradiance']` definition must be in your " +
@@ -273,6 +289,9 @@ def modeller(prod_df,
         try:
             X_parameters.remove(prod_col_dict['irradiance'])
             X_parameters.remove(prod_col_dict['temperature'])
+            # Place irradiance and temperature in front.
+            X_parameters = [prod_col_dict['irradiance'],
+                            prod_col_dict['temperature']] + X_parameters
         except ValueError:
             raise ValueError("The `prod_col_dict['irradiance']` and `prod_col_dict['irradiance']`" +
                              "definitions must be in your X_parameters input for the " +
@@ -296,7 +315,7 @@ def modeller(prod_df,
     elif kernel_type == 'polynomial_log':
         model = PolynomialLogEModel(degree=degree, verbose=verbose)
     elif kernel_type == 'diode_inspired':
-        pass
+        model = DiodeInspiredModel(verbose=verbose)
 
     model.construct(train_X, train_y, type='train')
     model.construct(test_X, test_y, type='test')
