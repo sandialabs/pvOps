@@ -24,55 +24,73 @@ class Model:
                                          ('RANSAC',
                                           RANSACRegressor(random_state=42))]
 
-    def train(self, xs, Y, dates):
+    def train(self):
         """
         Least-squares implementation on multiple covariates
         """
+        if self.verbose >= 1:
+            print("Begin training.")
 
         for name, estimator in self.estimators:
-            print(name)
-            estimator.fit(self.A, Y)
-            # Make predictions using the testing set
-            pred = estimator.predict(self.A)
+            estimator.fit(self.train_X, self.train_y)
+            self._evaluate(name, estimator, self.train_X, self.train_y)
 
+    def _evaluate(self, name, estimator, X, y):
+        # Make predictions using the testing set
+        pred = estimator.predict(X)
+
+        if self.verbose >= 1:
+            # The mean squared error
+            print(f'[{name}] Mean squared error: %.2f'
+                  % mean_squared_error(y, pred))
+            # The coefficient of determination: 1 is perfect prediction
+            print(f'[{name}] Coefficient of determination: %.2f'
+                  % r2_score(y, pred))
+
+        if self.verbose >= 2:
             # The coefficients
             try:
-                print('Coefficients: \n', estimator.coef_)
+                print(f'[{name}] Coefficients: \n', estimator.coef_)
             except:
-                # For RANSAC
+                # For RANSAC and others
                 pass
-            # The mean squared error
-            print('Mean squared error: %.2f'
-                  % mean_squared_error(Y, pred))
-            # The coefficient of determination: 1 is perfect prediction
-            print('Coefficient of determination: %.2f'
-                  % r2_score(Y, pred))
 
-            import matplotlib.pyplot as plt
-            plt.plot(dates[0:50], pred[0:50], label=name)
-            plt.plot(dates[0:50], Y[0:50], 'k')
-        plt.legend()
-        plt.show()
+        if self.verbose >= 1:
+            print()
+
+    def predict(self):
+        if self.verbose >= 1:
+            print("Begin testing.")
+
+        for name, estimator in self.estimators:
+            self._evaluate(name, estimator, self.test_X, self.test_y)
 
 
 class DefaultModel(Model):
-    def __init__(self):
+    def __init__(self, verbose=0):
         super().__init__()
+        self.verbose = verbose
 
-    def construct(self, xs):
-        self.A = xs
+    def construct(self, X, y, type='train'):
+        if type == 'train':
+            self.train_X = X
+            self.train_y = y
+        elif type == 'test':
+            self.test_X = X
+            self.test_y = y
 
 
 class PolynomialModel(Model):
-    def __init__(self, degree=3):
+    def __init__(self, degree=3, verbose=0):
         super().__init__()
         self.degree = degree
+        self.verbose = verbose
 
-    def construct(self, xs):
+    def construct(self, X, y, type='train'):
 
-        num_inputs, len_input = xs.shape[1], xs.shape[0]
+        num_inputs, len_input = X.shape[1], X.shape[0]
         # add column of rows in first index of matrix
-        xs = np.hstack((np.ones((len_input, 1), dtype=float), xs))
+        xs = np.hstack((np.ones((len_input, 1), dtype=float), X))
 
         # construct identity matrix
         iden_matrix = []
@@ -102,38 +120,35 @@ class PolynomialModel(Model):
         for power in poly_powers:
             product = (xs**power).prod(1)
             A.append(product.reshape(product.shape + (1,)))
-        self.A = np.hstack(np.array(A))
+        A = np.hstack(np.array(A))
+
+        if type == 'train':
+            self.train_X = A
+            self.train_y = y
+        elif type == 'test':
+            self.test_X = A
+            self.test_y = y
 
         return
 
-    # def predict(self, temps):
-    #     """Evaluate output with input parameters and polynomial information
-    #         temps: temporary inputs
-    #     """
-    #     fit = 0
-    #     for _iter, power in zip(self.a_hat, self.powers):
-    #         for index in range(1, len(power)):
-    #             _iter *= temps[index - 1] ** power[index]
-    #         fit += _iter
-    #     return fit
-
 
 class PolynomialLogEModel(Model):
-    def __init__(self, degree=3):
+    def __init__(self, degree=3, verbose=0):
         super().__init__()
         self.degree = degree
+        self.verbose = verbose
 
-    def construct(self, xs):
+    def construct(self, X, y, type='train'):
 
         # polynomial with included log(POA) parameter
         # Requires POA be first input in xs
 
-        num_inputs, len_input = xs.shape[1], xs.shape[0]
+        num_inputs, len_input = X.shape[1], X.shape[0]
         # add column of rows in first index of matrix
-        Evals = np.array([row[0] for row in xs]) + 1
+        Evals = np.array([row[0] for row in X]) + 1
         xs = np.hstack(
             (np.ones((len_input, 1), dtype=float),
-                xs, np.vstack(np.log(Evals)))
+                X, np.vstack(np.log(Evals)))
         )
         # construct identity matrix
         iden_matrix = []
@@ -164,20 +179,16 @@ class PolynomialLogEModel(Model):
         for power in poly_powers:
             product = (xs**power).prod(1)
             A.append(product.reshape(product.shape + (1,)))
-        self.A = np.hstack(np.array(A))
+        A = np.hstack(np.array(A))
+
+        if type == 'train':
+            self.train_X = A
+            self.train_y = y
+        elif type == 'test':
+            self.test_X = A
+            self.test_y = y
 
         return
-
-    # def predict(self, temps):
-    #     """Evaluate output with input parameters and polynomial information
-    #         temps: temporary inputs
-    #     """
-    #     fit = 0
-    #     for _iter, power in zip(self.a_hat, self.powers):
-    #         for index in range(1, len(power)):
-    #             _iter *= temps[index - 1] ** power[index]
-    #         fit += _iter
-    #     return fit
 
 
 def modeller(prod_df,
@@ -187,7 +198,8 @@ def modeller(prod_df,
              X_parameters=[],
              Y_parameter=None,
              test_split=0.2,
-             degree=3):
+             degree=3,
+             verbose=0):
     """Wrapper method to conduct the modelling of the timeseries data.
 
     Parameters
@@ -266,31 +278,28 @@ def modeller(prod_df,
                              "definitions must be in your X_parameters input for the " +
                              "`polynomial_log` model.")
 
-    train, test = test_train_split(
-        prod_df, test_size=0.33, random_state=42)
+    # Split into test-train
+    mask = np.array(range(len(prod_df))) < int(
+        len(prod_df) * (1-test_split))
+    train_prod_df = prod_df.iloc[mask]
+    test_prod_df = prod_df.iloc[~mask]
 
     train_y = train_prod_df[Y_parameter].values
     test_y = test_prod_df[Y_parameter].values
-
     train_X = _array_from_df(train_prod_df, X_parameters)
-    train_X = _array_from_df(test_prod_df, X_parameters)
+    test_X = _array_from_df(test_prod_df, X_parameters)
 
     if kernel_type == 'default':
-        model = DefaultModel()
+        model = DefaultModel(verbose=verbose)
     elif kernel_type == 'polynomial':
-        model = PolynomialModel(degree=degree)
+        model = PolynomialModel(degree=degree, verbose=verbose)
     elif kernel_type == 'polynomial_log':
-        model = PolynomialLogEModel(degree=degree)
+        model = PolynomialLogEModel(degree=degree, verbose=verbose)
     elif kernel_type == 'diode_inspired':
         pass
 
-    model.construct(train_X)
-    model.train(
-        train_X,
-        train_y,
-        train_prod_df['date'].values
-    )
-    model.predict(train_X)
-    # model.evaluate()
-
-    return
+    model.construct(train_X, train_y, type='train')
+    model.construct(test_X, test_y, type='test')
+    model.train()
+    model.predict()
+    return model
