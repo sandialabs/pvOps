@@ -64,16 +64,16 @@ def om_date_convert(om_df, om_col_dict, toffset=0.0):
         A data frame corresponding to O&M data.
 
     om_col_dict: dict of {str : str}
-        A dictionary that contains the column names associated with 
+        A dictionary that contains the column names associated with
         the O&M data, which consist of at least:
 
-          - **datestart** (*string*), should be assigned to column 
+          - **datestart** (*string*), should be assigned to column
             name for O&M event start date in om_df
           - **dateend** (*string*), should be assigned to column name
             for O&M event end date  in om_df
 
     toffset: float
-       Value that specifies how many hours the O&M data should be 
+       Value that specifies how many hours the O&M data should be
        shifted by in case time-stamps in production data and O&M data
        don't align as they should
 
@@ -107,8 +107,8 @@ def om_date_convert(om_df, om_col_dict, toffset=0.0):
 def om_datelogic_check(om_df, om_col_dict, om_dflag="swap"):
     """
     Addresses issues with O&M dates where the start
-    of an event is listed as occurring after its end.  These row are 
-    either dropped or the dates are swapped, depending on the user's 
+    of an event is listed as occurring after its end.  These row are
+    either dropped or the dates are swapped, depending on the user's
     preference.
 
 
@@ -119,18 +119,18 @@ def om_datelogic_check(om_df, om_col_dict, om_dflag="swap"):
         A data frame corresponding to O&M data.
 
     om_col_dict: dict of {str : str}
-        A dictionary that contains the column names associated with 
+        A dictionary that contains the column names associated with
         the O&M data, which consist of at least:
 
-          - **datestart** (*string*), should be assigned to column 
+          - **datestart** (*string*), should be assigned to column
             name for associated O&M event start date in om_df
-          - **dateend** (*string*), should be assigned to column name 
+          - **dateend** (*string*), should be assigned to column name
             for associated O&M event end date in om_df
 
     om_dflag: str
-       A flag that specifies how to address rows where the start of 
-       an event occurs after its conclusion. A flag of 'drop' will 
-       drop those rows, and a flag of 'swap' swap the two dates for 
+       A flag that specifies how to address rows where the start of
+       an event occurs after its conclusion. A flag of 'drop' will
+       drop those rows, and a flag of 'swap' swap the two dates for
        that row.
 
     Returns

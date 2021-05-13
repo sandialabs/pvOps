@@ -158,7 +158,7 @@ def prod_inverter_clipping_filter(prod_df, prod_col_dict, meta_df, meta_col_dict
         - **timestamp** (*string*), should be assigned to associated time-stamp
         column name in prod_df
         - **siteid** (*string*), should be assigned to site-ID column name in prod_df
-        - **power** (*string*), should be assigned to associated power production column name in prod_df
+        - **powerprod** (*string*), should be assigned to associated power production column name in prod_df
 
     meta_df: DataFrame
         A data frame corresponding to site metadata.
@@ -172,7 +172,8 @@ def prod_inverter_clipping_filter(prod_df, prod_col_dict, meta_df, meta_col_dict
         - **longitude** (*string*), should be assigned to column name corresponding to site's longitude
 
     model: str
-        A string distinguishing the inverter clipping detection model programmed in pvanalytics. Available options: ['geometric', 'threshold', 'levels']
+        A string distinguishing the inverter clipping detection model programmed in pvanalytics.
+        Available options: ['geometric', 'threshold', 'levels']
 
     kwargs:
         Extra parameters passed to the relevant pvanalytics model. If none passed, defaults are used.
@@ -192,7 +193,7 @@ def prod_inverter_clipping_filter(prod_df, prod_col_dict, meta_df, meta_col_dict
     for site in individual_sites:
 
         site_prod_mask = prod_df.loc[:, prod_col_dict["siteid"]] == site
-        ac_power = prod_df.loc[site_prod_mask, prod_col_dict["power"]]
+        ac_power = prod_df.loc[site_prod_mask, prod_col_dict["powerprod"]]
 
         if len(ac_power) == 0:
             # If no rows exist for this company, skip it.
