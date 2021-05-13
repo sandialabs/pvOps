@@ -1,16 +1,9 @@
 # Source
 import itertools
-import math
-import warnings
-from datetime import datetime
-import warnings
-from sklearn.linear_model import LinearRegression, RANSACRegressor
+from sklearn.linear_model import LinearRegression
 import numpy as np
 from sklearn.metrics import mean_squared_error, r2_score
 import pandas as pd
-
-# Standard
-warnings.filterwarnings("ignore")
 
 
 def _array_from_df(df, X_parameters):
@@ -21,11 +14,9 @@ class Model:
     def __init__(self, estimators=None):
         self.train_index = None
         self.test_index = None
+        # Other solvers, like RANSAC or THEIL SEN can be added by user
         self.estimators = estimators or {'OLS':
                                          {'estimator': LinearRegression()},
-                                         #  'RANSAC':
-                                         #  {'estimator': RANSACRegressor(
-                                         #      random_state=42)},
                                          }
 
     def train(self):
