@@ -248,7 +248,7 @@ class PolynomialModel(Model, TimeWeightedProcess):
 
 class PolynomialLogEModel(Model, TimeWeightedProcess):
     """Add all interactions between terms with degree and add log(Irradiance) term.
-    
+
     For example, with two covariates and a degree of 2, 
     Y(α , X) = α_0 + α_1 X_1 + α_2 X_2 + α_3 X_1 X_2 + α_4 X_1^2 + α_5 X_2^2
     """
@@ -315,7 +315,7 @@ class PolynomialLogEModel(Model, TimeWeightedProcess):
 
 class DiodeInspiredModel(Model, TimeWeightedProcess):
     """Generate a regression kernel derived from the diode model, originally meant to model voltage.
-    
+
     (static equation):  Y(α , X) = α_0 + α_1 POA + α_2 Temp + α_3 ln(POA) + α_4 ln(Temp)
     """
     def __init__(self, time_weighted=None, verbose=0):
