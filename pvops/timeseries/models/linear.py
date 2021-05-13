@@ -4,10 +4,10 @@ import math
 import warnings
 from datetime import datetime
 import warnings
-from sklearn.linear_model import LinearRegression, TheilSenRegressor
-from sklearn.linear_model import RANSACRegressor
+from sklearn.linear_model import LinearRegression, RANSACRegressor
 import numpy as np
 from sklearn.metrics import mean_squared_error, r2_score
+import pandas as pd
 
 # Standard
 warnings.filterwarnings("ignore")
@@ -19,10 +19,14 @@ def _array_from_df(df, X_parameters):
 
 class Model:
     def __init__(self, estimators=None):
-        self.estimators = estimators or [('OLS',
-                                          LinearRegression()),
-                                         ('RANSAC',
-                                          RANSACRegressor(random_state=42))]
+        self.train_index = None
+        self.test_index = None
+        self.estimators = estimators or {'OLS':
+                                         {'estimator': LinearRegression()},
+                                         #  'RANSAC':
+                                         #  {'estimator': RANSACRegressor(
+                                         #      random_state=42)},
+                                         }
 
     def train(self):
         """
@@ -31,59 +35,165 @@ class Model:
         if self.verbose >= 1:
             print("\nBegin training.")
 
-        for name, estimator in self.estimators:
-            estimator.fit(self.train_X, self.train_y)
-            self._evaluate(name, estimator, self.train_X, self.train_y)
+        for name, info in self.estimators.items():
+            info['estimator'].fit(self.train_X, self.train_y)
+            self._evaluate(name, info, self.train_X, self.train_y)
 
-    def _evaluate(self, name, estimator, X, y):
+    def _evaluate(self, name, info, X, y, data_split='train'):
         # Make predictions using the testing set
-        pred = estimator.predict(X)
+        pred = info['estimator'].predict(X)
+        mse = mean_squared_error(y, pred)
+        r2 = r2_score(y, pred)
+
+        try:
+            coeffs = info['estimator'].coef_
+        except AttributeError:
+            coeffs = None
 
         if self.verbose >= 1:
-            # The mean squared error
             print(f'[{name}] Mean squared error: %.2f'
-                  % mean_squared_error(y, pred))
-            # The coefficient of determination: 1 is perfect prediction
+                  % mse)
             print(f'[{name}] Coefficient of determination: %.2f'
-                  % r2_score(y, pred))
+                  % r2)
+            try:
+                print(f'[{name}] {len(coeffs)} coefficient trained.')
+            except:
+                # For RANSAC and others
+                pass
 
         if self.verbose >= 2:
             # The coefficients
             try:
-                print(f'[{name}] Coefficients: \n', estimator.coef_)
+                print(f'[{name}] Coefficients generated: \n', coeffs)
             except:
                 # For RANSAC and others
                 pass
+
+        if data_split == 'train':
+            info['train_index'] = self.train_index
+            info['train_prediction'] = pred
+            info['train_X'] = X
+            info['train_y'] = y
+            info['train_eval'] = {'mse': mse, 'r2': r2}
+        elif data_split == 'test':
+            info['test_index'] = self.test_index
+            info['test_prediction'] = pred
+            info['test_X'] = X
+            info['test_y'] = y
+            info['test_eval'] = {'mse': mse, 'r2': r2}
 
     def predict(self):
         if self.verbose >= 1:
             print("\nBegin testing.")
 
-        for name, estimator in self.estimators:
-            self._evaluate(name, estimator, self.test_X, self.test_y)
+        for name, info in self.estimators.items():
+            self._evaluate(name, info, self.test_X,
+                           self.test_y, data_split='test')
 
 
-class DefaultModel(Model):
+def _map_season(df_index):
+    # Derived from https://stackoverflow.com/questions/44526662/group-data-by-season-according-to-the-exact-dates
+
+    spring = range(80, 172)
+    summer = range(172, 264)
+    fall = range(264, 355)
+
+    def _season(x):
+        if x in spring:
+            return 1
+        if x in summer:
+            return 2
+        if x in fall:
+            return 3
+        else:
+            return 0
+
+    return df_index.dayofyear.map(_season)
+
+
+class TimeWeightedProcess:
     def __init__(self, verbose=0):
+        self.verbose = verbose
+        self.set_time_bins = None
+
+    def time_weight(self, X, time_weighted='season', data_split='train'):
+
+        if time_weighted == 'month':
+            if data_split == 'train':
+                time_bins = self.train_index.month
+            elif data_split == 'test':
+                time_bins = self.test_index.month
+        if time_weighted == 'season':
+            if data_split == 'train':
+                time_bins = _map_season(self.train_index)
+            elif data_split == 'test':
+                time_bins = _map_season(self.test_index)
+        elif time_weighted == 'hour':
+            if data_split == 'train':
+                time_bins = self.train_index.hour
+            elif data_split == 'test':
+                time_bins = self.test_index.hour
+
+        if data_split == 'train':
+            self.set_time_bins = set(time_bins)
+        elif data_split == 'test' and not isinstance(self.set_time_bins, set):
+            raise Exception(
+                "Must construct train before constructing test " +
+                "if using the TimeWeightedProcess.")
+
+        if self.verbose >= 1:
+            print(data_split, set(time_bins))
+
+        df = pd.DataFrame()
+        df['time_bins'] = time_bins
+
+        indices = {}
+        for group in self.set_time_bins:
+            indices[group] = df[df["time_bins"] == group].index
+
+        for ii in range(X.shape[1]):
+            df[f"col_{ii}"] = X[:, ii]
+            # add groups
+            for group in self.set_time_bins:
+                vals = np.zeros(len(df))
+                vals[indices[group]] = df.iloc[indices[group]][f"col_{ii}"]
+                df[f"col_{ii}_{group}"] = vals
+            # remove original data
+            del df[f"col_{ii}"]
+        del df["time_bins"]
+
+        xs = df.values
+
+        return xs
+
+
+class DefaultModel(Model, TimeWeightedProcess):
+    def __init__(self, time_weighted=None, verbose=0):
         super().__init__()
         self.verbose = verbose
+        self.time_weighted = time_weighted
 
-    def construct(self, X, y, type='train'):
-        if type == 'train':
+    def construct(self, X, y, data_split='train'):
+
+        if not isinstance(self.time_weighted, type(None)):
+            X = self.time_weight(
+                X, time_weighted=self.time_weighted, data_split=data_split)
+        if data_split == 'train':
             self.train_X = X
             self.train_y = y
-        elif type == 'test':
+        elif data_split == 'test':
             self.test_X = X
             self.test_y = y
 
 
-class PolynomialModel(Model):
-    def __init__(self, degree=3, verbose=0):
+class PolynomialModel(Model, TimeWeightedProcess):
+    def __init__(self, degree=3, time_weighted=None, verbose=0):
         super().__init__()
         self.degree = degree
+        self.time_weighted = time_weighted
         self.verbose = verbose
 
-    def construct(self, X, y, type='train'):
+    def construct(self, X, y, data_split='train'):
 
         num_inputs = X.shape[1]
         # add column of rows in first index of matrix
@@ -119,23 +229,28 @@ class PolynomialModel(Model):
             A.append(product.reshape(product.shape + (1,)))
         A = np.hstack(np.array(A))
 
-        if type == 'train':
+        if not isinstance(self.time_weighted, type(None)):
+            A = self.time_weight(
+                A, time_weighted=self.time_weighted, data_split=data_split)
+
+        if data_split == 'train':
             self.train_X = A
             self.train_y = y
-        elif type == 'test':
+        elif data_split == 'test':
             self.test_X = A
             self.test_y = y
 
         return
 
 
-class PolynomialLogEModel(Model):
-    def __init__(self, degree=3, verbose=0):
+class PolynomialLogEModel(Model, TimeWeightedProcess):
+    def __init__(self, degree=3, time_weighted=None, verbose=0):
         super().__init__()
         self.degree = degree
+        self.time_weighted = time_weighted
         self.verbose = verbose
 
-    def construct(self, X, y, type='train'):
+    def construct(self, X, y, data_split='train'):
 
         # polynomial with included log(POA) parameter
         # Requires POA be first input in xs
@@ -176,30 +291,39 @@ class PolynomialLogEModel(Model):
             A.append(product.reshape(product.shape + (1,)))
         A = np.hstack(np.array(A))
 
-        if type == 'train':
+        if not isinstance(self.time_weighted, type(None)):
+            A = self.time_weight(
+                A, time_weighted=self.time_weighted, data_split=data_split)
+
+        if data_split == 'train':
             self.train_X = A
             self.train_y = y
-        elif type == 'test':
+        elif data_split == 'test':
             self.test_X = A
             self.test_y = y
 
         return
 
 
-class DiodeInspiredModel(Model):
-    def __init__(self, verbose=0):
+class DiodeInspiredModel(Model, TimeWeightedProcess):
+    def __init__(self, time_weighted=None, verbose=0):
         super().__init__()
+        self.time_weighted = time_weighted
         self.verbose = verbose
 
-    def construct(self, X, y, type='train'):
+    def construct(self, X, y, data_split='train'):
         # Diode Inspired
         # Requires that xs inputs be [POA, Temp], in that order
         xs = np.hstack((X, np.log(X)))
 
-        if type == 'train':
+        if not isinstance(self.time_weighted, type(None)):
+            X = self.time_weight(
+                X, time_weighted=self.time_weighted, data_split=data_split)
+
+        if data_split == 'train':
             self.train_X = xs
             self.train_y = y
-        elif type == 'test':
+        elif data_split == 'test':
             self.test_X = xs
             self.test_y = y
         return
@@ -209,6 +333,7 @@ def modeller(prod_df,
              prod_col_dict,
              meta_df, meta_col_dict,
              kernel_type='polynomial_log',
+             time_weighted=False,
              X_parameters=[],
              Y_parameter=None,
              test_split=0.2,
@@ -260,7 +385,7 @@ def modeller(prod_df,
         Type of kernel type for the statistical model
 
         - **polynomial**, a paraboiloidal polynomial with a dynamic number of
-          covariates (Xs) and degrees (n). For example, with 2 covariates and a 
+          covariates (Xs) and degrees (n). For example, with 2 covariates and a
           degree of 2, the formula would be:
           Y(α , X) = α_0 + α_1 X_1 + α_2 X_2 + α_3 X_1 X_2 + α_4 X_1^2 + α_5 X_2^2
         - **polynomial_log**, same as above except with an added log(POA) term.
@@ -299,7 +424,7 @@ def modeller(prod_df,
 
     # Split into test-train
     mask = np.array(range(len(prod_df))) < int(
-        len(prod_df) * (1-test_split))
+        len(prod_df) * (1 - test_split))
     train_prod_df = prod_df.iloc[mask]
     test_prod_df = prod_df.iloc[~mask]
 
@@ -309,16 +434,24 @@ def modeller(prod_df,
     test_X = _array_from_df(test_prod_df, X_parameters)
 
     if kernel_type == 'default':
-        model = DefaultModel(verbose=verbose)
+        model = DefaultModel(time_weighted=time_weighted, verbose=verbose)
     elif kernel_type == 'polynomial':
-        model = PolynomialModel(degree=degree, verbose=verbose)
+        model = PolynomialModel(
+            time_weighted=time_weighted, degree=degree, verbose=verbose)
     elif kernel_type == 'polynomial_log':
-        model = PolynomialLogEModel(degree=degree, verbose=verbose)
+        model = PolynomialLogEModel(
+            time_weighted=time_weighted, degree=degree, verbose=verbose)
     elif kernel_type == 'diode_inspired':
-        model = DiodeInspiredModel(verbose=verbose)
+        model = DiodeInspiredModel(
+            time_weighted=time_weighted, verbose=verbose)
 
-    model.construct(train_X, train_y, type='train')
-    model.construct(test_X, test_y, type='test')
+    model.train_index = train_prod_df.index
+    model.test_index = test_prod_df.index
+
+    # Always construct train first in case of using time_weighted,
+    # which caches the time regions in training to reuse in testing.
+    model.construct(train_X, train_y, data_split='train')
+    model.construct(test_X, test_y, data_split='test')
     model.train()
     model.predict()
-    return model
+    return model, train_prod_df, test_prod_df

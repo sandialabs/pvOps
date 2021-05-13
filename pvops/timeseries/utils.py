@@ -1,13 +1,6 @@
 # Standard
 import datetime
-import warnings
-
-# Third party
-
 import pandas as pd
-import scipy
-
-warnings.filterwarnings("ignore")
 
 
 def find_and_break_days_or_hours(df, filter_bool, min_count_per_day=8, frequency='days', print_info=False):
@@ -38,11 +31,11 @@ def find_and_break_days_or_hours(df, filter_bool, min_count_per_day=8, frequency
     cut_results = []
     # Break df into days
     for k in range(len(index_list)):
-        if k == (len(index_list)-1):
+        if k == (len(index_list) - 1):
             # append last day
             cut_results.append(df[index_list[k]:-1])
         else:
-            cut_results.append(df[index_list[k]:index_list[k+1]])
+            cut_results.append(df[index_list[k]:index_list[k + 1]])
 
     cut_results[-1] = pd.concat([cut_results[-1], df.iloc[[-1]]])
 
