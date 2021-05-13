@@ -11,6 +11,8 @@ def _array_from_df(df, X_parameters):
 
 
 class Model:
+    """Linear model kernel
+    """
     def __init__(self, estimators=None):
         self.train_index = None
         self.test_index = None
@@ -21,7 +23,7 @@ class Model:
 
     def train(self):
         """
-        Least-squares implementation on multiple covariates
+        Train the model.
         """
         if self.verbose >= 1:
             print("\nBegin training.")
@@ -31,7 +33,8 @@ class Model:
             self._evaluate(name, info, self.train_X, self.train_y)
 
     def _evaluate(self, name, info, X, y, data_split='train'):
-        # Make predictions using the testing set
+        """Evaluate the model.
+        """
         pred = info['estimator'].predict(X)
         mse = mean_squared_error(y, pred)
         r2 = r2_score(y, pred)
@@ -74,6 +77,8 @@ class Model:
             info['test_eval'] = {'mse': mse, 'r2': r2}
 
     def predict(self):
+        """Predict using the model.
+        """
         if self.verbose >= 1:
             print("\nBegin testing.")
 
@@ -103,6 +108,9 @@ def _map_season(df_index):
 
 
 class TimeWeightedProcess:
+    """Generate time-oriented dummy variables for linear regression. Available timeframes
+    include "month", "season", and "hour".
+    """
     def __init__(self, verbose=0):
         self.verbose = verbose
         self.set_time_bins = None
@@ -159,6 +167,8 @@ class TimeWeightedProcess:
 
 
 class DefaultModel(Model, TimeWeightedProcess):
+    """Generate a simple model using the input data, without any data transposition.
+    """
     def __init__(self, time_weighted=None, verbose=0):
         super().__init__()
         self.verbose = verbose
@@ -178,7 +188,9 @@ class DefaultModel(Model, TimeWeightedProcess):
 
 
 class PolynomialModel(Model, TimeWeightedProcess):
-    def __init__(self, degree=3, time_weighted=None, verbose=0):
+    """Add all interactions between terms with a degree.
+    """
+    def __init__(self, degree=2, time_weighted=None, verbose=0):
         super().__init__()
         self.degree = degree
         self.time_weighted = time_weighted
@@ -235,6 +247,11 @@ class PolynomialModel(Model, TimeWeightedProcess):
 
 
 class PolynomialLogEModel(Model, TimeWeightedProcess):
+    """Add all interactions between terms with degree and add log(Irradiance) term.
+    
+    For example, with two covariates and a degree of 2, 
+    Y(α , X) = α_0 + α_1 X_1 + α_2 X_2 + α_3 X_1 X_2 + α_4 X_1^2 + α_5 X_2^2
+    """
     def __init__(self, degree=3, time_weighted=None, verbose=0):
         super().__init__()
         self.degree = degree
@@ -297,6 +314,10 @@ class PolynomialLogEModel(Model, TimeWeightedProcess):
 
 
 class DiodeInspiredModel(Model, TimeWeightedProcess):
+    """Generate a regression kernel derived from the diode model, originally meant to model voltage.
+    
+    (static equation):  Y(α , X) = α_0 + α_1 POA + α_2 Temp + α_3 ln(POA) + α_4 ln(Temp)
+    """
     def __init__(self, time_weighted=None, verbose=0):
         super().__init__()
         self.time_weighted = time_weighted

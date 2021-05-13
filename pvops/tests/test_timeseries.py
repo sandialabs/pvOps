@@ -19,7 +19,7 @@ example_prod2path = os.path.join(datadir, 'example_prod_with_covariates.csv')
 # Format for dictionaries is {pvops variable: user-specific column names}
 prod_col_dict = {'siteid': 'randid',
                  'timestamp': 'Date',
-                 'power': 'AC_POWER',
+                 'powerprod': 'AC_POWER',
                  'energyprod': 'Energy',
                  'irradiance': 'POAirradiance',
                  'baseline': 'IEC_pstep',
