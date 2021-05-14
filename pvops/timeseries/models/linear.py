@@ -1,6 +1,6 @@
 # Source
 import itertools
-from sklearn.linear_model import LinearRegression
+from sklearn.linear_model import LinearRegression, RANSACRegressor
 import numpy as np
 from sklearn.metrics import mean_squared_error, r2_score
 import pandas as pd
@@ -19,6 +19,8 @@ class Model:
         # Other solvers, like RANSAC or THEIL SEN can be added by user
         self.estimators = estimators or {'OLS':
                                          {'estimator': LinearRegression()},
+                                         'RANSAC':
+                                         {'estimator': RANSACRegressor()}
                                          }
 
     def train(self):
@@ -49,17 +51,17 @@ class Model:
                   % mse)
             print(f'[{name}] Coefficient of determination: %.2f'
                   % r2)
-            try:
+            if not isinstance(coeffs, type(None)):
                 print(f'[{name}] {len(coeffs)} coefficient trained.')
-            except:
+            else:
                 # For RANSAC and others
                 pass
 
         if self.verbose >= 2:
             # The coefficients
-            try:
+            if not isinstance(coeffs, type(None)):
                 print(f'[{name}] Coefficients generated: \n', coeffs)
-            except:
+            else:
                 # For RANSAC and others
                 pass
 
