@@ -1,4 +1,4 @@
-.. _whatsnew_0100:
+.. _whatsnew_beta:
 
 beta 
 -----------------------
