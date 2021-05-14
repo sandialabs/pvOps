@@ -1,9 +1,10 @@
 pvOps Examples
 ==============
 
+Check out the examples below!
+
 .. toctree::
    :maxdepth: 2
-   :hidden:
    :caption: List of examples:
 
    examples/tutorial_iv_simulator.nblink
