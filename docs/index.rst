@@ -10,6 +10,7 @@ pvops: a python package for PV operators & researchers
 
    modules
    examples
+   whatsnew
    contributing
 
 Introduction
