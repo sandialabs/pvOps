@@ -1,4 +1,8 @@
-# pvops
+# pvOps
+[![GitHub version](https://badge.fury.io/gh/tgunda%2FpvOps.svg)](https://badge.fury.io/gh/tgunda%2FpvOps)
+[![License](https://img.shields.io/pypi/l/pvOps?color=green)](https://github.com/tgunda/pvOps/blob/master/LICENSE)
+[![ActionStatus](https://github.com/tgunda/pvOps/workflows/lint%20and%20test/badge.svg)](https://github.com/tgunda/pvOps/actions)
+
 pvops contains a series of functions to facilitate fusion of text-based data with time series production data collected at photovoltaic sites. The package also contains example datasets and tutorials to help demonstrate how the functions can be used.
 
 Installation
@@ -31,6 +35,7 @@ Contributing
 
 The long-term success of pvops requires community support. Please see the [Contributing page](https://pvops.readthedocs.io/en/latest/) for more on how you can contribute.
 
+[![Contributors Display](https://badges.pufler.dev/contributors/tgunda/pvOps?size=50&padding=5&bots=true)](https://badges.pufler.dev)
 
 Copyright and License
 =======
