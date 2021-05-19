@@ -316,7 +316,7 @@ def plot_profiles(df, colx, coly, iv_col_dict, cmap_name='brg'):
         if all_equal:
             x = subdf[colx].values[0]
         else:
-            x = range(len(subdf[colx]))
+            x = range(len(subdf[colx].values[0]))
         s2ismean = np.array(s2is).mean(axis=0)
         s2isstd = np.array(s2is).std(axis=0)
         s2lowerbound = [s2ismean[i] - s2isstd[i] for i in range(len(s2ismean))]
@@ -459,7 +459,7 @@ class IVClassifier:
         self.model_name = nn_config["model_choice"]
         self.params = nn_config["params"]
 
-    def structure(self, train, test, nn_config):
+    def structure(self, train, test):
         """Structure the data according to the chosen network model's input structure.
 
         Parameters
@@ -524,6 +524,24 @@ class IVClassifier:
         self.train_y = train['mode'].values
         self.encoded_length = len(self.lb.classes_)
 
+
+        if self.encoded_length == 1:
+            raise ValueError("Only one failure mode was passed in dataset. "
+                             "Add samples with other failure modes.")
+        if self.encoded_length == 2:
+            # Binary classification detected
+            self.loss_defn = 'binary_crossentropy'
+            self.metric_defn = 'binary_accuracy'
+
+            # Cover case where only two classes are passed.
+            # With 2 classes, the binarizer will summarize
+            # the classes in one number
+            self.encoded_length = (self.encoded_length if
+                                   self.encoded_length > 2 else 1)
+        else:
+            self.loss_defn = 'categorical_crossentropy'
+            self.metric_defn = 'categorical_accuracy'
+
         if self.model_name == '1DCNN':
             self.train_x = _convert_ivdata_to_cnn_structure(train, self.params)
             self.test_x = _convert_ivdata_to_cnn_structure(test, self.params)
@@ -552,9 +570,9 @@ class IVClassifier:
                                  units=self.nn_config['units'],
                                  dropout_pct=self.nn_config['dropout_pct'])
 
-        self.model.compile(loss='categorical_crossentropy',
+        self.model.compile(loss=self.loss_defn,
                            optimizer='adam',
-                           metrics=['categorical_accuracy'])
+                           metrics=[self.metric_defn])
 
         if self.verbose >= 1:
             print(self.model.summary())
@@ -576,6 +594,8 @@ class IVClassifier:
                     self.train_x, train_idx)
                 xte = _grab_structure_lstm_multihead_structure(
                     self.train_x, test_idx)
+            print(np.asarray(ytr).shape)
+            print(np.asarray(yte).shape)
             self.model.fit(xtr, ytr, epochs=self.nn_config["max_epochs"],
                            batch_size=self.nn_config["batch_size"],
                            verbose=self.verbose-1)

@@ -7,6 +7,7 @@ sys.path.append(iv_directory)
 
 from models import nn
 import simulator
+import preprocess
 
 def test_simulation():
     random.seed(0)
@@ -101,14 +102,24 @@ def test_classification():
     condition = {'identifier': 'shade', 'Il_mult': 0.6}
     sim.add_preset_conditions('complete', condition,
                               save_name='Complete_shading')
-    dicts = {'Il_mult':{'mean': 0.6,
-                        'std': 0.7,
-                        'low': 0.33,
-                        'upp': 0.95,
-                        }
-            }
-    sim.generate_many_samples('shade', 50, dicts)
+    dicts = {'Il_mult': {'mean': 0.6,
+                         'std': 0.7,
+                         'low': 0.33,
+                         'upp': 0.95,
+                         }
+             }
+    sim.generate_many_samples('shade', 100, dicts)
 
+    sim.build_strings({
+                        'Pristine array': ['pristine'] * 12,
+                        'Partial Soiling (1M)': ['pristine'] * 11 +
+                                                ['Complete_shading'] * 1,
+                        'Partial Soiling (6M)': ['pristine'] * 6 +
+                                                ['Complete_shading'] * 6
+                       }
+                      )
+
+    sim.simulate()
     df = sim.sims_to_df(focus=['string'], cutoff=True)
 
     iv_col_dict = {
@@ -131,7 +142,6 @@ def test_classification():
     # Shuffle
     bigdf = prep_df.sample(frac=1).reset_index(drop=True)
     bigdf.dropna(inplace=True)
-    bigdf.head(n=2)
 
     feat_df = nn.feature_generation(bigdf, iv_col_dict)
 
@@ -140,11 +150,14 @@ def test_classification():
         "model_choice": "1DCNN", # or "LSTM_multihead"
         "params": ['current', 'power', 'derivative', 'current_diff'],
         "dropout_pct": 0.5,
-        "verbose": 1,
+        "verbose": 0,
         # Training parameters
-        "train_size": 0.9,
+        "train_size": 0.6,
         "shuffle_split": True,
         "balance_tactic": 'truncate',
+        "n_CV_splits": 2,
+        "batch_size": 2,
+        "max_epochs": 100,
         # LSTM parameters
         "use_attention_lstm": False,
         "units": 50,
@@ -154,4 +167,6 @@ def test_classification():
     }
 
     iv_col_dict = {'mode': 'mode'}
-    nn.classify_curves()
+    nn.classify_curves(feat_df, iv_col_dict, nn_config)
+
+test_classification()
