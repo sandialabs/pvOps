@@ -14,4 +14,4 @@ pvanalytics
 timezonefinder
 pyDOE
 keras
-tensorflow
+tensorflow==2.1.0
