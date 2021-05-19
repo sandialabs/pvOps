@@ -110,12 +110,11 @@ def test_classification():
              }
     sim.generate_many_samples('shade', 100, dicts)
 
-    sim.build_strings({
-                        'Pristine array': ['pristine'] * 12,
-                        'Partial Soiling (1M)': ['pristine'] * 11 +
-                                                ['Complete_shading'] * 1,
-                        'Partial Soiling (6M)': ['pristine'] * 6 +
-                                                ['Complete_shading'] * 6
+    sim.build_strings({'Pristine array': ['pristine'] * 12,
+                       'Partial Soiling (1M)': ['pristine'] * 11 +
+                                               ['Complete_shading'] * 1,
+                       'Partial Soiling (6M)': ['pristine'] * 6 +
+                                               ['Complete_shading'] * 6
                        }
                       )
 
@@ -147,16 +146,16 @@ def test_classification():
 
     nn_config = {
         # NN parameters
-        "model_choice": "1DCNN", # or "LSTM_multihead"
+        "model_choice": "1DCNN",
         "params": ['current', 'power', 'derivative', 'current_diff'],
         "dropout_pct": 0.5,
-        "verbose": 0,
+        "verbose": 1,
         # Training parameters
-        "train_size": 0.6,
+        "train_size": 0.8,
         "shuffle_split": True,
         "balance_tactic": 'truncate',
         "n_CV_splits": 2,
-        "batch_size": 2,
+        "batch_size": 10,
         "max_epochs": 100,
         # LSTM parameters
         "use_attention_lstm": False,
@@ -167,6 +166,9 @@ def test_classification():
     }
 
     iv_col_dict = {'mode': 'mode'}
-    nn.classify_curves(feat_df, iv_col_dict, nn_config)
+    model = nn.classify_curves(feat_df, iv_col_dict, nn_config)
 
-test_classification()
+    if model.test_accuracy > 0.9:
+        assert True
+    else:
+        assert False

@@ -13,3 +13,4 @@ pvlib
 pvanalytics
 timezonefinder
 pyDOE
+keras

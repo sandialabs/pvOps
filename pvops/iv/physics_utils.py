@@ -53,7 +53,7 @@ def calculate_IVparams(v, c):
         voc_size = voc_lim
 
     voc_lm = LinearRegression().fit(c[::-1][:voc_size].reshape(-1, 1),
-                                                         v[::-1][:voc_size].reshape(-1, 1))
+                                    v[::-1][:voc_size].reshape(-1, 1))
     voc = voc_lm.predict(np.asarray([0]).reshape(-1, 1))[0][0]
     rs = voc_lm.coef_[0][0] * -1
 

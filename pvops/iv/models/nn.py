@@ -9,6 +9,7 @@ import keras
 from keras.layers import Lambda, concatenate
 from keras.layers import LSTM, Flatten, Input, Dropout, Dense, Conv1D
 from keras.models import Sequential, Model
+from keras.utils import to_categorical
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -143,7 +144,7 @@ def feature_generation(bigdf, iv_col_dict,
     for ind, row in sub.iterrows():
         Is2 = row[current_col]
         finite_derivatives.append(
-            np.array([0]+[j-i for i, j in zip(Is2[:-1], Is2[1:])]))
+            np.array([0] + [j - i for i, j in zip(Is2[:-1], Is2[1:])]))
     sub[derivative_col] = finite_derivatives
     return sub
 
@@ -361,12 +362,12 @@ def _convert_ivdata_to_lstm_multihead_structure(df, params, n_filters=10.):
         # len: num vals in each sublist
         maxlen = len(lst)
         i = 0
-        l = []
-        while i+ln < maxlen:
-            x = lst[i:i+ln]
-            l.append(x)
+        lol = []
+        while i + ln < maxlen:
+            x = lst[i:i + ln]
+            lol.append(x)
             i += ln
-        return l
+        return lol
 
     print(f'Making {n_filters} and sample {len(data_features[0][0])}')
     length = int(len(data_features[0][0]) / n_filters)  # lists
@@ -524,23 +525,16 @@ class IVClassifier:
         self.train_y = train['mode'].values
         self.encoded_length = len(self.lb.classes_)
 
-
+        self.is_binary = False
         if self.encoded_length == 1:
             raise ValueError("Only one failure mode was passed in dataset. "
                              "Add samples with other failure modes.")
         if self.encoded_length == 2:
             # Binary classification detected
-            self.loss_defn = 'binary_crossentropy'
-            self.metric_defn = 'binary_accuracy'
+            self.is_binary = True
 
-            # Cover case where only two classes are passed.
-            # With 2 classes, the binarizer will summarize
-            # the classes in one number
-            self.encoded_length = (self.encoded_length if
-                                   self.encoded_length > 2 else 1)
-        else:
-            self.loss_defn = 'categorical_crossentropy'
-            self.metric_defn = 'categorical_accuracy'
+        self.loss_defn = 'categorical_crossentropy'
+        self.metric_defn = 'categorical_accuracy'
 
         if self.model_name == '1DCNN':
             self.train_x = _convert_ivdata_to_cnn_structure(train, self.params)
@@ -565,8 +559,7 @@ class IVClassifier:
             self._lstm_multihead((n_sequences, n_samples_in_sequence),
                                  num_params,
                                  use_attention_LSTM=self.nn_config[
-                                                        'use_attention_lstm'
-                                                        ],
+                                 'use_attention_lstm'],
                                  units=self.nn_config['units'],
                                  dropout_pct=self.nn_config['dropout_pct'])
 
@@ -587,6 +580,10 @@ class IVClassifier:
             ytr = self.lb.transform(self.train_y[train_idx])
             yte = self.lb.transform(self.train_y[test_idx])
 
+            if self.is_binary:
+                ytr = to_categorical(ytr)
+                yte = to_categorical(yte)
+
             if self.model_name == '1DCNN':
                 xtr, xte = self.train_x[train_idx], self.train_x[test_idx]
             elif self.model_name == 'LSTM_multihead':
@@ -594,15 +591,13 @@ class IVClassifier:
                     self.train_x, train_idx)
                 xte = _grab_structure_lstm_multihead_structure(
                     self.train_x, test_idx)
-            print(np.asarray(ytr).shape)
-            print(np.asarray(yte).shape)
             self.model.fit(xtr, ytr, epochs=self.nn_config["max_epochs"],
                            batch_size=self.nn_config["batch_size"],
-                           verbose=self.verbose-1)
+                           verbose=self.verbose - 1)
             scores = self.model.evaluate(xte, yte, verbose=self.verbose)
             if self.verbose >= 1:
                 print("%s: %.2f%%" %
-                      (self.model.metrics_names[1], scores[1]*100))
+                      (self.model.metrics_names[1], scores[1] * 100))
             cvscores.append(scores[1] * 100)
         return
 
@@ -621,11 +616,12 @@ class IVClassifier:
         decoded_preds = np.zeros(yhat.shape)
         decoded_preds[np.arange(decoded_preds.shape[0]), idx] = 1
         decoded_preds = self.lb.inverse_transform(decoded_preds)
+
+        self.test_accuracy = accuracy_score(self.test_y, decoded_preds)
         print(classification_report(
             self.test_y, decoded_preds))
         print(confusion_matrix(self.test_y, decoded_preds))
-        print('accuracy on test: ',
-              accuracy_score(self.test_y, decoded_preds))
+        print('accuracy on test: ', self.test_accuracy)
 
     def _1dcnn(self, input_shape,
                nfilters=64,
@@ -664,14 +660,16 @@ class IVClassifier:
             hidden_out = []
             for i in range(n_features):
                 hidden_out.append(
-                    Lambda(lambda x: x[:, -1, :], output_shape=(hidden_size[i],))(dropouts[i]))
+                    Lambda(lambda x: x[:, -1, :],
+                           output_shape=(hidden_size[i],)
+                           )(dropouts[i]))
 
             pre_mlp = concatenate(hidden_out, name='attention_output')
 
         else:
             pre_mlp = concatenate(dropouts)
 
-        d = Dense(int(((units-self.encoded_length) / 2)+self.encoded_length),
+        d = Dense(int(((units - self.encoded_length) / 2) + self.encoded_length),
                   activation='relu', kernel_initializer='normal')(pre_mlp)
 
         activations = Dense(
