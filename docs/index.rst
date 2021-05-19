@@ -4,16 +4,6 @@
 pvops: a python package for PV operators & researchers
 ******************************************************
 
-.. toctree::
-   :maxdepth: 3
-   :caption: Contents:
-
-   modules
-   examples
-   references
-   whatsnew
-   contributing
-
 Introduction
 ============
 pvops is a python package for PV operators & researchers. It is a collection of functions for working with text-based data from photovoltaic power systems. The library includes functions for processing text data as well as fusion of the text information with time series data for visualization of contextual details for data analysis. 
@@ -25,6 +15,16 @@ How to access pvops
 +------------------------+
 
 If you are interested in contributing to pvops, then you can also access this package through the GitHub repository: ``git clone https://github.com/tgunda/pvOps.git``.
+
+.. toctree::
+    :maxdepth: 3
+    :caption: Contents:
+ 
+    modules
+    examples
+    references
+    whatsnew
+    contributing 
 
 Text Subpackage Layout
 ======================

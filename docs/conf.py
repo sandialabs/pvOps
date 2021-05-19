@@ -26,7 +26,8 @@ MODULES = ['numpy', 'nltk', 'sklearn.pipeline', 'sklearn.model_selection',
            "plotly.graph_objects", "scipy.signal", 'matplotlib.colors',
            'seaborn', 'matplotlib.ticker', 'scipy.signal.find_peaks',
            'pvlib', 'pvanalytics', 'timezonefinder', 'sklearn', "pyDOE",
-           "sklearn.metrics"]
+           "sklearn.metrics", "scipy.interpolate", "keras", "keras.layers",
+           "sklearn.utils", "sklearn.preprocessing", "keras.models"]
 
 for module in MODULES:
     sys.modules[module] = mock.Mock()

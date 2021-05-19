@@ -1,12 +1,12 @@
+import random
 import os
 import sys
 
 iv_directory = os.path.join("pvops", "iv")
 sys.path.append(iv_directory)
 
-import random
+from models import nn
 import simulator
-
 
 def test_simulation():
     random.seed(0)
@@ -93,9 +93,65 @@ def test_simulation():
     assert len(df[df['level'] == 'string']) == n_str_samples
     assert len(df[df['level'] == 'module']) == n_mod_samples
 
-    # test visualizing
-    # sim.visualize()
-    # truth_identity_max_len = 'heavy_shade'
-    # truth_max_len = 28
-    # assert sim.maxIdent == truth_identity_max_len
-    # assert sim.maxL == truth_max_len
+
+def test_classification():
+
+    sim = simulator.Simulator()
+
+    condition = {'identifier': 'shade', 'Il_mult': 0.6}
+    sim.add_preset_conditions('complete', condition,
+                              save_name='Complete_shading')
+    dicts = {'Il_mult':{'mean': 0.6,
+                        'std': 0.7,
+                        'low': 0.33,
+                        'upp': 0.95,
+                        }
+            }
+    sim.generate_many_samples('shade', 50, dicts)
+
+    df = sim.sims_to_df(focus=['string'], cutoff=True)
+
+    iv_col_dict = {
+        "mode": "mode",
+        "current": "current",            # Populated in simulator
+        "voltage": "voltage",            # Populated in simulator
+        "irradiance": "E",               # Populated in simulator
+        "temperature": "T",              # Populated in simulator
+        "power": "power",                # Populated in preprocess
+        "derivative": "derivative",      # Populated in feature_generation
+        "current_diff": "current_diff",  # Populated in feature_generation
+    }
+
+    # Irradiance & Temperature correction, and normalize axes
+    prep_df = preprocess.preprocess(df, 0.05, iv_col_dict,
+                                    resmpl_cutoff=0.03, correct_gt=True,
+                                    normalize_y=False,
+                                    CECmodule_parameters=sim.module_parameters,
+                                    n_mods=12, gt_correct_option=3)
+    # Shuffle
+    bigdf = prep_df.sample(frac=1).reset_index(drop=True)
+    bigdf.dropna(inplace=True)
+    bigdf.head(n=2)
+
+    feat_df = nn.feature_generation(bigdf, iv_col_dict)
+
+    nn_config = {
+        # NN parameters
+        "model_choice": "1DCNN", # or "LSTM_multihead"
+        "params": ['current', 'power', 'derivative', 'current_diff'],
+        "dropout_pct": 0.5,
+        "verbose": 1,
+        # Training parameters
+        "train_size": 0.9,
+        "shuffle_split": True,
+        "balance_tactic": 'truncate',
+        # LSTM parameters
+        "use_attention_lstm": False,
+        "units": 50,
+        # 1DCNN parameters
+        "nfilters": 64,
+        "kernel_size": 12,
+    }
+
+    iv_col_dict = {'mode': 'mode'}
+    nn.classify_curves()

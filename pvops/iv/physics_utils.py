@@ -1,7 +1,7 @@
 import numpy as np
 import scipy
-import sklearn
 import math
+from sklearn.linear_model import LinearRegression
 
 def calculate_IVparams(v, c):
     """Calculate parameters of IV curve. 
@@ -41,7 +41,7 @@ def calculate_IVparams(v, c):
         isc_size = int(len(c) * isc_lim)
     else:
         isc_size = isc_lim
-    isc_lm = sklearn.linear_model.LinearRegression().fit(
+    isc_lm = LinearRegression().fit(
         v[:isc_size].reshape(-1, 1), c[:isc_size].reshape(-1, 1))
     isc = isc_lm.predict(np.asarray([0]).reshape(-1, 1))[0][0]
     rsh = 1 / (isc_lm.coef_[0][0] * -1)
@@ -52,7 +52,7 @@ def calculate_IVparams(v, c):
     else:
         voc_size = voc_lim
 
-    voc_lm = sklearn.linear_model.LinearRegression().fit(c[::-1][:voc_size].reshape(-1, 1),
+    voc_lm = LinearRegression().fit(c[::-1][:voc_size].reshape(-1, 1),
                                                          v[::-1][:voc_size].reshape(-1, 1))
     voc = voc_lm.predict(np.asarray([0]).reshape(-1, 1))[0][0]
     rs = voc_lm.coef_[0][0] * -1
@@ -347,7 +347,7 @@ def voltage_pts(npts, v_oc, v_rbd):
     return pts
 
 
-def gt_correction(v, i, gact, tact, cecparams, n_units=1, option=1):
+def gt_correction(v, i, gact, tact, cecparams, n_units=1, option=3):
     """IV Trace Correction using irradiance and temperature.
     Three correction options are provided, two of which are from an IEC standard.
 
@@ -407,7 +407,8 @@ def gt_correction(v, i, gact, tact, cecparams, n_units=1, option=1):
                           ) - rs * (iref - i) - k2 * iref * (tref - tact)
 
     elif option == 3:
-        vref = (v * (math.log10(gref) / math.log10(gact)) - (beta * (tact - tref)))
+        vref = (v * (math.log10(gref) / math.log10(gact)) -
+                (beta * (tact - tref)))
         iref = (i * (gref / gact)) - (alpha * (tact - tref))
 
     return vref, iref
