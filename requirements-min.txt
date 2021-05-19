@@ -13,4 +13,4 @@ pvlib
 pvanalytics
 timezonefinder
 pyDOE
-keras
+keras==2.3.0
