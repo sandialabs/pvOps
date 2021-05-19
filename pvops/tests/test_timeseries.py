@@ -107,7 +107,6 @@ def test_prod_inverter_clipping_filter():
 
 def test_linear_model():
     prod_df = pd.read_csv(example_prod2path)
-    meta_df = pd.read_csv(example_metapath)
 
     # Format for dictionaries is {pvops variable: user-specific column names}
     prod_col_dict = {'siteid': 'randid',
@@ -119,10 +118,6 @@ def test_linear_model():
                      'dcsize': 'dcsize',
                      'compared': 'Compared',
                      'energy_pstep': 'Energy_pstep'}
-
-    metad_col_dict = {'siteid': 'randid',
-                      'dcsize': 'DC_Size_kW',
-                      'COD': 'COD'}
 
     prod_data_converted = t2tprep.prod_date_convert(prod_df, prod_col_dict)
     prod_data_datena_d, _ = t2tprep.prod_nadate_process(
@@ -138,8 +133,6 @@ def test_linear_model():
 
     model, train_df, test_df = linear.modeller(model_prod_data,
                                                prod_col_dict,
-                                               meta_df,
-                                               metad_col_dict,
                                                kernel_type='default',
                                                time_weighted='month',
                                                X_parameters=[

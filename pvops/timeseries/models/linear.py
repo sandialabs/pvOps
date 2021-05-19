@@ -171,8 +171,8 @@ class TimeWeightedProcess:
 class DefaultModel(Model, TimeWeightedProcess):
     """Generate a simple model using the input data, without any data transposition.
     """
-    def __init__(self, time_weighted=None, verbose=0):
-        super().__init__()
+    def __init__(self, time_weighted=None, estimators=None, verbose=0):
+        super().__init__(estimators)
         self.verbose = verbose
         self.time_weighted = time_weighted
 
@@ -192,8 +192,11 @@ class DefaultModel(Model, TimeWeightedProcess):
 class PolynomialModel(Model, TimeWeightedProcess):
     """Add all interactions between terms with a degree.
     """
-    def __init__(self, degree=2, time_weighted=None, verbose=0):
-        super().__init__()
+    def __init__(self, degree=2,
+                 estimators=None,
+                 time_weighted=None,
+                 verbose=0):
+        super().__init__(estimators)
         self.degree = degree
         self.time_weighted = time_weighted
         self.verbose = verbose
@@ -254,8 +257,11 @@ class PolynomialLogEModel(Model, TimeWeightedProcess):
     For example, with two covariates and a degree of 2, 
     Y(α , X) = α_0 + α_1 X_1 + α_2 X_2 + α_3 X_1 X_2 + α_4 X_1^2 + α_5 X_2^2
     """
-    def __init__(self, degree=3, time_weighted=None, verbose=0):
-        super().__init__()
+    def __init__(self, degree=3,
+                 estimators=None,
+                 time_weighted=None,
+                 verbose=0):
+        super().__init__(estimators)
         self.degree = degree
         self.time_weighted = time_weighted
         self.verbose = verbose
@@ -320,8 +326,11 @@ class DiodeInspiredModel(Model, TimeWeightedProcess):
 
     (static equation):  Y(α , X) = α_0 + α_1 POA + α_2 Temp + α_3 ln(POA) + α_4 ln(Temp)
     """
-    def __init__(self, time_weighted=None, verbose=0):
-        super().__init__()
+    def __init__(self,
+                 estimators=None,
+                 time_weighted=None,
+                 verbose=0):
+        super().__init__(estimators)
         self.time_weighted = time_weighted
         self.verbose = verbose
 
@@ -345,11 +354,11 @@ class DiodeInspiredModel(Model, TimeWeightedProcess):
 
 def modeller(prod_df,
              prod_col_dict,
-             meta_df, meta_col_dict,
-             kernel_type='polynomial_log',
-             time_weighted=False,
+             kernel_type='default',
+             time_weighted='month',
              X_parameters=[],
              Y_parameter=None,
+             estimators=None,
              test_split=0.2,
              degree=3,
              verbose=0):
@@ -358,7 +367,7 @@ def modeller(prod_df,
     Parameters
 
     ----------
-    train_prod_df: DataFrame
+    prod_df: DataFrame
         A data frame corresponding to the production data
         used for model development and evaluation. This data frame needs
         at least the columns specified in prod_col_dict.
@@ -380,39 +389,71 @@ def modeller(prod_df,
         - **dcsize**, (*string*), should be assigned to
           preferred column name for site capacity in prod_df
 
-    meta_df: DataFrame
-        A data frame corresponding to site metadata.
-        At the least, the columns in meta_col_dict be
-        present.
-
-    meta_col_dict: dict of {str : str}
-        A dictionary that contains the column names relevant
-        for the meta-data
-
-        - **siteid** (*string*), should be assigned to site-ID
-          column name
-        - **dcsize** (*string*), should be assigned to
-          column name corresponding to site capacity, where
-          data is in [kW]
-
     kernel_type : str
         Type of kernel type for the statistical model
 
-        - **polynomial**, a paraboiloidal polynomial with a dynamic number of
+        - 'default', establishes a kernel where one component is instantiated
+          in the model for each feature.
+        - 'polynomial', a paraboiloidal polynomial with a dynamic number of
           covariates (Xs) and degrees (n). For example, with 2 covariates and a
           degree of 2, the formula would be:
           Y(α , X) = α_0 + α_1 X_1 + α_2 X_2 + α_3 X_1 X_2 + α_4 X_1^2 + α_5 X_2^2
-        - **polynomial_log**, same as above except with an added log(POA) term.
-        - **diode_inspired**, reverse-engineered formula from single diode formula, initially
+        - 'polynomial_log', same as above except with an added log(POA) term.
+        - 'diode_inspired', reverse-engineered formula from single diode formula, initially
           intended for modelling voltage.
           (static equation):  Y(α , X) = α_0 + α_1 POA + α_2 Temp + α_3 ln(POA) + α_4 ln(Temp)
+
+    time_weighted : str or None
+        Interval for time-based feature generation. For each interval in this time-weight,
+        a dummy variable is established in the model prior to training. Options include:
+
+        - if 'hour', establish discrete model components for each hour of day
+        - if 'month', establish discrete model components for each month
+        - if 'season', establish discrete model components for each season
+        - if None, no time-weighted dummy-variable generation is conducted.
 
     X_parameters : list of str
         List of prod_df column names used in the model
 
     Y_parameter : str
         Optional, name of the y column. Defaults to prod_col_dict['powerprod'].
+
+    estimators : dict
+        Optional, dictionary with key as regressor identifier (str) and value as a
+        dictionary with key "estimator" and value the regressor instance following
+        sklearn's base model convention: sklearn_docs.
+
+        .. sklearn_docs: https://scikit-learn.org/stable/modules/generated/sklearn.base.is_regressor.html
+        .. code-block:: python
+
+            estimators = {'OLS': {'estimator': LinearRegression()},
+                          'RANSAC': {'estimator': RANSACRegressor()}
+                          }
+
+    test_split : float
+        A value between 0 and 1 indicating the proportion of data used for testing.
+
+    degree : int
+        Utilized for 'polynomial' and 'polynomial_log' `kernel_type` options, this 
+        parameter defines the highest degree utilized in the polynomial kernel.
+
+    verbose : int
+        Define the specificity of the print statements during this function's
+        execution.
+
+    Returns
+
+    -------
+    `model`, which is a `pvops.timeseries.models.linear.Model` object, has a useful attribute
+    `estimators`, which allows access to model performance and data splitting information.
+
+    `train_df`, which is the training split of prod_df
+
+    `test_df`, which is the testing split of prod_df
     """
+    estimators = estimators or {'OLS': {'estimator': LinearRegression()},
+                                'RANSAC': {'estimator': RANSACRegressor()}}
+
     if Y_parameter is None:
         Y_parameter = prod_col_dict['powerprod']
     if kernel_type == 'polynomial_log':
@@ -448,16 +489,26 @@ def modeller(prod_df,
     test_X = _array_from_df(test_prod_df, X_parameters)
 
     if kernel_type == 'default':
-        model = DefaultModel(time_weighted=time_weighted, verbose=verbose)
+        model = DefaultModel(time_weighted=time_weighted,
+                             estimators=estimators,
+                             verbose=verbose)
     elif kernel_type == 'polynomial':
         model = PolynomialModel(
-            time_weighted=time_weighted, degree=degree, verbose=verbose)
+            time_weighted=time_weighted,
+            estimators=estimators,
+            degree=degree,
+            verbose=verbose)
     elif kernel_type == 'polynomial_log':
         model = PolynomialLogEModel(
-            time_weighted=time_weighted, degree=degree, verbose=verbose)
+            time_weighted=time_weighted,
+            estimators=estimators,
+            degree=degree,
+            verbose=verbose)
     elif kernel_type == 'diode_inspired':
         model = DiodeInspiredModel(
-            time_weighted=time_weighted, verbose=verbose)
+            time_weighted=time_weighted,
+            estimators=estimators,
+            verbose=verbose)
 
     model.train_index = train_prod_df.index
     model.test_index = test_prod_df.index

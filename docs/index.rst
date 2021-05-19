@@ -6,7 +6,8 @@ pvops: a python package for PV operators & researchers
 
 Introduction
 ============
-pvops is a python package for PV operators & researchers. It is a collection of functions for working with text-based data from photovoltaic power systems. The library includes functions for processing text data as well as fusion of the text information with time series data for visualization of contextual details for data analysis. 
+pvops is a python package for PV operators & researchers. It consists a set of documented functions for supporting operations research of photovoltaic energy systems.
+The library leverages advances in machine learning and visualization tools to extract and visualize actionable information from common PV data including Operations & Maintenance (O&M) text data, timeseries production data, and current-voltage (IV) curves.
 
 How to access pvops
 ========================
@@ -15,16 +16,6 @@ How to access pvops
 +------------------------+
 
 If you are interested in contributing to pvops, then you can also access this package through the GitHub repository: ``git clone https://github.com/tgunda/pvOps.git``.
-
-.. toctree::
-    :maxdepth: 3
-    :caption: Contents:
- 
-    modules
-    examples
-    references
-    whatsnew
-    contributing 
 
 Text Subpackage Layout
 ======================
@@ -93,7 +84,7 @@ These functions focus on pre-processing user O&M and production data to create v
 *  ``om_nadate_process`` and ``prod_nadate_process`` are used to detect/correct any missing time-stamps in the O&M and production data respectively.
 
 Utils
-------
+-----
 These helper functions focus on performing secondary calcuations from the O&M and production data to create visualizations of the merged data.
 
 *  ``iec_calc`` is used to calculate a comparison dataset for the production data based on an irradiance as calculated by IEC calculation
@@ -110,6 +101,41 @@ These functions focus on visualizing the processed O&M and production data
 *  ``visualize_categorical_scatter`` generates categorical scatter plots of chosen variable based on specified category (e.g. site ID) for the O&M data.
 *  ``visualize_counts`` generates a count plot of categories based on a chosen categorical variable column for the O&M data.  If that variable is the user's site ID for every ticket, a plot for total count of events can be generated.
 *  ``visualize_om_prod_overlap`` creates a visualization that overlays the O&M data on top of the coinciding production data.
+
+Timeseries Subpackage Layout
+============================
+These funcions focus on timeseries preprocessing and modeling. 
+
+Preprocess
+----------
+* ``prod_inverter_clipping_filter`` is used to filter out production periods with inverter clipping. The core method was adopted from `pvlib/pvanalytics`.
+
+Model
+-----
+* ``modeller`` is a wrapper method used to model timeseries data. This method gives multiple options for the learned model structure
+
+iv Subpackage Layout
+====================
+These functions focus on current-voltage (IV) curve simulation and classification.
+
+*  ``extractor.py`` has an object called `BruteForceExtractor` which extracts diode parameters from IV curves (even outdoor-collected).
+*  ``physics_utils.py`` contains methods which match aid the IV Simulator's physics-based calculations and the preprocessing pipeline's 
+   correction calculations.
+*  ``preprocess.py`` contains the preprocessing function which corrects a set of data according to irradiance and temperature and normalizes
+   the curves so they are easily compared.
+*  ``simulator.py`` holds the `IV Simulator` which can simulate current-voltage (IV) curves under different environmental and fault conditions.
+*  ``utils.py`` holds a utility function which connects to the CEC database hosted by pvLib for cell-level and module-level parameters.
+
+
+.. toctree::
+    :maxdepth: 2
+    :caption: Available resources:
+ 
+    modules
+    examples
+    references
+    whatsnew
+    contributing 
 
 Indices and tables
 ==================
