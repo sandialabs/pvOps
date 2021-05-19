@@ -14,3 +14,4 @@ pvanalytics
 timezonefinder
 pyDOE
 keras
+tensorflow
