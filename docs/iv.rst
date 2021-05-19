@@ -40,3 +40,11 @@ iv.utils module
    :members:
    :undoc-members:
    :show-inheritance:
+
+iv.models.nn module
+-------------------
+
+.. automodule:: iv.models.nn
+   :members:
+   :undoc-members:
+   :show-inheritance:

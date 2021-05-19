@@ -1132,7 +1132,8 @@ class Simulator():
                             substr_v, substr_i = add_series(
                                 substr_v, substr_i, iter_V, iter_I)
 
-                    substr_v = bypass(substr_v, self.module_parameters['v_bypass'])
+                    substr_v = bypass(
+                        substr_v, self.module_parameters['v_bypass'])
                     self.multilevel_ivdata['module'][mod_key][f'substr{s+1}']['V'].append(
                         substr_v)
                     self.multilevel_ivdata['module'][mod_key][f'substr{s+1}']['I'].append(
@@ -1679,7 +1680,8 @@ class Simulator():
             if correct_gt:
                 if cutoff:
                     # get average g&tc for
-                    varr, iarr = gt_correction(varr, iarr, Eval, Tval, self.cell_parameters)
+                    varr, iarr = gt_correction(
+                        varr, iarr, Eval, Tval, self.cell_parameters)
 
                 else:
                     # raise issue

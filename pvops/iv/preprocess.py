@@ -3,9 +3,18 @@ import pandas as pd
 from physics_utils import gt_correction
 
 
-def preprocess(input_df, resmpl_resolution, resmpl_cutoff=0.03, correct_gt=True, normalize=True, CECmodule_parameters=None, n_mods=None):
+def preprocess(input_df, resmpl_resolution, iv_col_dict, resmpl_cutoff=0.03,
+               correct_gt=False, normalize_y=True, CECmodule_parameters=None,
+               n_mods=None, gt_correct_option=3):
     """IV processing function which supports irradiance & temperature correction
     """
+
+    current_col = iv_col_dict["current"]
+    voltage_col = iv_col_dict["voltage"]
+    power_col = iv_col_dict["power"]
+    failure_mode_col = iv_col_dict["mode"]
+    irradiance_col = iv_col_dict["irradiance"]
+    temperature_col = iv_col_dict["temperature"]
 
     # Correct for irradiance and temperature
     if correct_gt:
@@ -14,16 +23,17 @@ def preprocess(input_df, resmpl_resolution, resmpl_cutoff=0.03, correct_gt=True,
             if CECmodule_parameters is None or n_mods is None:
                 raise ValueError(
                     "You must specify CECmodule_parameters and n_mods if you want to correct the IV curves for irradiance and temperature.")
-            Vt, It = gt_correction(row['voltage'], row['current'], row['E'], row['T'],
-                                   cecparams=CECmodule_parameters, n_units=n_mods)
+            Vt, It = gt_correction(row[voltage_col], row[current_col], row[irradiance_col], row[temperature_col],
+                                   cecparams=CECmodule_parameters, n_units=n_mods, option=gt_correct_option)
             Vs.append(Vt)
             Is.append(It)
     else:
-        Is = input_df['current'].tolist()
-        Vs = input_df['voltage'].tolist()
+        Is = input_df[current_col].tolist()
+        Vs = input_df[voltage_col].tolist()
 
     v_interps = np.arange(
-        resmpl_cutoff, 1 + resmpl_resolution, resmpl_resolution)
+        resmpl_cutoff, 1, resmpl_resolution)
+    v_interps = np.append(v_interps, 1.0)
 
     procVs = []
     procIs = []
@@ -32,27 +42,26 @@ def preprocess(input_df, resmpl_resolution, resmpl_cutoff=0.03, correct_gt=True,
         Voc = max(Vs[iii])
         Vnorm = Vs[iii] / Voc
         procVs.append(v_interps)
+        interpolated_I = np.interp(v_interps, Vnorm, Is[iii])
 
-        if normalize:
-            interpolated_I = np.interp(v_interps, Vnorm, Is[iii])
+        if normalize_y:
             isc_iter = interpolated_I.max()
             procIs.append(interpolated_I / isc_iter)
 
         else:
-            interpolated_I = np.interp(v_interps, Vs[iii], Is[iii])
             procIs.append(interpolated_I)
 
     df = pd.DataFrame()
-    df['mode'] = input_df['mode']
+    df[failure_mode_col] = input_df[failure_mode_col]
 
     procIs = np.array(procIs)
     procVs = np.array(procVs)
     procPs = procIs * procVs
 
-    df['current'] = list(procIs)
-    df['voltage'] = list(procVs)
-    df['power'] = list(procPs)
-    df['E'] = input_df['E'].tolist()
-    df['T'] = input_df['T'].tolist()
+    df[current_col] = list(procIs)
+    df[voltage_col] = list(procVs)
+    df[power_col] = list(procPs)
+    df[irradiance_col] = input_df[irradiance_col].tolist()
+    df[temperature_col] = input_df[temperature_col].tolist()
 
     return df
