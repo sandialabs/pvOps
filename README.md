@@ -42,4 +42,3 @@ Copyright and License
 =======
 
 pvops is copyright through Sandia National Laboratories. The software is distributed under the Revised BSD License. See [copyright and license](https://github.com/tgunda/pvops/blob/master/LICENSE) for more information.
-

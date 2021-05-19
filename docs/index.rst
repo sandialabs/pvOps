@@ -1,8 +1,10 @@
 .. _index:
 
-******************************************************
-pvops: a python package for PV operators & researchers
-******************************************************
+.. image:: assets/pvops_full_logo.svg
+  :width: 600
+
+pvops
+=====
 
 Introduction
 ============
