@@ -3,10 +3,11 @@ import scipy
 import math
 from sklearn.linear_model import LinearRegression
 
-def calculate_IVparams(v, c):
-    """Calculate parameters of IV curve. 
 
-    This needs to be reworked: extrapolate parameters from linear region instead of 
+def calculate_IVparams(v, c):
+    """Calculate parameters of IV curve.
+
+    This needs to be reworked: extrapolate parameters from linear region instead of
     hardcoded regions.
 
     Parameters
@@ -385,14 +386,15 @@ def gt_correction(v, i, gact, tact, cecparams, n_units=1, option=3):
 
     beta *= n_units
 
-    params = calculate_IVparams(v, i)
-    isc = params['isc']
-    voc = params['voc']
-    rs = params['rs']
+    if option in [1, 2]:
+        params = calculate_IVparams(v, i)
+        isc = params['isc']
+        voc = params['voc']
+        rs = params['rs']
 
-    # curve correction factor, k, must be derived
-    k1 = 0
-    k2 = 0
+        # curve correction factor, k, must be derived
+        k1 = 0
+        k2 = 0
 
     if option == 1:
         # IEC60891 Procedure 1
