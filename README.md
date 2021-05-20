@@ -1,4 +1,4 @@
-![pvOps Logo](docs/assets/pvops_full_logo.svg)
+<img src="https://github.com/tgunda/pvOps/blob/master/docs/assets/pvops_full_logo.svg" width="400" />
 
 [![GitHub version](https://badge.fury.io/gh/tgunda%2FpvOps.svg)](https://badge.fury.io/gh/tgunda%2FpvOps)
 [![License](https://img.shields.io/pypi/l/pvOps?color=green)](https://github.com/tgunda/pvOps/blob/master/LICENSE)
