@@ -39,6 +39,8 @@ The long-term success of pvops requires community support. Please see the [Contr
 
 [![Contributors Display](https://badges.pufler.dev/contributors/tgunda/pvOps?size=50&padding=5&bots=true)](https://badges.pufler.dev)
 
+Logo Credit: [Daniel Rubinstein](http://www.danielrubinstein.com/)
+
 Copyright and License
 =======
 

@@ -1,10 +1,8 @@
 .. _index:
 
 .. image:: assets/pvops_full_logo.svg
-  :width: 600
+  :width: 400
 
-pvops
-=====
 
 Introduction
 ============
