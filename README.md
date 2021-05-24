@@ -1,6 +1,6 @@
 <img src="https://github.com/sandialabs/pvOps/blob/master/docs/assets/pvops_full_logo.svg" width="400"/>
 
-[![GitHub version](https://badge.fury.io/gh/tgunda%2FpvOps.svg)](https://badge.fury.io/gh/tgunda%2FpvOps)
+[![GitHub version](https://badge.fury.io/gh/sandialabs%2FpvOps.svg)](https://badge.fury.io/gh/sandialabs%2FpvOps)
 [![License](https://img.shields.io/pypi/l/pvOps?color=green)](https://github.com/sandialabs/pvOps/blob/master/LICENSE)
 [![ActionStatus](https://github.com/sandialabs/pvOps/workflows/lint%20and%20test/badge.svg)](https://github.com/sandialabs/pvOps/actions)
 [![DOI](https://zenodo.org/badge/289032705.svg)](https://zenodo.org/badge/latestdoi/289032705)
