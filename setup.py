@@ -18,7 +18,7 @@ analysis.
 
 Documentation: https://pvops.readthedocs.io/en/latest/index.html
 
-Source code: https://github.com/tgunda/pvops
+Source code: https://github.com/sandialabs/pvOps
 
 """
 
