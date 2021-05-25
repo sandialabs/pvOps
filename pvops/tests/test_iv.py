@@ -8,6 +8,7 @@ sys.path.append(iv_directory)
 from models import nn
 import simulator
 import preprocess
+import timeseries_simulator
 
 def test_simulation():
     random.seed(0)
@@ -172,3 +173,14 @@ def test_classification():
         assert True
     else:
         assert False
+
+def test_timeseries_simulator():
+    generator = timeseries_simulator.IVTimeseriesGenerator(
+        replacement_5params={'I_L_ref': 2,
+                            'I_o_ref': 2,
+                            'R_s': 2,
+                            'R_sh_ref': 3,
+                            'a_ref': 4},
+    )
+
+test_timeseries_simulator()

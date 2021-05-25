@@ -11,7 +11,8 @@ import random
 from tqdm import tqdm
 import pvlib
 from utils import get_CEC_params
-from physics_utils import voltage_pts, add_series, bypass, intersection, iv_cutoff, gt_correction
+from physics_utils import voltage_pts, add_series, bypass
+from physics_utils import intersection, iv_cutoff, gt_correction
 
 
 class Simulator():
@@ -253,12 +254,13 @@ class Simulator():
         self.acceptible_keys = ['E', 'Tc', 'Rsh_mult',
                                 'Rs_mult', 'Io_mult', 'Il_mult', 'nnsvth_mult']
 
+        # self.param_keys = ['Rsh_mult', 'Rs_mult', 'Io_mult',
+        #                    'Il_mult', 'nnsvth_mult']
+
         # Store substring, module, and string-level IV data
         # the substring data is stored within the module data
         self.multilevel_ivdata = {'string': {}, 'module': {}}
-
         self.string_cond = {}
-
         self.specific_cells_plotted = 0
 
     def _add_pristine_condition(self):
