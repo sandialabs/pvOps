@@ -18,7 +18,7 @@ analysis.
 
 Documentation: https://pvops.readthedocs.io/en/latest/index.html
 
-Source code: https://github.com/tgunda/pvops
+Source code: https://github.com/sandialabs/pvOps
 
 """
 
@@ -26,7 +26,7 @@ DISTNAME = 'pvops'
 MAINTAINER = "Thushara Gunda"
 MAINTAINER_EMAIL = 'tgunda@sandia.gov'
 LICENSE = 'Revised BSD'
-URL = 'https://github.com/tgunda/pvops'
+URL = 'https://github.com/sandialabs/pvops'
 
 TESTS_REQUIRE = [
     'pytest',

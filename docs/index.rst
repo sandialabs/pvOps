@@ -15,7 +15,7 @@ How to access pvops
 |>  ``pip install pvops``|
 +------------------------+
 
-If you are interested in contributing to pvops, then you can also access this package through the GitHub repository: ``git clone https://github.com/tgunda/pvOps.git``.
+If you are interested in contributing to pvops, then you can also access this package through the GitHub repository: ``git clone https://github.com/sandialabs/pvOps.git``.
 
 Text Subpackage Layout
 ======================
