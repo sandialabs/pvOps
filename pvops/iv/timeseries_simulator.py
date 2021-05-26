@@ -1,7 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from datetime import timedelta
-import math
 import simulator
 
 
@@ -17,7 +16,8 @@ class IVTimeseriesGenerator(simulator.Simulator):
         """
         super().__init__(**iv_sim_kwargs)
 
-    def generate(self, env_df, failures, iv_col_dict, identifier_col, plot_trends=False):
+    def generate(self, env_df, failures, iv_col_dict,
+                 identifier_col, plot_trends=False):
         """Simulate a PV system
 
         Parameters
@@ -29,7 +29,8 @@ class IVTimeseriesGenerator(simulator.Simulator):
         """
 
         self.specs_df = env_df[[
-            identifier_col, iv_col_dict["irradiance"], iv_col_dict["temperature"]]].copy()
+            identifier_col, iv_col_dict["irradiance"],
+            iv_col_dict["temperature"]]].copy()
         for failure in failures:
             # Weigh all failure definitions together
             self.specs_df = failure.add_interpolation(
@@ -46,7 +47,8 @@ class IVTimeseriesGenerator(simulator.Simulator):
             self.build_strings({f"str_{condition_dict['identifier']}":
                                 [f"mod_{condition_dict['identifier']}"] * nmods})
 
-    def _structure_Simulator_inputs(self, specs_df, iv_col_dict, identifier_col):
+    def _structure_Simulator_inputs(self, specs_df,
+                                    iv_col_dict, identifier_col):
         keys = []
         savekeys = []
         spec_df_cols = specs_df.columns
@@ -63,7 +65,8 @@ class IVTimeseriesGenerator(simulator.Simulator):
                 keys.append(key)
                 savekeys.append(savekey)
 
-        return [dict(zip(keys, l)) for l in specs_df[savekeys].values]
+        return [dict(zip(keys, vals))
+                for vals in specs_df[savekeys].values]
 
 
 class TimeseriesFailure:
@@ -77,7 +80,10 @@ class TimeseriesFailure:
         self.annual_fcn_dict = {}
         self.daily_fcn_dict = {}
 
-    def trend(self, longterm_fcn_dict=None, annual_fcn_dict=None, daily_fcn_dict=None, **kwargs):
+    def trend(self, longterm_fcn_dict=None,
+              annual_fcn_dict=None,
+              daily_fcn_dict=None,
+              **kwargs):
         """Define a failure's trend across intraday (trending
         with time of day) and longterm timeframes.
 
@@ -92,9 +98,9 @@ class TimeseriesFailure:
             [0,inf), and outputs the chosen diode-multiplier's values across
             this timeseries. If a string, must use a pre-defined definition:
 
-            * 'degrade' : degrade over time at specified rate. 
-              Specify rate by passing a definition for 
-              `degradation_rate` 
+            * 'degrade' : degrade over time at specified rate.
+              Specify rate by passing a definition for
+              `degradation_rate`
 
             For example,
 
@@ -123,7 +129,7 @@ class TimeseriesFailure:
             values are either a function or a string. If a function, the
             function should be a mathematical operation as a `function of the
             percentage through this year`, a value on domain [0,1], and outputs
-            the chosen diode-multiplier's values across this timeseries. If a 
+            the chosen diode-multiplier's values across this timeseries. If a
             string, must use a pre-defined definition:
 
         daily_fcn_dict : function or str
@@ -132,7 +138,7 @@ class TimeseriesFailure:
             values are either a function or a string. If a function, the
             function should be a mathematical operation as a `function of the
             percentage through this day`, a value on domain [0,1], and outputs
-            the chosen diode-multiplier's values across this timeseries. If a 
+            the chosen diode-multiplier's values across this timeseries. If a
             string, must use a pre-defined definition:
         """
 
@@ -157,13 +163,16 @@ class TimeseriesFailure:
                 if isinstance(fcn, str):
                     self._predefined_trend(param, daily_fcn=fcn, **kwargs)
 
-    def _predefined_trend(self, param, longterm_fcn='degrade', annual_fcn='', daily_fcn='uniform', **kwargs):
+    def _predefined_trend(self, param, longterm_fcn='degrade',
+                          annual_fcn='', daily_fcn='uniform',
+                          **kwargs):
 
         if longterm_fcn == 'degrade':
             try:
                 degr_rate = kwargs['degradation_rate']
             except KeyError:
-                raise KeyError("TimeseriesFailure.trend requires a passed parameter `degradation_rate`"
+                raise KeyError("TimeseriesFailure.trend requires a "
+                               "passed parameter `degradation_rate`"
                                "if using `degrade` longterm_fcn definition.")
             self.longterm_fcn_dict[param] = lambda x: degr_rate * x
 

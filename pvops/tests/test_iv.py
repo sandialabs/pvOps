@@ -1,14 +1,20 @@
 import random
 import os
 import sys
+import pandas as pd
+import numpy as np
 
 iv_directory = os.path.join("pvops", "iv")
 sys.path.append(iv_directory)
-
-from models import nn
-import simulator
-import preprocess
 import timeseries_simulator
+import preprocess
+import simulator
+from models import nn
+
+datadir = os.path.join('examples', 'example_data')
+example_prodpath = os.path.join(
+    datadir, 'example_prod_with_covariates.csv')
+
 
 def test_simulation():
     random.seed(0)
@@ -174,13 +180,48 @@ def test_classification():
     else:
         assert False
 
-def test_timeseries_simulator():
-    generator = timeseries_simulator.IVTimeseriesGenerator(
-        replacement_5params={'I_L_ref': 2,
-                            'I_o_ref': 2,
-                            'R_s': 2,
-                            'R_sh_ref': 3,
-                            'a_ref': 4},
-    )
 
-test_timeseries_simulator()
+def test_timeseries_simulator():
+
+    env_df = pd.read_csv(example_prodpath)
+    env_df.index = pd.to_datetime(env_df["date"])
+    env_df = env_df.sort_index()
+
+    # Only simulate where irradiance > 200
+    env_df = env_df[env_df['irrad_poa_Wm2'] > 600]
+    # Two sites have data here so we choose one
+    env_df = env_df[env_df['randid'] == 'R10']
+    # Remove any NaN environmental specifications
+    env_df = env_df.dropna(subset=['irrad_poa_Wm2', 'temp_amb_C'])
+
+    # Reduce number of simulations for test
+    env_df = env_df.iloc[0:100]
+
+    failureA = timeseries_simulator.TimeseriesFailure()
+    longterm_fcn_dict = {
+        'Rs_mult': "degrade"
+    }
+    annual_fcn_dict = {
+        'Rs_mult': lambda x: (0.3 * np.sin(np.pi * x))
+    }
+
+    failureA.trend(longterm_fcn_dict=longterm_fcn_dict,
+                   annual_fcn_dict=annual_fcn_dict,
+                   degradation_rate=1.005)
+
+    iv_col_dict = {'irradiance': 'irrad_poa_Wm2',
+                   'temperature': 'temp_amb_C'
+                   }
+
+    env_df['identifier'] = env_df.index.strftime("%Y-%m-%d %H:%M:%S")
+
+    time_simulator = timeseries_simulator.IVTimeseriesGenerator()
+    time_simulator.generate(
+        env_df, [failureA], iv_col_dict, 'identifier', plot_trends=False)
+
+    time_simulator.add_time_conditions('complete', nmods=12)
+    time_simulator.simulate()
+
+    sims_df = time_simulator.sims_to_df(focus=['string'], cutoff=True)
+
+    assert len(sims_df) == 100
