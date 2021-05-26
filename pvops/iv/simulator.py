@@ -254,9 +254,6 @@ class Simulator():
         self.acceptible_keys = ['E', 'Tc', 'Rsh_mult',
                                 'Rs_mult', 'Io_mult', 'Il_mult', 'nnsvth_mult']
 
-        # self.param_keys = ['Rsh_mult', 'Rs_mult', 'Io_mult',
-        #                    'Il_mult', 'nnsvth_mult']
-
         # Store substring, module, and string-level IV data
         # the substring data is stored within the module data
         self.multilevel_ivdata = {'string': {}, 'module': {}}
