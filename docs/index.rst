@@ -125,7 +125,7 @@ These functions focus on current-voltage (IV) curve simulation and classificatio
    the curves so they are easily compared.
 *  ``simulator.py`` holds the `IV Simulator` which can simulate current-voltage (IV) curves under different environmental and fault conditions.
 *  ``utils.py`` holds a utility function which connects to the CEC database hosted by pvLib for cell-level and module-level parameters.
-
+*  ``timeseries_simulator.py`` holds a timeseries wrapper of the IV Simulator which allows users to specify time-based failure degradation patterns.
 
 .. toctree::
     :maxdepth: 2

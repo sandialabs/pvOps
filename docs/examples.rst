@@ -9,6 +9,7 @@ Check out the examples below!
 
    examples/tutorial_timeseries.nblink
    examples/tutorial_iv_simulator.nblink
+   examples/tutorial_timeseries_sim.nblink
    examples/tutorial_iv_classifier.nblink
    examples/tutorial_iv_diode_extractor.nblink
    examples/tutorial_text2time_module.nblink
