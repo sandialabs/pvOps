@@ -37,7 +37,7 @@ Contributing
 
 The long-term success of pvops requires community support. Please see the [Contributing page](https://pvops.readthedocs.io/en/latest/) for more on how you can contribute.
 
-[![Contributors Display](https://badges.pufler.dev/contributors/tgunda/pvOps?size=50&padding=5&bots=true)](https://badges.pufler.dev)
+[![Contributors Display](https://badges.pufler.dev/contributors/sandialabs/pvOps?size=50&padding=5&bots=true)](https://badges.pufler.dev)
 
 Logo Credit: [Daniel Rubinstein](http://www.danielrubinstein.com/)
 
