@@ -52,7 +52,7 @@ class IVTimeseriesGenerator(simulator.Simulator):
         keys = []
         savekeys = []
         spec_df_cols = specs_df.columns
-        for key in ['identifier']+self.acceptible_keys:
+        for key in ['identifier'] + self.acceptible_keys:
             if key == 'identifier':
                 savekey = identifier_col
             elif key == 'E':
