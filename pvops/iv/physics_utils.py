@@ -158,7 +158,7 @@ def intersection(x1, y1, x2, y2):
 
     x1, y1 = _upsample_curve(x1, y1)
     x2, y2 = _upsample_curve(x2, y2)
-    
+
     def _rect_inter_inner(x1, x2):
         n1 = x1.shape[0] - 1
         n2 = x2.shape[0] - 1
