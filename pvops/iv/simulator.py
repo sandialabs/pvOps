@@ -900,7 +900,7 @@ class Simulator():
         """
         for discrete_mod in list(self.modcells.keys()):
             # print(discrete_mod)
-            print('in simulate_modules, iterating to ', discrete_mod)
+            # print('in simulate_modules, iterating to ', discrete_mod)
             self.simulate_module(discrete_mod)
 
     def BISHOP88_simulate_module(self, mod_key):
@@ -995,9 +995,6 @@ class Simulator():
 
         for md_idx, modset in enumerate(self.modcells[mod_key]):
 
-            if show_debugging_plots:
-                print(modset)
-
             # Map all definitions to every possible definition-map combination
             cell_defs = []
             for cell_num in set(modset):
@@ -1033,11 +1030,6 @@ class Simulator():
                 # module: loop through substrings, cells in substring
 
                 for s in range(self.module_parameters['nsubstrings']):
-
-                    if show_debugging_plots:
-                        print()
-                        print()
-                        print(f'substring:{s}')
 
                     ivs = {}
 
@@ -1114,7 +1106,7 @@ class Simulator():
                                 # Essentially Isc minus effectiveISC
                                 delta = realisc - effective_Isc[1][0]
                                 substr_i -= delta
-                            else:
+                            elif substr_i[idx_left_substr] < iter_I[idx_left_iter]:
                                 iter_V_cutoff, iter_I_cutoff = iter_V.copy(
                                 ), iter_I.copy()
 
@@ -1127,6 +1119,10 @@ class Simulator():
                                 # Essentially Isc minus effectiveISC
                                 delta = realisc - effective_Isc[1][0]
                                 iter_I -= delta
+
+                            else:
+                                # Equal! Doing nothing.
+                                pass
 
                             substr_v, substr_i = add_series(
                                 substr_v, substr_i, iter_V, iter_I)
@@ -1457,7 +1453,6 @@ class Simulator():
                     params.append(parm)
                     vals.append(dct[parm])
 
-        print(len(params), len(cell_ids), len(vals))
         df_gp = pd.DataFrame()
         df_gp['param_names'] = params
         df_gp['cell_id'] = cell_ids
@@ -1500,7 +1495,7 @@ class Simulator():
 
             cell_idx = 0
             for cellid_iter in list(self.condition_dict.keys()):
-                print('id', cellid_iter)
+                # print('id', cellid_iter)
                 sns.kdeplot(data=df_gp[(df_gp.cell_id == cellid_iter) & (df_gp.param_names == self.acceptible_keys[i])].value,
                             ax=ax[i], shade=True, color=colors[cell_idx], bw=300, legend=False)
                 cell_idx += 1
@@ -1522,7 +1517,7 @@ class Simulator():
         plt.show()
         return
 
-    def visualize(self, lim=False, correct_gt=False):
+    def visualize(self, lim=False):
         """Run visualization suite to visualize information about the simulated curves.
         """
         d = {}
@@ -1595,6 +1590,7 @@ class Simulator():
         plt.legend(loc='center left', bbox_to_anchor=(1, 0.5))
         if lim:
             plt.xlim(xmin=0)
+            plt.ylim(ymin=0)
         plt.show()
 
         if len(self.string_cond.keys()) > 0:
@@ -1609,6 +1605,7 @@ class Simulator():
             plt.legend(loc='center left', bbox_to_anchor=(1, 0.5))
             if lim:
                 plt.xlim(xmin=0)
+                plt.ylim(ymin=0)
             plt.show()
 
     def visualize_specific_iv(self, ax=None, string_identifier=None, module_identifier=None, substring_identifier=None, cutoff=True, correct_gt=False):
@@ -1722,7 +1719,7 @@ class Simulator():
         colors = sns.color_palette("hls", len(list_cell_identifiers))
 
         for i, cell_identity in enumerate(list_cell_identifiers):
-            print(cell_identity)
+            # print(cell_identity)
             if i == 0:
                 axs = self._vis_cell_trace(
                     cell_identity, colors[i], cutoff=cutoff)
