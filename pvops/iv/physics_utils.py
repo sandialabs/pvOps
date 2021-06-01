@@ -2,6 +2,7 @@ import numpy as np
 import scipy
 import math
 from sklearn.linear_model import LinearRegression
+import copy
 
 
 def calculate_IVparams(v, c):
@@ -143,11 +144,21 @@ def intersection(x1, y1, x2, y2):
     -------
     intersection coordinates
     """
-    x1 = np.asarray(x1)
-    x2 = np.asarray(x2)
-    y1 = np.asarray(y1)
-    y2 = np.asarray(y2)
+    x1 = copy.copy(np.asarray(x1))
+    x2 = copy.copy(np.asarray(x2))
+    y1 = copy.copy(np.asarray(y1))
+    y2 = copy.copy(np.asarray(y2))
 
+    def _upsample_curve(Varr, Iarr, n_pts=1000):
+        vmax = Varr.max()
+        vnot = Varr.min()
+        resol = (vmax - vnot) / n_pts
+        v_interps = np.arange(vnot, vmax, resol)
+        return v_interps, np.interp(v_interps, Varr, Iarr)
+
+    x1, y1 = _upsample_curve(x1, y1)
+    x2, y2 = _upsample_curve(x2, y2)
+    
     def _rect_inter_inner(x1, x2):
         n1 = x1.shape[0] - 1
         n2 = x2.shape[0] - 1
@@ -197,6 +208,25 @@ def intersection(x1, y1, x2, y2):
 
     xy0 = T[2:, in_range]
     xy0 = xy0.T
+
+    if not len(xy0[:, 1]):
+        import matplotlib.pyplot as plt
+        plt.figure(figsize=(13,8))
+        plt.plot(x1, y1,
+                'bo', markersize=2, label='1')
+        plt.plot(x2, y2, 'ro',
+                markersize=2, label='2')
+        plt.legend()
+        plt.xlabel('V (Volts)')
+        plt.ylabel('I (Amps)')
+        #plt.ylim(0, max(max(y2),max(y1)) + 2.)
+        plt.ylim(-4,20)
+        plt.xlim(-13.5, max(max(x2),max(x1)) + 2.)
+        plt.show()
+        print("x1 = ", list(x1))
+        print("x2 = ", list(x2))
+        print("y1 = ", list(y1))
+        print("y2 = ", list(y2))
     return xy0[:, 0], xy0[:, 1]
 
 
