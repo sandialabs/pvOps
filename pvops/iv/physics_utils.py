@@ -211,17 +211,17 @@ def intersection(x1, y1, x2, y2):
 
     if not len(xy0[:, 1]):
         import matplotlib.pyplot as plt
-        plt.figure(figsize=(13,8))
+        plt.figure(figsize=(13, 8))
         plt.plot(x1, y1,
-                'bo', markersize=2, label='1')
+                 'bo', markersize=2, label='1')
         plt.plot(x2, y2, 'ro',
-                markersize=2, label='2')
+                 markersize=2, label='2')
         plt.legend()
         plt.xlabel('V (Volts)')
         plt.ylabel('I (Amps)')
-        #plt.ylim(0, max(max(y2),max(y1)) + 2.)
-        plt.ylim(-4,20)
-        plt.xlim(-13.5, max(max(x2),max(x1)) + 2.)
+        # plt.ylim(0, max(max(y2),max(y1)) + 2.)
+        plt.ylim(-4, 20)
+        plt.xlim(-13.5, max(max(x2), max(x1)) + 2.)
         plt.show()
         print("x1 = ", list(x1))
         print("x2 = ", list(x2))
