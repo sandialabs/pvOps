@@ -43,7 +43,7 @@ class Example:
         self.df = df
 
     def summarize_text_data(self, DATA_COLUMN):
-        utils.summarize_text_data(self.df, DATA_COLUMN)
+        nlp_utils.summarize_text_data(self.df, DATA_COLUMN)
 
     def visualize_attribute_timeseries(self, DATE_COLUMN):
         col_dict = {"date": DATE_COLUMN, "label": self.LABEL_COLUMN}

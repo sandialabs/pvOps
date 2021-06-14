@@ -3,7 +3,7 @@ import numpy as np
 
 
 def remap_attributes(om_df, remapping_df, remapping_col_dict,
-                     allow_missing_mappings=False):
+                     allow_missing_mappings=False, print_info=False):
     """A utility function which remaps the attributes of om_df using columns
        within remapping_df.
 
@@ -30,6 +30,8 @@ def remap_attributes(om_df, remapping_df, remapping_col_dict,
         the final dataframe.
         If False, only attributes specified in `remapping_df` will be in
         final dataframe.
+    print_info : bool
+        If True, print information about remapping.
 
     Returns
 
@@ -44,37 +46,36 @@ def remap_attributes(om_df, remapping_df, remapping_col_dict,
 
     # Lower all columns
     df[ATTRIBUTE_COL] = df[ATTRIBUTE_COL].str.lower()
-    print(remapping_df[REMAPPING_COL_FROM].tolist())
+
+    if print_info:
+        print("Initial value counts:")
+        print(df[ATTRIBUTE_COL].value_counts())
+
     remapping_df[REMAPPING_COL_FROM] = remapping_df[REMAPPING_COL_FROM].str.lower()
     remapping_df[REMAPPING_COL_TO] = remapping_df[REMAPPING_COL_TO].str.lower()
-
-    print("Original attribute distribution:")
-    print(df[ATTRIBUTE_COL].value_counts())
 
     # append remapping for if nan, make "Missing"
     remapping_df = remapping_df.append(pd.DataFrame({np.NaN, "Missing"}))
     remapping_df = remapping_df.append(pd.DataFrame({None, "Missing"}))
 
     if allow_missing_mappings:
-        print(remapping_df)
         # Find attributes not considered in mapping
-        missing_mappings = list(set(df[ATTRIBUTE_COL].tolist())
+        unique_words_in_data = set(df[ATTRIBUTE_COL].tolist())
+        missing_mappings = list(unique_words_in_data
                                 ^ set(remapping_df[REMAPPING_COL_FROM]))
+        missing_mappings = [word for word in missing_mappings if word in unique_words_in_data]
         temp_remapping_df = pd.DataFrame()
         temp_remapping_df[REMAPPING_COL_FROM] = missing_mappings
         temp_remapping_df[REMAPPING_COL_TO] = missing_mappings
-        print("Add missing:")
-        print(temp_remapping_df)
         remapping_df = remapping_df.append(temp_remapping_df)
-        print("Full remap:")
-        print(remapping_df)
 
     renamer = dict(
         zip(remapping_df[REMAPPING_COL_FROM], remapping_df[REMAPPING_COL_TO])
     )
     df[ATTRIBUTE_COL] = df[ATTRIBUTE_COL].map(renamer)
 
-    print("Final attribute distribution:")
-    print(df[ATTRIBUTE_COL].value_counts())
+    if print_info:
+        print("Final attribute distribution:")
+        print(df[ATTRIBUTE_COL].value_counts())
 
     return df

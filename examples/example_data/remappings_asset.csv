@@ -1,16 +1,8 @@
 in,out_
-Inverter,inverter
-Recloser,recloser
-Transformer,transformer
-Switchgear,switchgear
-Combiner,combiner
 DC Disconnect,combiner
 Recombiner,combiner
 Feeder (Dip Pole/Array),wiring
 Ground-Mount PV System,module
-Module,module
-Tracker,tracker
-Met station,met station
 Weather Station,met station
 Pyranometer,met station
 Temperature sensor,met station
@@ -18,11 +10,8 @@ Met station battery,met station
 Anemometer,met station
 Reference cell,met station
 Relative humidity sensor,met station
-Relay,relay
-Energy Meter,energy meter
 Meter,energy meter
 Energy Storage/Battery,energy storage
-Facility,facility
 AC Combiner,combiner
 Battery (Solar + storage facilities),energy storage
 Block,transformer
@@ -49,7 +38,6 @@ Site,other
 String,other
 String Inverter,inverter
 Subarray,other
-Substation,substation
 Summary,other
 Tracker control unit,tracker
 Tracking System,tracker
