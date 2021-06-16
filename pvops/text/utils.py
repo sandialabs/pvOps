@@ -63,12 +63,15 @@ def remap_attributes(om_df, remapping_df, remapping_col_dict,
         unique_words_in_data = set(df[ATTRIBUTE_COL].tolist())
         missing_mappings = list(unique_words_in_data
                                 ^ set(remapping_df[REMAPPING_COL_FROM]))
-        missing_mappings = [word for word in missing_mappings if word in unique_words_in_data]
+        missing_mappings = [word for word in missing_mappings
+                            if word in unique_words_in_data]
         temp_remapping_df = pd.DataFrame()
         temp_remapping_df[REMAPPING_COL_FROM] = missing_mappings
         temp_remapping_df[REMAPPING_COL_TO] = missing_mappings
         remapping_df = remapping_df.append(temp_remapping_df)
 
+    if print_info:
+        print("All mappings:", remapping_df)
     renamer = dict(
         zip(remapping_df[REMAPPING_COL_FROM], remapping_df[REMAPPING_COL_TO])
     )
