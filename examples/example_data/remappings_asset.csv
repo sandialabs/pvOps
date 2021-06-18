@@ -1,4 +1,16 @@
 in,out_
+inverter,inverter
+recloser,recloser
+transformer,transformer
+switchgear,switchgear
+combiner,combiner
+substation,substation
+facility,facility
+energy meter,energy meter
+relay,relay
+met station,met station
+tracker,tracker
+module,module
 DC Disconnect,combiner
 Recombiner,combiner
 Feeder (Dip Pole/Array),wiring

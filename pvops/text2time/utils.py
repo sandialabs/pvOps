@@ -5,6 +5,131 @@ visualizations of the merged data
 """
 import pandas as pd
 import numpy as np
+import tqdm
+
+def extrapolate_data(prod_df, om_df, prod_col_dict, om_col_dict, om_cols_to_translate=["asset", "prod_impact"]):
+    """
+    Provides general overview of the overlapping production and O&M data.
+
+
+    Parameters
+
+    ----------
+    prod_df: DataFrame
+        A data frame corresponding to the production
+        data after having been processed by the perf_om_NA_qc function. This
+        data frame needs the columns specified in prod_col_dict.
+
+    om_df: DataFrame
+        A data frame corresponding to the O&M data after
+        having been processed by the perf_om_NA_qc function. This data frame
+        needs the columns specified in om_col_dict.
+
+    prod_col_dict: dict of {str : str}
+        A dictionary that contains the column names relevant for the production data
+
+        - **siteid** (*string*), should be assigned to associated site-ID column name in prod_df
+        - **timestamp** (*string*), should be assigned to associated time-stamp column name in
+          prod_df
+        - **energyprod** (*string*), should be assigned to associated production column name in
+          prod_df
+        - **irradiance** (*string*), should be assigned to associated irradiance column name in
+          prod_df
+
+    om_col_dict: dict of {str : str}
+        A dictionary that contains the column names relevant for the O&M data
+
+        - **siteid** (*string*), should be assigned to associated site-ID column name in om_df
+        - **datestart** (*string*), should be assigned to associated O&M event start-date
+          column name in om_df
+        - **dateend** (*string*), should be assigned to associated O&M event end-date
+          column name in om_df
+        - Others specified in om_cols_to_translate
+
+    om_cols_to_translate : list
+        List of om_col_dict keys to translate into prod_df
+
+    Returns
+
+    -------
+    prod_output: DataFrame
+        A data frame that includes statistics for the production data per site in the data frame.
+        Two statistical parameters are calculated and assigned to separate columns:
+
+        - **Actual # Time Stamps** (*datetime.datetime*), total number of overlapping
+          production time-stamps
+        - **Max # Time Stamps** (*datetime.datetime), maximum number of production time-stamps,
+          including NANs
+
+    om_out: DataFrame
+        A data frame that includes statistics for the O&M data per site in the data frame.
+        Three statistical parameters are calculated and assigned to separate columns:
+
+        - **Earliest Event Start** (*datetime.datetime*), column that specifies timestamp of
+          earliest start of all events per site.
+        - **Latest Event End** (*datetime.datetime), column that specifies timestamp for
+          latest conclusion of all events per site.
+        - **Total Events** (*int*), column that specifies total number of events per site
+
+    """
+
+    prod_df = prod_df.copy()
+    om_df = om_df.copy()
+
+    om_site = om_col_dict["siteid"]
+    om_date_s = om_col_dict["datestart"]
+    om_date_e = om_col_dict["dateend"]
+
+    translation_keys = [om_col_dict[key] for key in om_cols_to_translate]
+
+    # Prime the columns in prod_df
+    for key in om_cols_to_translate:
+        prod_df[key] = np.nan
+
+    prod_ts = prod_col_dict["timestamp"]
+
+    # Obtaining new DFs to extract statistics by using overlapping_data function
+    prod_df_overlap, om_df_overlap = overlapping_data(
+        prod_df, om_df, prod_col_dict, om_col_dict)
+
+    print(f'processing {len(om_df_overlap)} rows')
+    for ind, row in tqdm.tqdm(om_df_overlap.iterrows()):
+        mask = ((prod_df[prod_ts] >= row[om_date_s]) &
+                (prod_df[prod_ts] < row[om_date_e]) &
+                (prod_df[om_site] == row[om_site]))
+        for key in translation_keys:
+            prod_df.loc[mask, key] = row[key]
+
+    # om_site = om_col_dict["siteid"]
+    # om_date_s = om_col_dict["datestart"]
+    # om_date_e = om_col_dict["dateend"]
+
+    # prod_site = prod_col_dict["siteid"]
+    # prod_ts = prod_col_dict["timestamp"]
+
+    # # total number of OM events per site
+    # num_om_events = om_df[[om_site, om_date_s]].groupby([om_site]).count()
+
+    # # earliest dates of O&M events per site
+    # min_date = om_df[[om_site, om_date_s]].groupby([om_site]).min()
+
+    # # earliest dates of O&M events per site
+    # max_date = om_df[[om_site, om_date_e]].groupby([om_site]).max()
+
+    # # concatenating
+    # om_output = pd.concat([min_date, max_date, num_om_events], axis=1)
+    # om_output.columns = ["Earliest Event Start",
+    #                      "Latest Event End", "Total Events"]
+
+    # # production data timestep frequency in number of hours
+    # prod_max_ts = prod_df[[prod_site, prod_ts]].groupby([prod_site]).size()
+    # prod_act_ts = prod_df[[prod_site, prod_ts]].groupby([prod_site]).count()
+
+    # prod_output = pd.concat([prod_act_ts, prod_max_ts], axis=1)
+    # prod_output.columns = ["Actual # Time Stamps", "Max # Time Stamps"]
+
+    return prod_df, om_df_overlap
+
 
 def summarize_overlaps(prod_df, om_df, prod_col_dict, om_col_dict):
     """
