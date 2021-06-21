@@ -6,6 +6,65 @@ from timezonefinder import TimezoneFinder
 import pandas as pd
 
 
+def establish_solar_loc(prod_df, prod_col_dict, meta_df, meta_col_dict):
+    prod_df = prod_df.copy()
+    meta_df = meta_df.copy()
+
+    return prod_df
+
+def normalize_power_by_capacity(prod_df, prod_col_dict, meta_df, meta_col_dict):
+    """Normalize power by capacity. This preprocessing step is meant as a
+    step prior to a modeling attempt where a model is trained on multiple
+    sites simultaneously.
+
+    Parameters
+
+    ----------
+    prod_df: DataFrame
+        A data frame corresponding to production data.
+
+    prod_df_col_dict: dict of {str : str}
+        A dictionary that contains the column names associated with the production data,
+        which consist of at least:
+
+        - **powerprod** (*string*), should be assigned to production data in prod_df
+        - **siteid** (*string*), should be assigned to site-ID column name in prod_df
+        - **capacity_normalized_power** (*string*), should be assigned to a column name 
+          where the normalized output signal will be stored
+    meta_df: DataFrame
+        A data frame corresponding to site metadata.
+        At the least, the columns in meta_col_dict be present.
+
+    meta_col_dict: dict of {str : str}
+        A dictionary that contains the column names relevant for the meta-data
+
+        - **siteid** (*string*), should be assigned to site-ID column name
+        - **dcsize** (*string*), should be assigned to column name corresponding
+          to site's DC size
+    """
+
+    prod_df = prod_df.copy()
+    meta_df = meta_df.copy()
+
+    output_name = prod_col_dict["capacity_normalized_power"]
+    power_name = prod_col_dict["powerprod"]
+    dcsize_name = meta_col_dict["dcsize"]
+
+    individual_sites = set(meta_df[meta_col_dict['siteid']].tolist())
+
+    for site in individual_sites:
+        # Get site-specific meta data
+        site_meta_mask = meta_df.loc[:, meta_col_dict["siteid"]] == site
+        site_prod_mask = prod_df.loc[:, prod_col_dict["siteid"]] == site
+
+        # Calculate and save  power/capacity
+        prod_df.loc[site_prod_mask, output_name] = \
+            prod_df.loc[site_prod_mask, power_name] / \
+            meta_df.loc[site_meta_mask, dcsize_name].iloc[0]
+
+    return prod_df
+
+
 def prod_irradiance_filter(prod_df, prod_col_dict, meta_df, meta_col_dict,
                            drop=True, irradiance_type='ghi', csi_max=1.1
                            ):

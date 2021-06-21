@@ -3,7 +3,8 @@ import numpy as np
 
 
 def remap_attributes(om_df, remapping_df, remapping_col_dict,
-                     allow_missing_mappings=False, print_info=False):
+                     allow_missing_mappings=False, nan_entry_rename="missing",
+                     print_info=False):
     """A utility function which remaps the attributes of om_df using columns
        within remapping_df.
 
@@ -54,10 +55,6 @@ def remap_attributes(om_df, remapping_df, remapping_col_dict,
     remapping_df[REMAPPING_COL_FROM] = remapping_df[REMAPPING_COL_FROM].str.lower()
     remapping_df[REMAPPING_COL_TO] = remapping_df[REMAPPING_COL_TO].str.lower()
 
-    # append remapping for if nan, make "Missing"
-    remapping_df = remapping_df.append(pd.DataFrame({np.NaN, "Missing"}))
-    remapping_df = remapping_df.append(pd.DataFrame({None, "Missing"}))
-
     if allow_missing_mappings:
         # Find attributes not considered in mapping
         unique_words_in_data = set(df[ATTRIBUTE_COL].tolist())
@@ -71,11 +68,14 @@ def remap_attributes(om_df, remapping_df, remapping_col_dict,
         remapping_df = remapping_df.append(temp_remapping_df)
 
     if print_info:
-        print("All mappings:", remapping_df)
+        print("All mappings:\n", remapping_df)
     renamer = dict(
         zip(remapping_df[REMAPPING_COL_FROM], remapping_df[REMAPPING_COL_TO])
     )
     df[ATTRIBUTE_COL] = df[ATTRIBUTE_COL].map(renamer)
+
+    # Map all NaN entries to "Missing"
+    df[ATTRIBUTE_COL].fillna(nan_entry_rename, inplace=True)
 
     if print_info:
         print("Final attribute distribution:")

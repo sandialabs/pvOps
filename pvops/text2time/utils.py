@@ -7,7 +7,7 @@ import pandas as pd
 import numpy as np
 import tqdm
 
-def extrapolate_data(prod_df, om_df, prod_col_dict, om_col_dict, om_cols_to_translate=["asset", "prod_impact"]):
+def interpolate_data(prod_df, om_df, prod_col_dict, om_col_dict, om_cols_to_translate=["asset", "prod_impact"]):
     """
     Provides general overview of the overlapping production and O&M data.
 
