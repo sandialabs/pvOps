@@ -280,15 +280,15 @@ class Example:
         user_defined_search_space=None,
         verbose=0,
     ):
-        """A wrapper function which evaluates the performance of many 
+        """A wrapper function which evaluates the performance of many
         supervised classifiers
 
             embedding : str
-                Definition of document embedding strategy with "tfidf" and 
+                Definition of document embedding strategy with "tfidf" and
                 "doc2vec" options
 
             setting : str
-                Thoroughness of supervised classification investigation with 
+                Thoroughness of supervised classification investigation with
                 following options:
                 'normal': a smaller subset of settings used in grid search
                 'detailed': a comprehensive set of settings used in grid search

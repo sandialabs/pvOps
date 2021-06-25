@@ -218,15 +218,18 @@ class PolynomialModel(Model, TimeWeightedProcess):
             iden_matrix.append(row)
 
         # gather list
-        combinations = itertools.combinations_with_replacement(
-            iden_matrix, self.degree)
+        all_combinations = []
+        for degree in range(1, self.degree+1):
+            all_combinations.append(itertools.combinations_with_replacement(
+                iden_matrix, degree))
 
         # list of polynomial powers
         poly_powers = []
-        for combination in combinations:
-            sum_arr = np.zeros(num_inputs, dtype=int)
-            sum_arr += sum((np.array(j) for j in combination))
-            poly_powers.append(sum_arr)
+        for combinations in all_combinations:
+            for combination in combinations:
+                sum_arr = np.zeros(num_inputs, dtype=int)
+                sum_arr += sum((np.array(j) for j in combination))
+                poly_powers.append(sum_arr)
 
         self.powers = poly_powers
 

@@ -3,8 +3,7 @@ import numpy as np
 
 
 def remap_attributes(om_df, remapping_df, remapping_col_dict,
-                     allow_missing_mappings=False, nan_entry_rename="missing",
-                     print_info=False):
+                     allow_missing_mappings=False, print_info=False):
     """A utility function which remaps the attributes of om_df using columns
        within remapping_df.
 
@@ -74,11 +73,11 @@ def remap_attributes(om_df, remapping_df, remapping_col_dict,
     )
     df[ATTRIBUTE_COL] = df[ATTRIBUTE_COL].map(renamer)
 
-    # Map all NaN entries to "Missing"
-    df[ATTRIBUTE_COL].fillna(nan_entry_rename, inplace=True)
-
     if print_info:
         print("Final attribute distribution:")
         print(df[ATTRIBUTE_COL].value_counts())
+
+        print(f"Number of nan definitions of {ATTRIBUTE_COL}:"
+              "{sum(df[ATTRIBUTE_COL].isna())}")
 
     return df

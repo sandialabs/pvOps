@@ -12,7 +12,7 @@ def establish_solar_loc(prod_df, prod_col_dict, meta_df, meta_col_dict):
 
     return prod_df
 
-def normalize_power_by_capacity(prod_df, prod_col_dict, meta_df, meta_col_dict):
+def normalize_production_by_capacity(prod_df, prod_col_dict, meta_df, meta_col_dict):
     """Normalize power by capacity. This preprocessing step is meant as a
     step prior to a modeling attempt where a model is trained on multiple
     sites simultaneously.
@@ -27,7 +27,7 @@ def normalize_power_by_capacity(prod_df, prod_col_dict, meta_df, meta_col_dict):
         A dictionary that contains the column names associated with the production data,
         which consist of at least:
 
-        - **powerprod** (*string*), should be assigned to production data in prod_df
+        - **energyprod** (*string*), should be assigned to production data in prod_df
         - **siteid** (*string*), should be assigned to site-ID column name in prod_df
         - **capacity_normalized_power** (*string*), should be assigned to a column name 
           where the normalized output signal will be stored
@@ -47,7 +47,7 @@ def normalize_power_by_capacity(prod_df, prod_col_dict, meta_df, meta_col_dict):
     meta_df = meta_df.copy()
 
     output_name = prod_col_dict["capacity_normalized_power"]
-    power_name = prod_col_dict["powerprod"]
+    power_name = prod_col_dict["energyprod"]
     dcsize_name = meta_col_dict["dcsize"]
 
     individual_sites = set(meta_df[meta_col_dict['siteid']].tolist())
@@ -217,7 +217,7 @@ def prod_inverter_clipping_filter(prod_df, prod_col_dict, meta_df, meta_col_dict
         - **timestamp** (*string*), should be assigned to associated time-stamp
         column name in prod_df
         - **siteid** (*string*), should be assigned to site-ID column name in prod_df
-        - **powerprod** (*string*), should be assigned to associated power production column name in prod_df
+        - **energyprod** (*string*), should be assigned to associated power production column name in prod_df
 
     meta_df: DataFrame
         A data frame corresponding to site metadata.
@@ -252,7 +252,7 @@ def prod_inverter_clipping_filter(prod_df, prod_col_dict, meta_df, meta_col_dict
     for site in individual_sites:
 
         site_prod_mask = prod_df.loc[:, prod_col_dict["siteid"]] == site
-        ac_power = prod_df.loc[site_prod_mask, prod_col_dict["powerprod"]]
+        ac_power = prod_df.loc[site_prod_mask, prod_col_dict["energyprod"]]
 
         if len(ac_power) == 0:
             # If no rows exist for this company, skip it.

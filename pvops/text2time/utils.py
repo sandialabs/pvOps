@@ -79,55 +79,37 @@ def interpolate_data(prod_df, om_df, prod_col_dict, om_col_dict, om_cols_to_tran
     om_site = om_col_dict["siteid"]
     om_date_s = om_col_dict["datestart"]
     om_date_e = om_col_dict["dateend"]
+    om_asset = om_col_dict["asset"]
 
+    unique_assets = om_df[om_asset].unique()
     translation_keys = [om_col_dict[key] for key in om_cols_to_translate]
 
     # Prime the columns in prod_df
-    for key in om_cols_to_translate:
-        prod_df[key] = np.nan
+    for asset in unique_assets:
+        for key in translation_keys:
+            prod_df[str(asset) + "_" + key] = [[] for _ in range(len(prod_df))]
 
     prod_ts = prod_col_dict["timestamp"]
+    prod_df["has_ticket"] = False
 
     # Obtaining new DFs to extract statistics by using overlapping_data function
     prod_df_overlap, om_df_overlap = overlapping_data(
         prod_df, om_df, prod_col_dict, om_col_dict)
+
+    om_df_overlap = om_df_overlap.iloc[0:3]
 
     print(f'processing {len(om_df_overlap)} rows')
     for ind, row in tqdm.tqdm(om_df_overlap.iterrows()):
         mask = ((prod_df[prod_ts] >= row[om_date_s]) &
                 (prod_df[prod_ts] < row[om_date_e]) &
                 (prod_df[om_site] == row[om_site]))
+        idxs = np.where(mask)[0]
         for key in translation_keys:
-            prod_df.loc[mask, key] = row[key]
-
-    # om_site = om_col_dict["siteid"]
-    # om_date_s = om_col_dict["datestart"]
-    # om_date_e = om_col_dict["dateend"]
-
-    # prod_site = prod_col_dict["siteid"]
-    # prod_ts = prod_col_dict["timestamp"]
-
-    # # total number of OM events per site
-    # num_om_events = om_df[[om_site, om_date_s]].groupby([om_site]).count()
-
-    # # earliest dates of O&M events per site
-    # min_date = om_df[[om_site, om_date_s]].groupby([om_site]).min()
-
-    # # earliest dates of O&M events per site
-    # max_date = om_df[[om_site, om_date_e]].groupby([om_site]).max()
-
-    # # concatenating
-    # om_output = pd.concat([min_date, max_date, num_om_events], axis=1)
-    # om_output.columns = ["Earliest Event Start",
-    #                      "Latest Event End", "Total Events"]
-
-    # # production data timestep frequency in number of hours
-    # prod_max_ts = prod_df[[prod_site, prod_ts]].groupby([prod_site]).size()
-    # prod_act_ts = prod_df[[prod_site, prod_ts]].groupby([prod_site]).count()
-
-    # prod_output = pd.concat([prod_act_ts, prod_max_ts], axis=1)
-    # prod_output.columns = ["Actual # Time Stamps", "Max # Time Stamps"]
-
+            for i in idxs:
+                prod_df.iloc[i, :][
+                    str(row[om_asset]) + "_" + key
+                    ].append(row[key])
+        prod_df.loc[mask, "has_ticket"] = True
     return prod_df, om_df_overlap
 
 
