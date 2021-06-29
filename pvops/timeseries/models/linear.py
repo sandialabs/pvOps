@@ -355,26 +355,31 @@ class DiodeInspiredModel(Model, TimeWeightedProcess):
         return
 
 
-def modeller(prod_df,
-             prod_col_dict,
+def modeller(prod_col_dict,
              kernel_type='default',
              time_weighted='month',
              X_parameters=[],
              Y_parameter=None,
              estimators=None,
+             prod_df=None,
              test_split=0.2,
+             train_df=None,
+             test_df=None,
              degree=3,
              verbose=0):
     """Wrapper method to conduct the modelling of the timeseries data.
 
+    To input the data, there are two options.
+
+    Option 1: include full production data in `prod_df` parameter and `test_split` so
+              that the test split is conducted
+
+    Option 2: conduct the test-train split prior to calling the function and pass in data
+              under `test_df` and `train_df`
+
     Parameters
 
     ----------
-    prod_df: DataFrame
-        A data frame corresponding to the production data
-        used for model development and evaluation. This data frame needs
-        at least the columns specified in prod_col_dict.
-
     prod_col_dict: dict of {str : str}
         A dictionary that contains the column names relevant
         for the production data
@@ -433,8 +438,23 @@ def modeller(prod_df,
                           'RANSAC': {'estimator': RANSACRegressor()}
                           }
 
+    prod_df: DataFrame
+        A data frame corresponding to the production data
+        used for model development and evaluation. This data frame needs
+        at least the columns specified in prod_col_dict.
+
     test_split : float
         A value between 0 and 1 indicating the proportion of data used for testing.
+        Only utilized if `prod_df` is specified. If you want to specify your own 
+        test-train splits, pass values to `test_df` and `train_df`.
+
+    test_df: DataFrame
+        A data frame corresponding to the test-split of the production data.
+        Only needed if `prod_df` and `test_split` are not specified.
+
+    train_df: DataFrame
+        A data frame corresponding to the test-split of the production data.
+        Only needed if `prod_df` and `test_split` are not specified.
 
     degree : int
         Utilized for 'polynomial' and 'polynomial_log' `kernel_type` options, this 
@@ -479,17 +499,22 @@ def modeller(prod_df,
             raise ValueError("The `prod_col_dict['irradiance']` and `prod_col_dict['irradiance']`" +
                              "definitions must be in your X_parameters input for the " +
                              "`polynomial_log` model.")
+    if (not isinstance(prod_df, type(None))) and (not isinstance(test_split, type(None))):
+        # Split into test-train
+        mask = np.array(range(len(prod_df))) < int(
+            len(prod_df) * (1 - test_split))
+        train_df = prod_df.iloc[mask]
+        test_df = prod_df.iloc[~mask]
+    else:
+        if isinstance(train_df, type(None)) or isinstance(test_df, type(None)):
+            raise ValueError("Because `prod_df` and `test_split` were not specified,"
+                             "expected `train_df` and `test_df` to be passed. But, they"
+                             "were not specified.")
 
-    # Split into test-train
-    mask = np.array(range(len(prod_df))) < int(
-        len(prod_df) * (1 - test_split))
-    train_prod_df = prod_df.iloc[mask]
-    test_prod_df = prod_df.iloc[~mask]
-
-    train_y = train_prod_df[Y_parameter].values
-    test_y = test_prod_df[Y_parameter].values
-    train_X = _array_from_df(train_prod_df, X_parameters)
-    test_X = _array_from_df(test_prod_df, X_parameters)
+    train_y = train_df[Y_parameter].values
+    test_y = test_df[Y_parameter].values
+    train_X = _array_from_df(train_df, X_parameters)
+    test_X = _array_from_df(test_df, X_parameters)
 
     if kernel_type == 'default':
         model = DefaultModel(time_weighted=time_weighted,
@@ -513,8 +538,8 @@ def modeller(prod_df,
             estimators=estimators,
             verbose=verbose)
 
-    model.train_index = train_prod_df.index
-    model.test_index = test_prod_df.index
+    model.train_index = train_df.index
+    model.test_index = test_df.index
 
     # Always construct train first in case of using time_weighted,
     # which caches the time regions in training to reuse in testing.
