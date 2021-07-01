@@ -96,8 +96,6 @@ def interpolate_data(prod_df, om_df, prod_col_dict, om_col_dict, om_cols_to_tran
     prod_df_overlap, om_df_overlap = overlapping_data(
         prod_df, om_df, prod_col_dict, om_col_dict)
 
-    om_df_overlap = om_df_overlap.iloc[0:3]
-
     print(f'processing {len(om_df_overlap)} rows')
     for ind, row in tqdm.tqdm(om_df_overlap.iterrows()):
         mask = ((prod_df[prod_ts] >= row[om_date_s]) &

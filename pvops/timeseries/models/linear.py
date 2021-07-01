@@ -547,4 +547,4 @@ def modeller(prod_col_dict,
     model.construct(test_X, test_y, data_split='test')
     model.train()
     model.predict()
-    return model, train_prod_df, test_prod_df
+    return model, train_df, test_df
