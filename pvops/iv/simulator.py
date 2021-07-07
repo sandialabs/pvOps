@@ -1424,7 +1424,6 @@ class Simulator():
                 self.condition_dict[ID][n]['I'] = i
                 self.condition_dict[ID][n]['E'] = g
                 self.condition_dict[ID][n]['Tc'] = tc
-
         return
 
     def build_strings(self, config_dict):

@@ -4,6 +4,8 @@ from sklearn.linear_model import LinearRegression, RANSACRegressor
 import numpy as np
 from sklearn.metrics import mean_squared_error, r2_score
 import pandas as pd
+from scipy import stats
+from statsmodels.stats.outliers_influence import variance_inflation_factor
 
 
 def _array_from_df(df, X_parameters):
@@ -46,11 +48,80 @@ class Model:
         except AttributeError:
             coeffs = None
 
+        if not isinstance(coeffs, type(None)):
+            # @dev: Compare p-value & CI calculations to one of
+            # @dev: an open source package as a validation step.
+            # @dev: Beware that the evaluation uses OLS and may
+            # @dev: be mismatched if user inputs other regressors.
+            # import statsmodels.api as sm
+            # Xnew = pd.DataFrame(X, columns=self.variate_names)
+            # Xnew = sm.add_constant(Xnew)
+            # est = sm.OLS(y, Xnew)
+            # est2 = est.fit()
+            # print(est2.summary())
+
+            params = np.append(info['estimator'].intercept_, coeffs)
+            # Check variable significanace
+            newX = pd.DataFrame({"Constant": np.ones(
+                len(X)
+                )}).join(pd.DataFrame(X))
+            MSE = (sum((y-pred)**2))/(len(newX)-len(newX.columns))
+
+            try:
+                var_b = MSE * np.linalg.inv(np.dot(newX.T,
+                                                   newX)
+                                            ).diagonal()
+            except np.linalg.LinAlgError:
+                # Add random noise to avoid a LinAlg error
+                newX += 0.00001*np.random.rand(*newX.shape)
+                var_b = MSE * np.linalg.inv(np.dot(newX.T,
+                                                   newX)
+                                            ).diagonal()
+            sd_b = np.sqrt(var_b)
+            ts_b = params / sd_b
+            p_values = [2*(1-stats.t.cdf(np.abs(i),
+                                         (len(newX)-newX.shape[1])))
+                        for i in ts_b]
+            vif = [variance_inflation_factor(newX.values, i)
+                   for i in range(newX.shape[1])]
+            lb_ci = params - sd_b * 1.96  # percentile: 0.025
+            ub_ci = params + sd_b * 1.96  # percentile: 0.975
+
+            # Round
+            sd_b = np.round(sd_b, 3)
+            ts_b = np.round(ts_b, 3)
+            p_values = np.round(p_values, 3)
+            params = np.round(params, 4)
+            lb_ci = np.round(lb_ci, 4)
+            ub_ci = np.round(ub_ci, 4)
+
+            statsdf = pd.DataFrame()
+            (statsdf["coef"],
+             statsdf["std err"],
+             statsdf["t"],
+             statsdf["P>|t|"],
+             statsdf["[0.025"],
+             statsdf["0.975]"],
+             statsdf["vif"]
+             ) = [params,
+                  sd_b,
+                  ts_b,
+                  p_values,
+                  lb_ci,
+                  ub_ci,
+                  vif
+                  ]
+            statsdf.index = ["constant"] + list(self.variate_names)
+        else:
+            statsdf = None
+
         if self.verbose >= 1:
             print(f'[{name}] Mean squared error: %.2f'
                   % mse)
             print(f'[{name}] Coefficient of determination: %.2f'
                   % r2)
+
+            # Display coefficients
             if not isinstance(coeffs, type(None)):
                 print(f'[{name}] {len(coeffs)} coefficient trained.')
             else:
@@ -60,7 +131,8 @@ class Model:
         if self.verbose >= 2:
             # The coefficients
             if not isinstance(coeffs, type(None)):
-                print(f'[{name}] Coefficients generated: \n', coeffs)
+                if data_split == 'train':
+                    print(statsdf)
             else:
                 # For RANSAC and others
                 pass
@@ -70,13 +142,13 @@ class Model:
             info['train_prediction'] = pred
             info['train_X'] = X
             info['train_y'] = y
-            info['train_eval'] = {'mse': mse, 'r2': r2}
+            info['train_eval'] = {'mse': mse, 'r2': r2, 'statsdf': statsdf}
         elif data_split == 'test':
             info['test_index'] = self.test_index
             info['test_prediction'] = pred
             info['test_X'] = X
             info['test_y'] = y
-            info['test_eval'] = {'mse': mse, 'r2': r2}
+            info['test_eval'] = {'mse': mse, 'r2': r2, 'statsdf': statsdf}
 
     def predict(self):
         """Predict using the model.
@@ -152,32 +224,35 @@ class TimeWeightedProcess:
         for group in self.set_time_bins:
             indices[group] = df[df["time_bins"] == group].index
 
-        for ii in range(X.shape[1]):
+        new_variable_names = []
+        for ii, param in enumerate(self.variate_names):
             df[f"col_{ii}"] = X[:, ii]
             # add groups
             for group in self.set_time_bins:
                 vals = np.zeros(len(df))
                 vals[indices[group]] = df.iloc[indices[group]][f"col_{ii}"]
                 df[f"col_{ii}_{group}"] = vals
+                new_variable_names.append(f"{param} | {time_weighted}:{group}")
             # remove original data
             del df[f"col_{ii}"]
         del df["time_bins"]
 
         xs = df.values
-
+        self.variate_names = new_variable_names
         return xs
-
 
 class DefaultModel(Model, TimeWeightedProcess):
     """Generate a simple model using the input data, without any data transposition.
     """
-    def __init__(self, time_weighted=None, estimators=None, verbose=0):
+    def __init__(self, time_weighted=None, estimators=None, verbose=0, X_parameters=[]):
         super().__init__(estimators)
         self.verbose = verbose
         self.time_weighted = time_weighted
+        self.X_parameters = X_parameters
 
     def construct(self, X, y, data_split='train'):
 
+        self.variate_names = self.X_parameters
         if not isinstance(self.time_weighted, type(None)):
             X = self.time_weight(
                 X, time_weighted=self.time_weighted, data_split=data_split)
@@ -195,11 +270,13 @@ class PolynomialModel(Model, TimeWeightedProcess):
     def __init__(self, degree=2,
                  estimators=None,
                  time_weighted=None,
-                 verbose=0):
+                 verbose=0,
+                 X_parameters=[]):
         super().__init__(estimators)
         self.degree = degree
         self.time_weighted = time_weighted
         self.verbose = verbose
+        self.X_parameters = X_parameters
 
     def construct(self, X, y, data_split='train'):
 
@@ -225,10 +302,23 @@ class PolynomialModel(Model, TimeWeightedProcess):
 
         # list of polynomial powers
         poly_powers = []
+        self.variate_names = []
         for combinations in all_combinations:
             for combination in combinations:
                 sum_arr = np.zeros(num_inputs, dtype=int)
                 sum_arr += sum((np.array(j) for j in combination))
+                s = ""
+                has_first_term = False
+                for idx, p in enumerate(sum_arr):
+                    if p == 0:
+                        continue
+                    if has_first_term:
+                        s += " * "
+                    else:
+                        has_first_term = True
+                    s += r"{}^{}".format(self.X_parameters[idx], p)
+
+                self.variate_names.append(s)
                 poly_powers.append(sum_arr)
 
         self.powers = poly_powers
@@ -253,77 +343,6 @@ class PolynomialModel(Model, TimeWeightedProcess):
 
         return
 
-
-class PolynomialLogEModel(Model, TimeWeightedProcess):
-    """Add all interactions between terms with degree and add log(Irradiance) term.
-
-    For example, with two covariates and a degree of 2, 
-    Y(α , X) = α_0 + α_1 X_1 + α_2 X_2 + α_3 X_1 X_2 + α_4 X_1^2 + α_5 X_2^2
-    """
-    def __init__(self, degree=3,
-                 estimators=None,
-                 time_weighted=None,
-                 verbose=0):
-        super().__init__(estimators)
-        self.degree = degree
-        self.time_weighted = time_weighted
-        self.verbose = verbose
-
-    def construct(self, X, y, data_split='train'):
-
-        # polynomial with included log(POA) parameter
-        # Requires POA be first input in xs
-
-        num_inputs = X.shape[1]
-        # add column of rows in first index of matrix
-        Evals = np.array([row[0] for row in X]) + 1
-        xs = np.hstack((X, np.vstack(np.log(Evals))))
-
-        # construct identity matrix
-        iden_matrix = []
-
-        for i in range(num_inputs + 1):
-            # for i in range(num_inputs+1+num_inputs):
-            # create np.array of np.zeros
-            row = np.zeros(num_inputs + 1, dtype=int)
-            # row = np.zeros(num_inputs+1+num_inputs, dtype=int)
-            # add 1 to diagonal index
-            row[i] = 1
-            iden_matrix.append(row)
-
-        # gather list
-        combinations = itertools.combinations_with_replacement(
-            iden_matrix, self.degree)
-
-        # list of polynomial powers
-        poly_powers = []
-        for combination in combinations:
-            sum_arr = np.zeros(num_inputs + 1, dtype=int)
-            sum_arr += sum((np.array(j) for j in combination))
-
-            poly_powers.append(sum_arr)
-        self.powers = poly_powers
-        # Raise data to specified degree pattern and stack
-        A = []
-        for power in poly_powers:
-            product = (xs**power).prod(1)
-            A.append(product.reshape(product.shape + (1,)))
-        A = np.hstack(np.array(A))
-
-        if not isinstance(self.time_weighted, type(None)):
-            A = self.time_weight(
-                A, time_weighted=self.time_weighted, data_split=data_split)
-
-        if data_split == 'train':
-            self.train_X = A
-            self.train_y = y
-        elif data_split == 'test':
-            self.test_X = A
-            self.test_y = y
-
-        return
-
-
 class DiodeInspiredModel(Model, TimeWeightedProcess):
     """Generate a regression kernel derived from the diode model, originally meant to model voltage.
 
@@ -332,10 +351,12 @@ class DiodeInspiredModel(Model, TimeWeightedProcess):
     def __init__(self,
                  estimators=None,
                  time_weighted=None,
-                 verbose=0):
+                 verbose=0,
+                 X_parameters=[]):
         super().__init__(estimators)
         self.time_weighted = time_weighted
         self.verbose = verbose
+        self.X_parameters = X_parameters
 
     def construct(self, X, y, data_split='train'):
         # Diode Inspired
@@ -406,7 +427,6 @@ def modeller(prod_col_dict,
           covariates (Xs) and degrees (n). For example, with 2 covariates and a
           degree of 2, the formula would be:
           Y(α , X) = α_0 + α_1 X_1 + α_2 X_2 + α_3 X_1 X_2 + α_4 X_1^2 + α_5 X_2^2
-        - 'polynomial_log', same as above except with an added log(POA) term.
         - 'diode_inspired', reverse-engineered formula from single diode formula, initially
           intended for modelling voltage.
           (static equation):  Y(α , X) = α_0 + α_1 POA + α_2 Temp + α_3 ln(POA) + α_4 ln(Temp)
@@ -519,24 +539,21 @@ def modeller(prod_col_dict,
     if kernel_type == 'default':
         model = DefaultModel(time_weighted=time_weighted,
                              estimators=estimators,
-                             verbose=verbose)
+                             verbose=verbose,
+                             X_parameters=X_parameters)
     elif kernel_type == 'polynomial':
         model = PolynomialModel(
             time_weighted=time_weighted,
             estimators=estimators,
             degree=degree,
-            verbose=verbose)
-    elif kernel_type == 'polynomial_log':
-        model = PolynomialLogEModel(
-            time_weighted=time_weighted,
-            estimators=estimators,
-            degree=degree,
-            verbose=verbose)
+            verbose=verbose,
+            X_parameters=X_parameters)
     elif kernel_type == 'diode_inspired':
         model = DiodeInspiredModel(
             time_weighted=time_weighted,
             estimators=estimators,
-            verbose=verbose)
+            verbose=verbose,
+            X_parameters=X_parameters)
 
     model.train_index = train_df.index
     model.test_index = test_df.index
