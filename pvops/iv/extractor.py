@@ -131,7 +131,7 @@ class BruteForceExtractor():
         iph, io, rs, rsh, nnsvth = params
 
         if self.user_func is None:
-            sim = self.create_string_object(iph, io, rs, rsh, nnsvth)
+            sim = self.create_string_object(self, iph, io, rs, rsh, nnsvth)
         else:
             sim = self.user_func(self, iph, io, rs, rsh, nnsvth)
 
@@ -213,6 +213,10 @@ class BruteForceExtractor():
             plt.ylabel('Simulated (A)')
             plt.xlim(miniscs_m - 0.5, maxiscs_m + 0.5)
             plt.ylim(miniscs_m - 0.5, maxiscs_m + 0.5)
+            plt.show()
+
+            plt.plot(sample['V'], simI_interp, 'r', label='Simulated')
+            plt.title("SIMULATED")
             plt.show()
 
             plt.plot(sample['V'], simI_interp, 'r', label='Simulated')

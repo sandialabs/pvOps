@@ -6,6 +6,7 @@ from sklearn.metrics import mean_squared_error, r2_score
 import pandas as pd
 from scipy import stats
 from statsmodels.stats.outliers_influence import variance_inflation_factor
+import statsmodels.api as sm
 
 
 def _array_from_df(df, X_parameters):
@@ -53,65 +54,67 @@ class Model:
             # @dev: an open source package as a validation step.
             # @dev: Beware that the evaluation uses OLS and may
             # @dev: be mismatched if user inputs other regressors.
-            # import statsmodels.api as sm
-            # Xnew = pd.DataFrame(X, columns=self.variate_names)
-            # Xnew = sm.add_constant(Xnew)
-            # est = sm.OLS(y, Xnew)
-            # est2 = est.fit()
-            # print(est2.summary())
+            Xnew = pd.DataFrame(X, columns=self.variate_names)
+            Xnew = sm.add_constant(Xnew)
+            est = sm.OLS(y, Xnew)
+            est2 = est.fit()
+            statsdf = est2.summary()
 
-            params = np.append(info['estimator'].intercept_, coeffs)
-            # Check variable significanace
-            newX = pd.DataFrame({"Constant": np.ones(
-                len(X)
-                )}).join(pd.DataFrame(X))
-            MSE = (sum((y-pred)**2))/(len(newX)-len(newX.columns))
+            # @dev the below snippet calculates statistical parameters
+            # @dev using base numpy. This is commented out because we
+            # @dev have opted to use the statsmodels package.
+            # params = np.append(info['estimator'].intercept_, coeffs)
+            # # Check variable significanace
+            # newX = pd.DataFrame({"Constant": np.ones(
+            #     len(X)
+            #     )}).join(pd.DataFrame(X))
+            # MSE = (sum((y-pred)**2))/(len(newX)-len(newX.columns))
 
-            try:
-                var_b = MSE * np.linalg.inv(np.dot(newX.T,
-                                                   newX)
-                                            ).diagonal()
-            except np.linalg.LinAlgError:
-                # Add random noise to avoid a LinAlg error
-                newX += 0.00001*np.random.rand(*newX.shape)
-                var_b = MSE * np.linalg.inv(np.dot(newX.T,
-                                                   newX)
-                                            ).diagonal()
-            sd_b = np.sqrt(var_b)
-            ts_b = params / sd_b
-            p_values = [2*(1-stats.t.cdf(np.abs(i),
-                                         (len(newX)-newX.shape[1])))
-                        for i in ts_b]
-            vif = [variance_inflation_factor(newX.values, i)
-                   for i in range(newX.shape[1])]
-            lb_ci = params - sd_b * 1.96  # percentile: 0.025
-            ub_ci = params + sd_b * 1.96  # percentile: 0.975
+            # try:
+            #     var_b = MSE * np.linalg.inv(np.dot(newX.T,
+            #                                        newX)
+            #                                 ).diagonal()
+            # except np.linalg.LinAlgError:
+            #     # Add random noise to avoid a LinAlg error
+            #     newX += 0.00001*np.random.rand(*newX.shape)
+            #     var_b = MSE * np.linalg.inv(np.dot(newX.T,
+            #                                        newX)
+            #                                 ).diagonal()
+            # sd_b = np.sqrt(var_b)
+            # ts_b = params / sd_b
+            # p_values = [2*(1-stats.t.cdf(np.abs(i),
+            #                              (len(newX)-newX.shape[1])))
+            #             for i in ts_b]
+            # vif = [variance_inflation_factor(newX.values, i)
+            #        for i in range(newX.shape[1])]
+            # lb_ci = params - sd_b * 1.96  # percentile: 0.025
+            # ub_ci = params + sd_b * 1.96  # percentile: 0.975
 
-            # Round
-            sd_b = np.round(sd_b, 3)
-            ts_b = np.round(ts_b, 3)
-            p_values = np.round(p_values, 3)
-            params = np.round(params, 4)
-            lb_ci = np.round(lb_ci, 4)
-            ub_ci = np.round(ub_ci, 4)
+            # # Round
+            # sd_b = np.round(sd_b, 3)
+            # ts_b = np.round(ts_b, 3)
+            # p_values = np.round(p_values, 3)
+            # params = np.round(params, 4)
+            # lb_ci = np.round(lb_ci, 4)
+            # ub_ci = np.round(ub_ci, 4)
 
-            statsdf = pd.DataFrame()
-            (statsdf["coef"],
-             statsdf["std err"],
-             statsdf["t"],
-             statsdf["P>|t|"],
-             statsdf["[0.025"],
-             statsdf["0.975]"],
-             statsdf["vif"]
-             ) = [params,
-                  sd_b,
-                  ts_b,
-                  p_values,
-                  lb_ci,
-                  ub_ci,
-                  vif
-                  ]
-            statsdf.index = ["constant"] + list(self.variate_names)
+            # statsdf = pd.DataFrame()
+            # (statsdf["coef"],
+            #  statsdf["std err"],
+            #  statsdf["t"],
+            #  statsdf["P>|t|"],
+            #  statsdf["[0.025"],
+            #  statsdf["0.975]"],
+            #  statsdf["vif"]
+            #  ) = [params,
+            #       sd_b,
+            #       ts_b,
+            #       p_values,
+            #       lb_ci,
+            #       ub_ci,
+            #       vif
+            #       ]
+            # statsdf.index = ["constant"] + list(self.variate_names)
         else:
             statsdf = None
 

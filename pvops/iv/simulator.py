@@ -1151,17 +1151,15 @@ class Simulator():
                         plt.title('Final substring plot')
                         plt.xlabel('V (Volts)')
                         plt.ylabel('I (Amps)')
+                        plt.ylim(0, 9.5)
                         plt.grid()
                         plt.show()
 
                     modEs += irrs
                     modTs += temps
 
-                    substr_v_copy = copy.copy(substr_v)
-                    substr_v_copy = bypass(
-                        substr_v_copy, self.module_parameters['v_bypass'])
                     mod_v, mod_i = add_series(
-                        substr_v_copy, substr_i, mod_v, mod_i)
+                        substr_v, substr_i, mod_v, mod_i)
 
                 mod_v = bypass(mod_v, self.module_parameters['v_bypass'])
                 self.multilevel_ivdata['module'][mod_key]['V'].append(mod_v)
@@ -1419,6 +1417,14 @@ class Simulator():
                                                         breakdown_voltage=self.module_parameters[
                                                             'breakdown_voltage'],
                                                         breakdown_exp=self.module_parameters['breakdown_exp'])
+
+                # @dev: Uncomment if debugging pvlib bishop88 simulation results
+                # plt.plot(v,i)
+                # plt.xlim(-5,v[-1])
+                # plt.ylim(0,iph+1)
+                # plt.title(f"{ID}: {n} :: {rs},"
+                #           f"{rsh}, {io}, {iph}, {nnsvth}")
+                # plt.show()
 
                 self.condition_dict[ID][n]['V'] = v
                 self.condition_dict[ID][n]['I'] = i
