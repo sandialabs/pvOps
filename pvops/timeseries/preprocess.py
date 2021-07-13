@@ -56,11 +56,10 @@ def establish_solar_loc(prod_df, prod_col_dict, meta_df, meta_col_dict):
     for site in sites:
         site_mask = prod_df[prod_col_dict['siteid']] == site
         prod_df.loc[site_mask, positional_columns] = (
-            pvlib.solarposition.spa_python(
-                                           prod_df.loc[site_mask].index,
+            pvlib.solarposition.spa_python(prod_df.loc[site_mask].index,
                                            meta_df.loc[site, longitude_col],
-                                           meta_df.loc[site, latitude_col])
-        )
+                                           meta_df.loc[site, latitude_col]
+                                           ))
 
     return prod_df
 
