@@ -1,6 +1,7 @@
 import os
 import sys
 import pandas as pd
+import numpy as np
 
 pvops_directory = os.path.join("pvops")
 sys.path.append(pvops_directory)
@@ -153,4 +154,46 @@ def test_linear_model():
     assert eval['mse'] < benchmark_mse
 
 
-test_linear_model()
+def test_establish_solar_loc():
+    prod_df = pd.read_csv(example_prod2path)
+    meta_df = pd.read_csv(example_metapath)
+    # Test-specific changes
+    meta_df['randid'] = ["R10", "R15"]
+    meta_df.index = meta_df['randid']
+    # Format for dictionaries is {pvops variable: user-specific column names}
+    prod_col_dict = {'siteid': 'randid',
+                     'timestamp': 'date',
+                     'powerprod': 'generated_kW',
+                     'irradiance': 'irrad_poa_Wm2',
+                     'temperature': 'temp_amb_C',
+                     'baseline': 'IEC_pstep',
+                     'dcsize': 'dcsize',
+                     'compared': 'Compared',
+                     'energy_pstep': 'Energy_pstep'}
+    prod_data_converted = t2tprep.prod_date_convert(prod_df, prod_col_dict)
+    prod_data_datena_d, _ = t2tprep.prod_nadate_process(
+        prod_data_converted, prod_col_dict, pnadrop=True)
+
+    prod_data_datena_d.index = pd.to_datetime(prod_data_datena_d[prod_col_dict['timestamp']])
+
+    prod_with_solar_pos = tprep.establish_solar_loc(prod_data_datena_d,
+                                                    prod_col_dict,
+                                                    meta_df,
+                                                    metad_col_dict)
+
+    positional_columns = ['apparent_zenith',
+                          'zenith',
+                          'apparent_elevation',
+                          'elevation',
+                          'azimuth',
+                          'equation_of_time']
+    answer = [142.081554, 142.081554, -52.081554,
+              -52.081554, 140.635657, -3.925820]
+    rounded_answer = [round(a, 2) for a in answer]
+
+    expected = prod_with_solar_pos.iloc[0][positional_columns].values
+    rounded_expected = [round(a, 2) for a in expected]
+
+    assert len(rounded_answer) == len(rounded_expected)
+    assert all([a == b for a, b in zip(rounded_answer,
+                                       rounded_expected)])

@@ -31,11 +31,11 @@ def establish_solar_loc(prod_df, prod_col_dict, meta_df, meta_col_dict):
     meta_col_dict: dict of {str : str}
         A dictionary that contains the column names relevant for the meta-data
 
-        - **Longitude** (*string*), should be assigned to site's longitude
-        - **Latitude** (*string*), should be assigned to site's latitude
+        - **longitude** (*string*), should be assigned to site's longitude
+        - **latitude** (*string*), should be assigned to site's latitude
 
     Returns
-    
+
     -------
     Original dataframe (copied) with new timeseries solar position data using
     the same column name definitions provided in pvLib.
@@ -44,8 +44,8 @@ def establish_solar_loc(prod_df, prod_col_dict, meta_df, meta_col_dict):
     meta_df = meta_df.copy()
 
     sites = prod_df['randid'].unique()
-    longitude_col = meta_col_dict['Longitude']
-    latitude_col = meta_col_dict['Latitude']
+    longitude_col = meta_col_dict['longitude']
+    latitude_col = meta_col_dict['latitude']
 
     positional_columns = ['apparent_zenith',
                           'zenith',
@@ -64,7 +64,11 @@ def establish_solar_loc(prod_df, prod_col_dict, meta_df, meta_col_dict):
 
     return prod_df
 
-def normalize_production_by_capacity(prod_df, prod_col_dict, meta_df, meta_col_dict):
+
+def normalize_production_by_capacity(prod_df,
+                                     prod_col_dict,
+                                     meta_df,
+                                     meta_col_dict):
     """Normalize power by capacity. This preprocessing step is meant as a
     step prior to a modeling attempt where a model is trained on multiple
     sites simultaneously.
