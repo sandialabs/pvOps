@@ -299,7 +299,7 @@ class PolynomialModel(Model, TimeWeightedProcess):
 
         # gather list
         all_combinations = []
-        for degree in range(1, self.degree+1):
+        for degree in range(1, self.degree + 1):
             all_combinations.append(itertools.combinations_with_replacement(
                 iden_matrix, degree))
 

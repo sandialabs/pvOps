@@ -7,8 +7,60 @@ import pandas as pd
 
 
 def establish_solar_loc(prod_df, prod_col_dict, meta_df, meta_col_dict):
+    """Normalize power by capacity. This preprocessing step is meant as a
+    step prior to a modeling attempt where a model is trained on multiple
+    sites simultaneously.
+
+    Parameters
+
+    ----------
+    prod_df: DataFrame
+        A data frame corresponding to production data containing a datetime index.
+
+    prod_col_dict: dict of {str : str}
+        A dictionary that contains the column names associated with the production data,
+        which consist of at least:
+
+        - **siteid** (*string*), should be assigned to site-ID column name in prod_df
+
+    meta_df: DataFrame
+        A data frame corresponding to site metadata.
+        At the least, the columns in meta_col_dict be present.
+        The index must contain the site IDs used in prod_df.
+
+    meta_col_dict: dict of {str : str}
+        A dictionary that contains the column names relevant for the meta-data
+
+        - **Longitude** (*string*), should be assigned to site's longitude
+        - **Latitude** (*string*), should be assigned to site's latitude
+
+    Returns
+    
+    -------
+    Original dataframe (copied) with new timeseries solar position data using
+    the same column name definitions provided in pvLib.
+    """
     prod_df = prod_df.copy()
     meta_df = meta_df.copy()
+
+    sites = prod_df['randid'].unique()
+    longitude_col = meta_col_dict['Longitude']
+    latitude_col = meta_col_dict['Latitude']
+
+    positional_columns = ['apparent_zenith',
+                          'zenith',
+                          'apparent_elevation',
+                          'elevation',
+                          'azimuth',
+                          'equation_of_time']
+    for site in sites:
+        site_mask = prod_df[prod_col_dict['siteid']] == site
+        prod_df.loc[site_mask, positional_columns] = (
+            pvlib.solarposition.spa_python(
+                                           prod_df.loc[site_mask].index,
+                                           meta_df.loc[site, longitude_col],
+                                           meta_df.loc[site, latitude_col])
+        )
 
     return prod_df
 
@@ -217,7 +269,7 @@ def prod_inverter_clipping_filter(prod_df, prod_col_dict, meta_df, meta_col_dict
         - **timestamp** (*string*), should be assigned to associated time-stamp
         column name in prod_df
         - **siteid** (*string*), should be assigned to site-ID column name in prod_df
-        - **energyprod** (*string*), should be assigned to associated power production column name in prod_df
+        - **powerprod** (*string*), should be assigned to associated power production column name in prod_df
 
     meta_df: DataFrame
         A data frame corresponding to site metadata.
@@ -252,7 +304,7 @@ def prod_inverter_clipping_filter(prod_df, prod_col_dict, meta_df, meta_col_dict
     for site in individual_sites:
 
         site_prod_mask = prod_df.loc[:, prod_col_dict["siteid"]] == site
-        ac_power = prod_df.loc[site_prod_mask, prod_col_dict["energyprod"]]
+        ac_power = prod_df.loc[site_prod_mask, prod_col_dict["powerprod"]]
 
         if len(ac_power) == 0:
             # If no rows exist for this company, skip it.

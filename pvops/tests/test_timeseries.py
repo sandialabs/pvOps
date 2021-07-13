@@ -131,13 +131,13 @@ def test_linear_model():
          ])
     model_prod_data = model_prod_data[model_prod_data['randid'] == 'R15']
 
-    model, train_df, test_df = linear.modeller(model_prod_data,
-                                               prod_col_dict,
+    model, train_df, test_df = linear.modeller(prod_col_dict,
                                                kernel_type='default',
                                                time_weighted='month',
                                                X_parameters=[
                                                    'irrad_poa_Wm2',
                                                    'temp_amb_C'],
+                                               prod_df=model_prod_data,
                                                test_split=0.05,
                                                degree=3,
                                                verbose=0)

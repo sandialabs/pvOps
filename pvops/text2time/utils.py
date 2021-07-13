@@ -105,8 +105,8 @@ def interpolate_data(prod_df, om_df, prod_col_dict, om_col_dict, om_cols_to_tran
         for key in translation_keys:
             for i in idxs:
                 prod_df.iloc[i, :][
-                    str(row[om_asset]) + "_" + key
-                    ].append(row[key])
+                                   str(row[om_asset]) + "_" + key
+                                   ].append(row[key])
         prod_df.loc[mask, "has_ticket"] = True
     return prod_df, om_df_overlap
 
