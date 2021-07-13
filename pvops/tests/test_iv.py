@@ -173,7 +173,7 @@ def test_classification():
     }
 
     iv_col_dict = {'mode': 'mode'}
-    model = nn.classify_curves(feat_df, iv_col_dict, nn_config)
+    model,_,_ = nn.classify_curves(feat_df, iv_col_dict, nn_config)
 
     if model.test_accuracy > 0.9:
         assert True
