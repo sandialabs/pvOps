@@ -6,6 +6,120 @@ from timezonefinder import TimezoneFinder
 import pandas as pd
 
 
+def establish_solar_loc(prod_df, prod_col_dict, meta_df, meta_col_dict):
+    """Normalize power by capacity. This preprocessing step is meant as a
+    step prior to a modeling attempt where a model is trained on multiple
+    sites simultaneously.
+
+    Parameters
+
+    ----------
+    prod_df: DataFrame
+        A data frame corresponding to production data containing a datetime index.
+
+    prod_col_dict: dict of {str : str}
+        A dictionary that contains the column names associated with the production data,
+        which consist of at least:
+
+        - **siteid** (*string*), should be assigned to site-ID column name in prod_df
+
+    meta_df: DataFrame
+        A data frame corresponding to site metadata.
+        At the least, the columns in meta_col_dict be present.
+        The index must contain the site IDs used in prod_df.
+
+    meta_col_dict: dict of {str : str}
+        A dictionary that contains the column names relevant for the meta-data
+
+        - **longitude** (*string*), should be assigned to site's longitude
+        - **latitude** (*string*), should be assigned to site's latitude
+
+    Returns
+
+    -------
+    Original dataframe (copied) with new timeseries solar position data using
+    the same column name definitions provided in pvLib.
+    """
+    prod_df = prod_df.copy()
+    meta_df = meta_df.copy()
+
+    sites = prod_df['randid'].unique()
+    longitude_col = meta_col_dict['longitude']
+    latitude_col = meta_col_dict['latitude']
+
+    positional_columns = ['apparent_zenith',
+                          'zenith',
+                          'apparent_elevation',
+                          'elevation',
+                          'azimuth',
+                          'equation_of_time']
+    for site in sites:
+        site_mask = prod_df[prod_col_dict['siteid']] == site
+        prod_df.loc[site_mask, positional_columns] = (
+            pvlib.solarposition.spa_python(prod_df.loc[site_mask].index,
+                                           meta_df.loc[site, longitude_col],
+                                           meta_df.loc[site, latitude_col]
+                                           ))
+
+    return prod_df
+
+
+def normalize_production_by_capacity(prod_df,
+                                     prod_col_dict,
+                                     meta_df,
+                                     meta_col_dict):
+    """Normalize power by capacity. This preprocessing step is meant as a
+    step prior to a modeling attempt where a model is trained on multiple
+    sites simultaneously.
+
+    Parameters
+
+    ----------
+    prod_df: DataFrame
+        A data frame corresponding to production data.
+
+    prod_df_col_dict: dict of {str : str}
+        A dictionary that contains the column names associated with the production data,
+        which consist of at least:
+
+        - **energyprod** (*string*), should be assigned to production data in prod_df
+        - **siteid** (*string*), should be assigned to site-ID column name in prod_df
+        - **capacity_normalized_power** (*string*), should be assigned to a column name 
+          where the normalized output signal will be stored
+    meta_df: DataFrame
+        A data frame corresponding to site metadata.
+        At the least, the columns in meta_col_dict be present.
+
+    meta_col_dict: dict of {str : str}
+        A dictionary that contains the column names relevant for the meta-data
+
+        - **siteid** (*string*), should be assigned to site-ID column name
+        - **dcsize** (*string*), should be assigned to column name corresponding
+          to site's DC size
+    """
+
+    prod_df = prod_df.copy()
+    meta_df = meta_df.copy()
+
+    output_name = prod_col_dict["capacity_normalized_power"]
+    power_name = prod_col_dict["energyprod"]
+    dcsize_name = meta_col_dict["dcsize"]
+
+    individual_sites = set(meta_df[meta_col_dict['siteid']].tolist())
+
+    for site in individual_sites:
+        # Get site-specific meta data
+        site_meta_mask = meta_df.loc[:, meta_col_dict["siteid"]] == site
+        site_prod_mask = prod_df.loc[:, prod_col_dict["siteid"]] == site
+
+        # Calculate and save  power/capacity
+        prod_df.loc[site_prod_mask, output_name] = \
+            prod_df.loc[site_prod_mask, power_name] / \
+            meta_df.loc[site_meta_mask, dcsize_name].iloc[0]
+
+    return prod_df
+
+
 def prod_irradiance_filter(prod_df, prod_col_dict, meta_df, meta_col_dict,
                            drop=True, irradiance_type='ghi', csi_max=1.1
                            ):

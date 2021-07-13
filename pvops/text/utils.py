@@ -2,8 +2,10 @@ import pandas as pd
 import numpy as np
 
 
-def remap_attributes(om_df, remapping_df, remapping_col_dict):
-    """A utility function which remaps the attributes of om_df using columns within remapping_df.
+def remap_attributes(om_df, remapping_df, remapping_col_dict,
+                     allow_missing_mappings=False, print_info=False):
+    """A utility function which remaps the attributes of om_df using columns
+       within remapping_df.
 
     Parameters
 
@@ -13,10 +15,23 @@ def remap_attributes(om_df, remapping_df, remapping_col_dict):
     remapping_df : dataframe
         Holds columns that define the remappings
     remapping_col_dict: dict of {str : str}
-        A dictionary that contains the column names that describes how remapping is going to be done
-        - **attribute_col** (*string*), should be assigned to associated column name in om_df which will be remapped
-        - **remapping_col_from** (*string*), should be assigned to associated column name in remapping_df that matches original attribute of interest in om_df
-        - **remapping_col_to** (*string*), should be assigned to associated column name in remapping_df that contains the final mapped entries
+        A dictionary that contains the column names that describes how
+        remapping is going to be done
+        - **attribute_col** (*string*), should be assigned to associated
+          column name in om_df which will be remapped
+        - **remapping_col_from** (*string*), should be assigned
+          to associated column name in remapping_df that matches
+          original attribute of interest in om_df
+        - **remapping_col_to** (*string*), should be assigned to
+          associated column name in remapping_df that contains the
+          final mapped entries
+    allow_missing_mappings : bool
+        If True, allow attributes without specified mappings to exist in
+        the final dataframe.
+        If False, only attributes specified in `remapping_df` will be in
+        final dataframe.
+    print_info : bool
+        If True, print information about remapping.
 
     Returns
 
@@ -29,18 +44,40 @@ def remap_attributes(om_df, remapping_df, remapping_col_dict):
     REMAPPING_COL_FROM = remapping_col_dict["remapping_col_from"]
     REMAPPING_COL_TO = remapping_col_dict["remapping_col_to"]
 
-    print("Original attribute distribution:")
-    print(df[ATTRIBUTE_COL].value_counts())
+    # Lower all columns
+    df[ATTRIBUTE_COL] = df[ATTRIBUTE_COL].str.lower()
 
-    # append remapping for if nan, make "Missing"
-    remapping_df = remapping_df.append(pd.DataFrame({np.NaN, "Missing"}))
+    if print_info:
+        print("Initial value counts:")
+        print(df[ATTRIBUTE_COL].value_counts())
 
+    remapping_df[REMAPPING_COL_FROM] = remapping_df[REMAPPING_COL_FROM].str.lower()
+    remapping_df[REMAPPING_COL_TO] = remapping_df[REMAPPING_COL_TO].str.lower()
+
+    if allow_missing_mappings:
+        # Find attributes not considered in mapping
+        unique_words_in_data = set(df[ATTRIBUTE_COL].tolist())
+        missing_mappings = list(unique_words_in_data
+                                ^ set(remapping_df[REMAPPING_COL_FROM]))
+        missing_mappings = [word for word in missing_mappings
+                            if word in unique_words_in_data]
+        temp_remapping_df = pd.DataFrame()
+        temp_remapping_df[REMAPPING_COL_FROM] = missing_mappings
+        temp_remapping_df[REMAPPING_COL_TO] = missing_mappings
+        remapping_df = remapping_df.append(temp_remapping_df)
+
+    if print_info:
+        print("All mappings:\n", remapping_df)
     renamer = dict(
         zip(remapping_df[REMAPPING_COL_FROM], remapping_df[REMAPPING_COL_TO])
     )
     df[ATTRIBUTE_COL] = df[ATTRIBUTE_COL].map(renamer)
 
-    print("Final attribute distribution:")
-    print(df[ATTRIBUTE_COL].value_counts())
+    if print_info:
+        print("Final attribute distribution:")
+        print(df[ATTRIBUTE_COL].value_counts())
+
+        print(f"Number of nan definitions of {ATTRIBUTE_COL}:"
+              "{sum(df[ATTRIBUTE_COL].isna())}")
 
     return df

@@ -450,7 +450,7 @@ def classify_curves(df, iv_col_dict, nn_config):
     iv.structure(train, test)
     iv.train()
     iv.predict()
-    return iv
+    return iv, train, test
 
 
 class IVClassifier:
@@ -542,9 +542,9 @@ class IVClassifier:
             self._X_for_cvsplit = self.train_x
             length_arr_in_sample = len(self.test_x[0])
             self._1dcnn((length_arr_in_sample, num_params),
-                        nfilters=64,
-                        kernel_size=12,
-                        dropout_pct=0.5)
+                        nfilters=self.nn_config["nfilters"],
+                        kernel_size=self.nn_config["kernel_size"],
+                        dropout_pct=self.nn_config["dropout_pct"])
 
         elif self.model_name == 'LSTM_multihead':
             self.train_x = _convert_ivdata_to_lstm_multihead_structure(

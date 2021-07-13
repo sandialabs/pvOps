@@ -5,114 +5,109 @@ visualizations of the merged data
 """
 import pandas as pd
 import numpy as np
+import tqdm
 
-
-def iec_calc(prod_df, prod_col_dict, meta_df, meta_col_dict,
-             gi_ref=1000.0):
+def interpolate_data(prod_df, om_df, prod_col_dict, om_col_dict, om_cols_to_translate=["asset", "prod_impact"]):
     """
-    Calculates expected energy using measured irradiance
-    based on IEC calculations
+    Provides general overview of the overlapping production and O&M data.
 
 
     Parameters
 
     ----------
     prod_df: DataFrame
-        A data frame corresponding to the production data
-        after having been processed by the perf_om_NA_qc
-        and overlappingDFs functions. This data frame needs
-        at least the columns specified in prod_col_dict.
+        A data frame corresponding to the production
+        data after having been processed by the perf_om_NA_qc function. This
+        data frame needs the columns specified in prod_col_dict.
+
+    om_df: DataFrame
+        A data frame corresponding to the O&M data after
+        having been processed by the perf_om_NA_qc function. This data frame
+        needs the columns specified in om_col_dict.
 
     prod_col_dict: dict of {str : str}
-        A dictionary that contains the column names relevant
-        for the production data
+        A dictionary that contains the column names relevant for the production data
 
-        - **siteid** (*string*), should be assigned to 
-          site-ID column name in prod_df
-        - **timestamp** (*string*), should be assigned to
-          time-stamp column name in prod_df
-        - **irradiance** (*string*), should be assigned to
-          irradiance column name in prod_df, where data
-          should be in [W/m^2]
-        - **baseline** (*string*), should be assigned to
-          preferred column name to capture IEC calculations
-          in prod_df
-        - **dcsize**, (*string*), should be assigned to
-          preferred column name for site capacity in prod_df
+        - **siteid** (*string*), should be assigned to associated site-ID column name in prod_df
+        - **timestamp** (*string*), should be assigned to associated time-stamp column name in
+          prod_df
+        - **energyprod** (*string*), should be assigned to associated production column name in
+          prod_df
+        - **irradiance** (*string*), should be assigned to associated irradiance column name in
+          prod_df
 
-    meta_df: DataFrame
-        A data frame corresponding to site metadata.
-        At the least, the columns in meta_col_dict be
-        present.
+    om_col_dict: dict of {str : str}
+        A dictionary that contains the column names relevant for the O&M data
 
-    meta_col_dict: dict of {str : str}
-        A dictionary that contains the column names relevant
-        for the meta-data
+        - **siteid** (*string*), should be assigned to associated site-ID column name in om_df
+        - **datestart** (*string*), should be assigned to associated O&M event start-date
+          column name in om_df
+        - **dateend** (*string*), should be assigned to associated O&M event end-date
+          column name in om_df
+        - Others specified in om_cols_to_translate
 
-        - **siteid** (*string*), should be assigned to site-ID
-          column name
-        - **dcsize** (*string*), should be assigned to
-          column name corresponding to site capacity, where
-          data is in [kW]
-
-    gi_ref: float
-        reference plane of array irradiance in W/m^2 at
-        which a site capacity is determined (default value
-        is 1000 [W/m^2])
-
+    om_cols_to_translate : list
+        List of om_col_dict keys to translate into prod_df
 
     Returns
 
     -------
-    DataFrame
-        A data frame for production data with a new column,
-        iecE, which is the predicted energy calculated
-        based on the IEC standard using measured irradiance
-        data
+    prod_output: DataFrame
+        A data frame that includes statistics for the production data per site in the data frame.
+        Two statistical parameters are calculated and assigned to separate columns:
+
+        - **Actual # Time Stamps** (*datetime.datetime*), total number of overlapping
+          production time-stamps
+        - **Max # Time Stamps** (*datetime.datetime), maximum number of production time-stamps,
+          including NANs
+
+    om_out: DataFrame
+        A data frame that includes statistics for the O&M data per site in the data frame.
+        Three statistical parameters are calculated and assigned to separate columns:
+
+        - **Earliest Event Start** (*datetime.datetime*), column that specifies timestamp of
+          earliest start of all events per site.
+        - **Latest Event End** (*datetime.datetime), column that specifies timestamp for
+          latest conclusion of all events per site.
+        - **Total Events** (*int*), column that specifies total number of events per site
 
     """
-    # assigning dictionary items to local variables for cleaner code
-    prod_site = prod_col_dict["siteid"]
-    prod_ts = prod_col_dict["timestamp"]
-    prod_irr = prod_col_dict["irradiance"]
-    prod_iec = prod_col_dict["baseline"]
-    prod_dcsize = prod_col_dict["dcsize"]
 
-    meta_site = meta_col_dict["siteid"]
-    meta_size = meta_col_dict["dcsize"]
-
-    # creating local dataframes to not modify originals
     prod_df = prod_df.copy()
-    meta_df = meta_df.copy()
+    om_df = om_df.copy()
 
-    # setting index for metadata for alignment to production data
-    meta_df = meta_df.set_index(meta_site)
+    om_site = om_col_dict["siteid"]
+    om_date_s = om_col_dict["datestart"]
+    om_date_e = om_col_dict["dateend"]
+    om_asset = om_col_dict["asset"]
 
-    # Creating new column in production data corresponding to site size (in terms of KW)
-    prod_df[prod_dcsize] = prod_df.loc[:, prod_site].apply(
-        lambda x: meta_df.loc[x, meta_size]
-    )
+    unique_assets = om_df[om_asset].unique()
+    translation_keys = [om_col_dict[key] for key in om_cols_to_translate]
 
-    # iec calculation
+    # Prime the columns in prod_df
+    for asset in unique_assets:
+        for key in translation_keys:
+            prod_df[str(asset) + "_" + key] = [[] for _ in range(len(prod_df))]
 
-    for sid in prod_df.loc[:, prod_site].unique():
-        mask = prod_df.loc[:, prod_site] == sid
-        tstep = prod_df.loc[mask, prod_ts].iloc[1] - \
-            prod_df.loc[mask, prod_ts].iloc[0]
-        tstep = tstep / np.timedelta64(
-            1, "h"
-        )  # Converting the time-step to float (representing hours) to
-        # arrive at kWh for the iecE calculation
+    prod_ts = prod_col_dict["timestamp"]
+    prod_df["has_ticket"] = False
 
-        prod_df.loc[mask, prod_iec] = (
-            prod_df.loc[mask, prod_dcsize]
-            * prod_df.loc[mask, prod_irr]
-            * tstep
-            / gi_ref
-        )
-    prod_df.drop(columns=[prod_dcsize], inplace=True)
+    # Obtaining new DFs to extract statistics by using overlapping_data function
+    prod_df_overlap, om_df_overlap = overlapping_data(
+        prod_df, om_df, prod_col_dict, om_col_dict)
 
-    return prod_df
+    print(f'processing {len(om_df_overlap)} rows')
+    for ind, row in tqdm.tqdm(om_df_overlap.iterrows()):
+        mask = ((prod_df[prod_ts] >= row[om_date_s]) &
+                (prod_df[prod_ts] < row[om_date_e]) &
+                (prod_df[om_site] == row[om_site]))
+        idxs = np.where(mask)[0]
+        for key in translation_keys:
+            for i in idxs:
+                prod_df.iloc[i, :][str(row[om_asset]) + "_" + key
+                                   ].append(row[key])
+        prod_df.loc[mask, "has_ticket"] = True
+    return prod_df, om_df_overlap
 
 
 def summarize_overlaps(prod_df, om_df, prod_col_dict, om_col_dict):

@@ -3,26 +3,22 @@
 beta 
 -----------------------
 
-The beta release of pvOps will consist mostly of new features.
+New features and bug fixes are predominant in the beta versions.
 
 New features
 ~~~~~~~~~~~~
 
-* `text` module added which conducts natural language processing on Operations & Maintenance (O&M) tickets, or other.
-* `text2time` module investigates the relationship between the production timeseries data and the O&M tickets.
-* `timeseries` module conducts timeseries preprocessing and modeling
-* `iv` incorporates the ability to simulate current-voltage (IV) curves under different environmental, load, and failure conditions.
+* IV trace classification framework built according to literature (PR #25)
+* Timeseries IV simulation for highly customizable degradation of system parameters (PR #28)
+* Leverage pvlib solarposition package to populate content per site (PR #32)
+* Add coefficient-level evaluations linear models (PR #32)
+* Give user ability to input own test-train splits to linear modeller (PR #32)
+* Remap attributes function must retain the unaltered attributes (PR #32)
+* Interpolate O&M data onto production data where overlaps exist (PR #32)
 
+Bug fixes
+~~~~~~~~~
 
-Documentation
-~~~~~~~~~~~~~
-
-* Built original website
-* Add whatsnew
-* Add jupyter notebook embeddings
-
-Testing
-~~~~~~~
-
-* Built comprehensive tests with pytest 
-* Connected tests to automated testing pipeline
+* Basic package fixes to README (PR #27) and documentation configuration (PR #24)
+* Fix IV simulator bug for edge case where two IV curves added have equal I_{sc} (PR #30)
+* Neural network configuration referencing in 1D CNN (PR #32)

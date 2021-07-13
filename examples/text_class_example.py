@@ -43,7 +43,7 @@ class Example:
         self.df = df
 
     def summarize_text_data(self, DATA_COLUMN):
-        utils.summarize_text_data(self.df, DATA_COLUMN)
+        nlp_utils.summarize_text_data(self.df, DATA_COLUMN)
 
     def visualize_attribute_timeseries(self, DATE_COLUMN):
         col_dict = {"date": DATE_COLUMN, "label": self.LABEL_COLUMN}
@@ -102,6 +102,8 @@ class Example:
         EVENTSTART_COLUMN,
         SAVE_DATA_COLUMN="CleanDesc",
         SAVE_DATE_COLUMN="ExtractedDates",
+        input_lst_add_stopwords=None,
+        input_lst_keep_stopwords=None,
     ):
         self.DATA_COLUMN = DATA_COLUMN
         self.EVENTSTART_COLUMN = EVENTSTART_COLUMN
@@ -115,12 +117,22 @@ class Example:
                 self.df = self.df[self.df[self.LABEL_COLUMN] != lbl]
         self.df = self.df.sample(frac=1)
 
+        lst_add_stopwords = ["dtype", "say", "new",
+                             "length", "object", "u", "ha", "wa"]
+        lst_keep_words = ["new"]
+        if not isinstance(input_lst_add_stopwords, type(None)):
+            lst_add_stopwords += input_lst_add_stopwords
+        if not isinstance(input_lst_keep_stopwords, type(None)):
+            lst_keep_words += input_lst_keep_stopwords
+
         lst_stopwords = nlp_utils.create_stopwords(
             ["english"],
-            lst_add_words=["dtype", "say", "new",
-                           "length", "object", "u", "ha", "wa"],
-            lst_keep_words=["new"],
+            lst_add_words=lst_add_stopwords,
+            lst_keep_words=lst_keep_words,
         )
+
+        # Save so that can be easily referenced
+        self.lst_stopwords = lst_stopwords
 
         col_dict = {
             "data": DATA_COLUMN,
@@ -140,9 +152,8 @@ class Example:
         self.DATA_COLUMN = SAVE_DATA_COLUMN
         return self.df[[DATA_COLUMN, SAVE_DATA_COLUMN]]
 
-    def visualize_freqPlot(self, LBL_CAT=None, DATA_COLUMN="CleanDesc", 
+    def visualize_freqPlot(self, LBL_CAT=None, DATA_COLUMN="CleanDesc",
                            **graph_aargs):
-
         if LBL_CAT is None:
             words = " ".join(self.df[DATA_COLUMN].tolist())
             num_rows = len(self.df[DATA_COLUMN].index)
@@ -269,15 +280,15 @@ class Example:
         user_defined_search_space=None,
         verbose=0,
     ):
-        """A wrapper function which evaluates the performance of many 
+        """A wrapper function which evaluates the performance of many
         supervised classifiers
 
             embedding : str
-                Definition of document embedding strategy with "tfidf" and 
+                Definition of document embedding strategy with "tfidf" and
                 "doc2vec" options
 
             setting : str
-                Thoroughness of supervised classification investigation with 
+                Thoroughness of supervised classification investigation with
                 following options:
                 'normal': a smaller subset of settings used in grid search
                 'detailed': a comprehensive set of settings used in grid search

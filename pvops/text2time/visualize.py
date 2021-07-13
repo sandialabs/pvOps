@@ -2,10 +2,95 @@
 import pandas as pd
 import numpy as np
 from scipy.signal import find_peaks
-import plotly
+import plotly.graph_objects as go
 import matplotlib.pyplot as plt
 import seaborn as sns
 from matplotlib.ticker import MaxNLocator
+
+
+def visualize_counts(om_df, om_col_dict, count_var, fig_sets):
+    """
+    Produces a seaborn countplot of an O&M categorical column using sns.countplot()
+
+
+    Parameters
+
+    ----------
+    om_df: DataFrame
+        A data frame corresponding to the O&M data after having been pre-processed
+        to address NANs and date consistency, and after applying the ``om_summary_stats`` function.
+        This data frame needs at least the columns specified in om_col_dict.
+
+    om_col_dict: dict of {str : str}
+        A dictionary that contains the column names relevant for the O&M data
+
+        - **siteid** (*string*), should be assigned to column name for associated site-ID in om_df.
+        - **modatestart** (*string*), should be assigned to column name desired for month of
+          event start. This column is calculated by ``om_summary_stats``
+
+    count_var:str
+        Column name that contains categorical variable to be plotted
+
+    fig_sets: dict
+        A dictionary that contains the settings to be used for the
+        figure to be generated, and those settings should include:
+
+        - **figsize** (*tuple*), which is a tuple of the figure settings (e.g. *(12,10)* )
+        - **fontsize** (*int*), which is the desired font-size for the figure
+
+    Returns
+
+    -------
+    None
+
+    """
+    # assigning dictionary items to local variables for cleaner code
+    om_site = om_col_dict["siteid"]
+    om_mo_st = om_col_dict["modatestart"]
+
+    my_figsize = fig_sets["figsize"]
+    my_fontsize = fig_sets["fontsize"]
+
+    # For plot title labels
+    if count_var == om_site:
+        ttl_key = "Site"
+        hue = None
+    elif count_var == om_mo_st:
+        ttl_key = "Month"
+        hue = om_site
+    else:
+        ttl_key = count_var
+        hue = None
+
+    fig = plt.figure(figsize=my_figsize)
+    om_df[count_var] = om_df[count_var].astype("category")
+    ax = sns.countplot(x=count_var, data=om_df, hue=hue)
+
+    ax.set_xticklabels(
+        ax.get_xticklabels(),
+        rotation=45,
+        horizontalalignment="center",
+        fontweight="medium",
+        fontsize=my_fontsize - 2,
+    )
+
+    yticks = ax.get_yticks()
+    yticks = [int(i) for i in yticks]
+    ax.set_yticks(yticks)
+    ax.set_yticklabels(
+        yticks,
+        verticalalignment="center",
+        fontweight="medium",
+        fontsize=my_fontsize - 2,
+    )
+
+    ax.yaxis.set_major_locator(MaxNLocator(integer=True))
+    ax.set_xlabel(count_var, fontsize=my_fontsize, fontweight="bold")
+    ax.set_ylabel("Count", fontsize=my_fontsize, fontweight="bold")
+    ax.set_title("Number of Reported Events by " + ttl_key, fontsize=my_fontsize)
+    fig.tight_layout()
+
+    return fig
 
 
 def visualize_categorical_scatter(om_df, om_col_dict, cat_varx, cat_vary, fig_sets):
@@ -90,90 +175,6 @@ def visualize_categorical_scatter(om_df, om_col_dict, cat_varx, cat_vary, fig_se
 
     fig = plt.gcf()
     fig.set_size_inches(my_figsize)
-    fig.tight_layout()
-
-    return fig
-
-def visualize_counts(om_df, om_col_dict, count_var, fig_sets):
-    """
-    Produces a seaborn countplot of an O&M categorical column using sns.countplot()
-
-
-    Parameters
-
-    ----------
-    om_df: DataFrame
-        A data frame corresponding to the O&M data after having been pre-processed
-        to address NANs and date consistency, and after applying the ``om_summary_stats`` function.
-        This data frame needs at least the columns specified in om_col_dict.
-
-    om_col_dict: dict of {str : str}
-        A dictionary that contains the column names relevant for the O&M data
-
-        - **siteid** (*string*), should be assigned to column name for associated site-ID in om_df.
-        - **modatestart** (*string*), should be assigned to column name desired for month of
-          event start. This column is calculated by ``om_summary_stats``
-
-    count_var:str
-        Column name that contains categorical variable to be plotted
-
-    fig_sets: dict
-        A dictionary that contains the settings to be used for the
-        figure to be generated, and those settings should include:
-
-        - **figsize** (*tuple*), which is a tuple of the figure settings (e.g. *(12,10)* )
-        - **fontsize** (*int*), which is the desired font-size for the figure
-
-    Returns
-
-    -------
-    None
-
-    """
-    # assigning dictionary items to local variables for cleaner code
-    om_site = om_col_dict["siteid"]
-    om_mo_st = om_col_dict["modatestart"]
-
-    my_figsize = fig_sets["figsize"]
-    my_fontsize = fig_sets["fontsize"]
-
-    # For plot title labels
-    if count_var == om_site:
-        ttl_key = "Site"
-        hue = None
-    elif count_var == om_mo_st:
-        ttl_key = "Month"
-        hue = om_site
-    else:
-        ttl_key = count_var
-        hue = None
-
-    fig = plt.figure(figsize=my_figsize)
-    om_df[count_var] = om_df[count_var].astype("category")
-    ax = sns.countplot(x=count_var, data=om_df, hue=hue)
-
-    ax.set_xticklabels(
-        ax.get_xticklabels(),
-        rotation=45,
-        horizontalalignment="center",
-        fontweight="medium",
-        fontsize=my_fontsize - 2,
-    )
-
-    yticks = ax.get_yticks()
-    yticks = [int(i) for i in yticks]
-    ax.set_yticks(yticks)
-    ax.set_yticklabels(
-        yticks,
-        verticalalignment="center",
-        fontweight="medium",
-        fontsize=my_fontsize - 2,
-    )
-
-    ax.yaxis.set_major_locator(MaxNLocator(integer=True))
-    ax.set_xlabel(count_var, fontsize=my_fontsize, fontweight="bold")
-    ax.set_ylabel("Count", fontsize=my_fontsize, fontweight="bold")
-    ax.set_title("Number of Reported Events by " + ttl_key, fontsize=my_fontsize)
     fig.tight_layout()
 
     return fig
@@ -365,7 +366,7 @@ def visualize_om_prod_overlap(
             om_reg_hcorr = 1.0
 
         # initializing plotly-figure
-        fig = plotly.graph_objects.Figure(
+        fig = go.Figure(
             layout_yaxis_range=[-5, enrg_site.max() * om_reg_h * om_reg_hcorr]
         )
 
@@ -376,11 +377,11 @@ def visualize_om_prod_overlap(
         elif samp_freq == "H":
             perf_name = "Hourly Energy"
             baseline_name = "Hourly Baseline"
-        fig.add_trace(plotly.graph_objects.Scatter(x=enrg_site.index, y=enrg_site.values, 
-                                                   name=perf_name))
+        fig.add_trace(go.Scatter(x=enrg_site.index, y=enrg_site.values, 
+                                 name=perf_name))
         if baselineflag:
             fig.add_trace(
-                plotly.graph_objects.Scatter(
+                go.Scatter(
                     x=baseline_site.index, y=baseline_site.values, name=baseline_name
                 )
             )
@@ -409,7 +410,7 @@ def visualize_om_prod_overlap(
 
         # Adding EventStart Points with hover-text
         fig.add_trace(
-            plotly.graph_objects.Scatter(
+            go.Scatter(
                 x=om_df.loc[i].index,
                 y=om_df.loc[i, "perfval_plotcol"].values * om_start_h,
                 mode="markers",
@@ -432,7 +433,7 @@ def visualize_om_prod_overlap(
 
         # Adding EventEnd Points with hover-text
         fig.add_trace(
-            plotly.graph_objects.Scatter(
+            go.Scatter(
                 x=om_df.loc[i, om_date_e],
                 y=om_df.loc[i, "perfval_plotcol"].values * om_end_h,
                 mode="markers",
