@@ -15,6 +15,12 @@ from physics_utils import voltage_pts, add_series, bypass
 from physics_utils import intersection, iv_cutoff, gt_correction
 
 
+def _find_nearest(array, value):
+    array = np.asarray(array)
+    idx = (np.abs(array - value)).argmin()
+    return idx
+
+
 class Simulator():
     """
     An object which simulates Photovoltaic (PV) current-voltage (IV) curves wth failures
@@ -226,7 +232,7 @@ class Simulator():
         mod_name = list(mod_specs.keys())[0]
         self.module_parameters, self.cell_parameters = get_CEC_params(
             mod_name, mod_specs[mod_name])
-        self.module_parameters['v_bypass'] = 0.5
+        self.module_parameters['v_bypass'] = 0.5 #100 # 20 # 0.5
 
         # For all non-NULL values in given replacement parameters, *
         # replace in module_parameters and cell_parameters
@@ -1025,10 +1031,10 @@ class Simulator():
                         break
                 pristineIV = self.condition_dict[id_save][0]
 
-                mod_v, mod_i = None, None
+                substrings_v, substrings_i = list(), list()
                 modEs, modTs = list(), list()
+                mod_v, mod_i = None, None
                 # module: loop through substrings, cells in substring
-
                 for s in range(self.module_parameters['nsubstrings']):
 
                     ivs = {}
@@ -1037,7 +1043,7 @@ class Simulator():
                     for celltype in cell_id[s]:
                         try:
                             celltypes.append(modset[celltype])
-                        except:
+                        except IndexError:
                             print(modset)
                             print(celltype)
                             print(cell_id[s])
@@ -1084,20 +1090,16 @@ class Simulator():
                                     prist_substr_v, prist_substr_i = add_series(pristineIV['V'], pristineIV['I'],
                                                                                 prist_substr_v, prist_substr_i)
                         else:
-                            # observe higher value, for now -10
-                            def find_nearest(array, value):
-                                array = np.asarray(array)
-                                idx = (np.abs(array - value)).argmin()
-                                return idx
-                            idx_left_substr = find_nearest(substr_v, 0)
-                            idx_left_iter = find_nearest(iter_V, 0)
+
+                            idx_left_substr = _find_nearest(substr_v, 0)
+                            idx_left_iter = _find_nearest(iter_V, 0)
 
                             # get effective Isc which is intersection in revere bias region
                             # Correct higher curve to effective Isc
                             if substr_i[idx_left_substr] > iter_I[idx_left_iter]:
                                 substr_v_cutoff, substr_i_cutoff = substr_v.copy(
                                 ), substr_i.copy()
-                                realisc = substr_i[find_nearest(
+                                realisc = substr_i[_find_nearest(
                                     substr_v_cutoff, 0)]
 
                                 # Reflect the iter curve
@@ -1106,11 +1108,16 @@ class Simulator():
                                 # Essentially Isc minus effectiveISC
                                 delta = realisc - effective_Isc[1][0]
                                 substr_i -= delta
+                                other_isc = iter_I[_find_nearest(
+                                    iter_V, 0)]
+                                delta_substr = effective_Isc[1][0] - other_isc
+                                iter_I += delta_substr
+
                             elif substr_i[idx_left_substr] < iter_I[idx_left_iter]:
                                 iter_V_cutoff, iter_I_cutoff = iter_V.copy(
                                 ), iter_I.copy()
 
-                                realisc = iter_I[find_nearest(
+                                realisc = iter_I[_find_nearest(
                                     iter_V_cutoff, 0)]
 
                                 # Reflect the substr curve
@@ -1119,6 +1126,10 @@ class Simulator():
                                 # Essentially Isc minus effectiveISC
                                 delta = realisc - effective_Isc[1][0]
                                 iter_I -= delta
+                                other_isc = substr_i[_find_nearest(
+                                    substr_v, 0)]
+                                delta_substr = effective_Isc[1][0] - other_isc
+                                substr_i += delta_substr
 
                             else:
                                 # Equal! Doing nothing.
@@ -1157,11 +1168,133 @@ class Simulator():
 
                     modEs += irrs
                     modTs += temps
+                    # substrings_v.append(substr_v)
+                    # substrings_i.append(substr_i)
+                    mod_v, mod_i = add_series(substr_v,
+                                                substr_i,
+                                                mod_v,
+                                                mod_i
+                                                )
+                """
+                Now that substrings are calculated, we calculate module-level IVs
+                """
+                # # Sort substrings by isc
+                # substr_iscs = []
+                # for substr_v, substr_i in zip(substrings_v, substrings_i):
+                #     substr_iscs.append(substr_i[_find_nearest(substr_v, 0)])
 
-                    mod_v, mod_i = add_series(
-                        substr_v, substr_i, mod_v, mod_i)
+                # # gather indices of substrings from lowest to highest
+                # sorted_indices = np.argsort(substr_iscs)
+                # # reverse list so in descending order (largest to smallest)
+                # sorted_indices = sorted_indices[::-1]
+                # print(substr_iscs)
+                # print(sorted_indices)
+                # substrings_v = np.array(substrings_v)
+                # substrings_i = np.array(substrings_i)
+                # substr_iscs = np.array(substr_iscs)
 
-                mod_v = bypass(mod_v, self.module_parameters['v_bypass'])
+                # mod_v, mod_i = None, None
+                # # Because the substrings are sorted above, we only need
+                # # to capture the case where the ongoing module aggregation
+                # # is larger than the current substring
+                # for idx, (substr_v, substr_i, substr_isc) in enumerate(
+                #     zip(substrings_v[sorted_indices],
+                #         substrings_i[sorted_indices],
+                #         substr_iscs[sorted_indices]
+                #         )
+                #     ):
+
+                #     if ( idx == 0 ):
+                #         print('a')
+                #         mod_v, mod_i = add_series(substr_v,
+                #                                   substr_i,
+                #                                   mod_v,
+                #                                   mod_i
+                #                                   )
+                #     elif (substr_isc == mod_i[_find_nearest(mod_v, 0)]):
+                #         print('b')
+                #         mod_v, mod_i = add_series(substr_v,
+                #                                   substr_i,
+                #                                   mod_v,
+                #                                   mod_i
+                #                                   )
+                #     else:
+                #         print('c')
+                #         mod_isc = mod_i[_find_nearest(mod_v, 0)]
+                #         # Get intersection in neg vol
+                #         effective_Isc = intersection(
+                #             # Reflect the aggregated module-level
+                #             # curve about y-axis (current)
+                #             list(-mod_v), list(mod_i),
+                #             list(substr_v), list(substr_i), no_upsample=True)
+
+                #         print(effective_Isc)
+                #         #if len(effective_Isc[1]):
+                #         intersection_current = effective_Isc[1][0]
+                #         print('intersection_current',intersection_current)
+                #         #else:
+                #             # Occurs when the substrings are identical
+                #         #    intersection_current = 
+
+                #         # Essentially Isc minus effectiveISC
+                #         delta = mod_isc - intersection_current
+                #         print('delta',delta)
+                #         # Update the module-level IV
+                #         mod_i_stunted = mod_i - delta
+
+                #         delta_substr = intersection_current - substr_isc
+                #         substr_i += delta_substr
+
+                #         plt.plot(mod_v, mod_i_stunted, label='stunted')
+                #         plt.xlim(left=-0.49)
+                #         plt.ylim((-5,13))
+                #         plt.legend()
+                #         plt.show()
+
+                #         mod_v_stunted, mod_i_stunted = add_series(substr_v,
+                #                                                   substr_i,
+                #                                                   mod_v,
+                #                                                   mod_i_stunted
+                #                                                   )
+                #         # Find intersection between two curves in positive
+                #         # voltage domain: 
+                #         # 1. the `stunted curve` (mod_v_stunted, mod_i_stunted)
+                #         #    is wider in voltage domain but shorter in the current
+                #         #    domain
+                #         # 2. the regular curve (mod_v, mod_i) is thinner in voltage
+                #         #    domain but higher in current domain
+
+                #         plt.plot(mod_v_stunted, mod_i_stunted, label='stunted')
+                #         plt.plot(mod_v, mod_i, label='mod')
+                #         plt.xlim(left=-0.49)
+                #         plt.ylim((-5,13))
+                #         plt.legend()
+                #         plt.show()
+
+                #         # Get intersection in neg vol
+                #         effective_Isc = intersection(
+                #             # Reflect the aggregated module-level
+                #             # curve about y-axis (current)
+                #             list(mod_v_stunted), list(mod_i_stunted),
+                #             list(mod_v), list(mod_i)
+                #             )
+                #         print(effective_Isc)
+                #         # print(list(mod_v_stunted), list(mod_i_stunted))
+                #         # print(list(mod_v), list(mod_i))
+
+                #         mod_stunted_idx_crossover = _find_nearest(mod_v_stunted, effective_Isc[0][0])
+                #         mod_idx_crossover = _find_nearest(mod_v, effective_Isc[0][0])
+
+                #         mod_v = np.append(mod_v[:mod_idx_crossover], mod_v_stunted[mod_stunted_idx_crossover:])
+                #         mod_i = np.append(mod_i[:mod_idx_crossover], mod_i_stunted[mod_stunted_idx_crossover:])
+
+                # Full module curve 
+
+                # Get intersection between prist mod & full mod
+                # current add_series logic
+
+                # current from large 
+
                 self.multilevel_ivdata['module'][mod_key]['V'].append(mod_v)
                 self.multilevel_ivdata['module'][mod_key]['I'].append(mod_i)
                 self.multilevel_ivdata['module'][mod_key]['E'].append(

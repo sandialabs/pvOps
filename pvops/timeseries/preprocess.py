@@ -256,7 +256,7 @@ def prod_irradiance_filter(prod_df, prod_col_dict, meta_df, meta_col_dict,
         return prod_df, mask_series
 
 
-def prod_inverter_clipping_filter(prod_df, prod_col_dict, meta_df, meta_col_dict, model, **kwargs):
+def prod_inverter_clipping_filter(prod_df, prod_col_dict, meta_df, meta_col_dict, model, production_key, **kwargs):
     """Filter rows of production data frame according to performance and data quality
 
     Parameters
@@ -289,6 +289,9 @@ def prod_inverter_clipping_filter(prod_df, prod_col_dict, meta_df, meta_col_dict
         A string distinguishing the inverter clipping detection model programmed in pvanalytics.
         Available options: ['geometric', 'threshold', 'levels']
 
+    production_key: str
+        Name of key in prod_df_col_dict containing production data power/energy signal
+
     kwargs:
         Extra parameters passed to the relevant pvanalytics model. If none passed, defaults are used.
 
@@ -307,7 +310,7 @@ def prod_inverter_clipping_filter(prod_df, prod_col_dict, meta_df, meta_col_dict
     for site in individual_sites:
 
         site_prod_mask = prod_df.loc[:, prod_col_dict["siteid"]] == site
-        ac_power = prod_df.loc[site_prod_mask, prod_col_dict["powerprod"]]
+        ac_power = prod_df.loc[site_prod_mask, prod_col_dict[production_key]]
 
         if len(ac_power) == 0:
             # If no rows exist for this company, skip it.

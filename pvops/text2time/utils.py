@@ -7,7 +7,7 @@ import pandas as pd
 import numpy as np
 import tqdm
 
-def interpolate_data(prod_df, om_df, prod_col_dict, om_col_dict, om_cols_to_translate=["asset", "prod_impact"]):
+def interpolate_data(prod_df, om_df, prod_col_dict, om_col_dict, om_cols_to_translate=["asset", "prod_impact"], asset_col="Asset"):
     """
     Provides general overview of the overlapping production and O&M data.
 
@@ -79,7 +79,7 @@ def interpolate_data(prod_df, om_df, prod_col_dict, om_col_dict, om_cols_to_tran
     om_site = om_col_dict["siteid"]
     om_date_s = om_col_dict["datestart"]
     om_date_e = om_col_dict["dateend"]
-    om_asset = om_col_dict["asset"]
+    om_asset = asset_col #om_col_dict["asset"]
 
     unique_assets = om_df[om_asset].unique()
     translation_keys = [om_col_dict[key] for key in om_cols_to_translate]

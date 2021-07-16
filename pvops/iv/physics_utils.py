@@ -123,7 +123,7 @@ def iv_cutoff(Varr, Iarr, val):
     return Varr[msk], Iarr[msk]
 
 
-def intersection(x1, y1, x2, y2):
+def intersection(x1, y1, x2, y2, no_upsample=False):
     """Compute intersection of curves, y1=f(x1) and y2=f(x2).
     Adapted from https://stackoverflow.com/a/5462917
 
@@ -144,6 +144,7 @@ def intersection(x1, y1, x2, y2):
     -------
     intersection coordinates
     """
+
     x1 = copy.copy(np.asarray(x1))
     x2 = copy.copy(np.asarray(x2))
     y1 = copy.copy(np.asarray(y1))
@@ -156,8 +157,19 @@ def intersection(x1, y1, x2, y2):
         v_interps = np.arange(vnot, vmax, resol)
         return v_interps, np.interp(v_interps, Varr, Iarr)
 
-    x1, y1 = _upsample_curve(x1, y1)
-    x2, y2 = _upsample_curve(x2, y2)
+    if no_upsample:
+        import matplotlib.pyplot as plt
+        plt.figure(figsize=(10,10))
+        plt.scatter(x1,y1,label='1')
+        plt.scatter(x2,y2,label='2')
+        plt.ylim((0,10))
+        # plt.xlim((-3,3))
+        plt.legend()
+        plt.show()
+
+    if not no_upsample:
+        x1, y1 = _upsample_curve(x1, y1)
+        x2, y2 = _upsample_curve(x2, y2)
 
     def _rect_inter_inner(x1, x2):
         n1 = x1.shape[0] - 1
@@ -223,10 +235,10 @@ def intersection(x1, y1, x2, y2):
         plt.ylim(-4, 20)
         plt.xlim(-13.5, max(max(x2), max(x1)) + 2.)
         plt.show()
-        print("x1 = ", list(x1))
-        print("x2 = ", list(x2))
-        print("y1 = ", list(y1))
-        print("y2 = ", list(y2))
+        # print("x1 = ", list(x1))
+        # print("x2 = ", list(x2))
+        # print("y1 = ", list(y1))
+        # print("y2 = ", list(y2))
     return xy0[:, 0], xy0[:, 1]
 
 
