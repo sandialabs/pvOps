@@ -1,9 +1,19 @@
 References
 ==========
 
-This package has a DOI (soon)! If you publish using this package, please cite us:
+If using this package, please cite us using the following
 
-[Placeholder for DOI]
+```
+@INPROCEEDINGS{9518439,
+  author={Mendoza, Hector and Hopwood, Michael and Gunda, Thushara},
+  booktitle={2021 IEEE 48th Photovoltaic Specialists Conference (PVSC)}, 
+  title={pvOps: Improving Operational Assessments through Data Fusion}, 
+  year={2021},
+  volume={},
+  number={},
+  pages={0112-0119},
+  doi={10.1109/PVSC43889.2021.9518439}}
+```
 
 We also utilize content from other packages. See the NOTICE/ directory on our GitHub!
 
