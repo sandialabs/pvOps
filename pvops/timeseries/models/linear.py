@@ -263,6 +263,7 @@ class DefaultModel(Model, TimeWeightedProcess):
     any data transposition.
     """
     _model_name = 'default'
+
     def __init__(self, time_weighted=None, estimators=None, verbose=0, X_parameters=[]):
         super().__init__(estimators)
         self.verbose = verbose
@@ -590,8 +591,8 @@ def modeller(prod_col_dict,
     estimators = estimators or {'OLS': {'estimator': LinearRegression()},
                                 'RANSAC': {'estimator': RANSACRegressor()}}
 
-
-    X_parameters, Y_parameter = _get_params(Y_parameter, X_parameters, prod_col_dict, kernel_type)
+    X_parameters, Y_parameter = _get_params(Y_parameter, X_parameters,
+                                            prod_col_dict, kernel_type)
 
     if (not isinstance(prod_df, type(None))) and (not isinstance(test_split, type(None))):
         # Split into test-train

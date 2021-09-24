@@ -37,6 +37,14 @@ Citing
 
 If using this package, please cite [our paper](https://ieeexplore.ieee.org/document/9518439) using the following:
 
+**Citation:** 
+
+```
+H. Mendoza, M. Hopwood and T. Gunda, "pvOps: Improving Operational Assessments through Data Fusion," 2021 IEEE 48th Photovoltaic Specialists Conference (PVSC), 2021, pp. 0112-0119, doi: 10.1109/PVSC43889.2021.9518439.
+```
+
+**BibTex:**
+
 ```
 @INPROCEEDINGS{9518439,
   author={Mendoza, Hector and Hopwood, Michael and Gunda, Thushara},
@@ -48,7 +56,6 @@ If using this package, please cite [our paper](https://ieeexplore.ieee.org/docum
   pages={0112-0119},
   doi={10.1109/PVSC43889.2021.9518439}}
 ```
-
 
 Contributing
 ============
