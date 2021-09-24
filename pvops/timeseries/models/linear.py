@@ -242,7 +242,6 @@ class TimeWeightedProcess:
             df[f"col_{ii}"] = X[:, ii]
             # add groups
             for time_idx, group in enumerate(self.set_time_bins):
-                print(covariate_profile + [time_idx])
                 if covariate_profile + [time_idx] in self.exclude_params:
                     continue
                 vals = np.zeros(len(df))
@@ -264,15 +263,24 @@ class DefaultModel(Model, TimeWeightedProcess):
     """
     _model_name = 'default'
 
-    def __init__(self, time_weighted=None, estimators=None, verbose=0, X_parameters=[]):
+    def __init__(self, time_weighted=None, estimators=None,
+                 verbose=0, X_parameters=[]):
         super().__init__(estimators)
         self.verbose = verbose
         self.time_weighted = time_weighted
         self.X_parameters = X_parameters
+        # Set to null as default, this is used in PolynomialModel
+        self.exclude_params = []
 
     def construct(self, X, y, data_split='train'):
-
         self.variate_names = self.X_parameters
+        num_variates = len(self.variate_names)
+        self.covariate_degree_combinations = []
+        for i in range(num_variates):
+            list_sub = [0] * num_variates
+            list_sub[i] = 1
+            self.covariate_degree_combinations.append(list_sub)
+
         if not isinstance(self.time_weighted, type(None)):
             X = self.time_weight(
                 X, time_weighted=self.time_weighted, data_split=data_split)
@@ -384,42 +392,6 @@ class PolynomialModel(Model, TimeWeightedProcess):
             self.test_X = A
             self.test_y = y
 
-        return
-
-class DiodeInspiredModel(Model, TimeWeightedProcess):
-    """Generate a regression kernel derived from the diode model, originally meant to model voltage.
-
-    (static equation):  Y(α , X) = α_0 + α_1 POA + α_2 Temp + α_3 ln(POA) + α_4 ln(Temp)
-    """
-    _model_name = "diode_inspired"
-
-    def __init__(self,
-                 estimators=None,
-                 time_weighted=None,
-                 verbose=0,
-                 X_parameters=[]):
-        super().__init__(estimators)
-        self.time_weighted = time_weighted
-        self.verbose = verbose
-        self.X_parameters = X_parameters        
-
-    def construct(self, X, y, data_split='train'):
-        # Diode Inspired
-        # Requires that xs inputs be [POA, Temp], in that order
-        xs = np.hstack((X, np.log(X)))
-
-        if not isinstance(self.time_weighted, type(None)):
-            X = self.time_weight(
-                X, time_weighted=self.time_weighted, data_split=data_split)
-
-        if data_split == 'train':
-            self.train_X = xs
-            self.train_y = y
-        elif data_split == 'test':
-            self.test_X = xs
-            self.test_y = y
-        return
-
 
 def _get_params(Y_parameter, X_parameters, prod_col_dict, kernel_type):
     if Y_parameter is None:
@@ -433,18 +405,7 @@ def _get_params(Y_parameter, X_parameters, prod_col_dict, kernel_type):
             raise ValueError(
                 "The `prod_col_dict['irradiance']` definition must be in your " +
                 "X_parameters input for the `polynomial_log` model.")
-    elif kernel_type == 'diode_inspired':
-        try:
-            X_parameters.remove(prod_col_dict['irradiance'])
-            X_parameters.remove(prod_col_dict['temperature'])
-            # Place irradiance and temperature in front.
-            X_parameters = [prod_col_dict['irradiance'],
-                            prod_col_dict['temperature']] + X_parameters
-        except ValueError:
-            raise ValueError("The `prod_col_dict['irradiance']` and"
-                             "`prod_col_dict['irradiance']`"
-                             "definitions must be in your X_parameters"
-                             "input for the `polynomial_log` model.")
+
     return X_parameters, Y_parameter
 
 
@@ -460,9 +421,7 @@ def modeller(prod_col_dict,
              test_df=None,
              degree=3,
              exclude_params=[],
-             verbose=0,
-             train_capacity_bins=None,
-             test_capacity_bins=None):
+             verbose=0):
     """Wrapper method to conduct the modelling of the timeseries data.
 
     To input the data, there are two options.
@@ -503,9 +462,6 @@ def modeller(prod_col_dict,
           covariates (Xs) and degrees (n). For example, with 2 covariates and a
           degree of 2, the formula would be:
           Y(α , X) = α_0 + α_1 X_1 + α_2 X_2 + α_3 X_1 X_2 + α_4 X_1^2 + α_5 X_2^2
-        - 'diode_inspired', reverse-engineered formula from single diode formula, initially
-          intended for modelling voltage.
-          (static equation):  Y(α , X) = α_0 + α_1 POA + α_2 Temp + α_3 ln(POA) + α_4 ln(Temp)
 
     time_weighted : str or None
         Interval for time-based feature generation. For each interval in this time-weight,
@@ -568,12 +524,6 @@ def modeller(prod_col_dict,
         same term, then the exclude_params must be `[ [1,2,0,0,0] ]`, where the last 0 represents the
         time-weighted partition setting.
 
-    train_capacity_bins : array
-        Series of capacity bins in train df
-
-    test_capacity_bins : array
-        Series of capacity bins in test df
-
     verbose : int
         Define the specificity of the print statements during this function's
         execution.
@@ -624,18 +574,13 @@ def modeller(prod_col_dict,
             verbose=verbose,
             X_parameters=X_parameters,
             exclude_params=exclude_params)
-    elif kernel_type == 'diode_inspired':
-        model = DiodeInspiredModel(
-            time_weighted=time_weighted,
-            estimators=estimators,
-            verbose=verbose,
-            X_parameters=X_parameters)
 
     model.train_index = train_df.index
     model.test_index = test_df.index
 
-    model.train_capacity_bins = train_capacity_bins
-    model.test_capacity_bins = test_capacity_bins
+    # Support in future versions
+    # model.train_capacity_bins = train_capacity_bins
+    # model.test_capacity_bins = test_capacity_bins
 
     # Always construct train first in case of using time_weighted,
     # which caches the time regions in training to reuse in testing.
