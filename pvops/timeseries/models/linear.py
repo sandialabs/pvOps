@@ -236,8 +236,9 @@ class TimeWeightedProcess:
             indices[group] = df[df["time_bins"] == group].index
 
         new_variable_names = []
-        for ii, (param, covariate_profile) in enumerate(zip(self.variate_names,
-                                          self.covariate_degree_combinations)):
+        for ii, (param,
+                 covariate_profile) in enumerate(zip(self.variate_names,
+                                                     self.covariate_degree_combinations)):
             df[f"col_{ii}"] = X[:, ii]
             # add groups
             for time_idx, group in enumerate(self.set_time_bins):
@@ -256,8 +257,10 @@ class TimeWeightedProcess:
         self.variate_names = new_variable_names
         return xs
 
+
 class DefaultModel(Model, TimeWeightedProcess):
-    """Generate a simple model using the input data, without any data transposition.
+    """Generate a simple model using the input data, without
+    any data transposition.
     """
     _model_name = 'default'
     def __init__(self, time_weighted=None, estimators=None, verbose=0, X_parameters=[]):
@@ -284,6 +287,7 @@ class PolynomialModel(Model, TimeWeightedProcess):
     """Add all interactions between terms with a degree.
     """
     _model_name = "polynomial"
+
     def __init__(self, degree=2,
                  estimators=None,
                  time_weighted=None,
@@ -436,17 +440,11 @@ def _get_params(Y_parameter, X_parameters, prod_col_dict, kernel_type):
             X_parameters = [prod_col_dict['irradiance'],
                             prod_col_dict['temperature']] + X_parameters
         except ValueError:
-            raise ValueError("The `prod_col_dict['irradiance']` and `prod_col_dict['irradiance']`" +
-                            "definitions must be in your X_parameters input for the " +
-                            "`polynomial_log` model.")
+            raise ValueError("The `prod_col_dict['irradiance']` and"
+                             "`prod_col_dict['irradiance']`"
+                             "definitions must be in your X_parameters"
+                             "input for the `polynomial_log` model.")
     return X_parameters, Y_parameter
-
-
-_MODELS_TO_KERNEL_TYPE = {
-    "DefaultModel": "default",
-    "polynomial": "PolynomialModel",
-    "DiodeInspiredModel": "diode_inspired",
-}
 
 
 def modeller(prod_col_dict,
@@ -468,11 +466,12 @@ def modeller(prod_col_dict,
 
     To input the data, there are two options.
 
-    Option 1: include full production data in `prod_df` parameter and `test_split` so
-              that the test split is conducted
+    Option 1: include full production data in `prod_df`
+              parameter and `test_split` so that the test split is conducted
 
-    Option 2: conduct the test-train split prior to calling the function and pass in data
-              under `test_df` and `train_df`
+    Option 2: conduct the test-train split prior to calling
+              the function and pass in data under `test_df`
+              and `train_df`
 
     Parameters
 
@@ -649,8 +648,8 @@ def modeller(prod_col_dict,
 def predicter(model, df, Y_parameter, X_parameters, prod_col_dict, verbose=0):
     kernel_type = model._model_name
 
-    X_parameters, Y_parameter = _get_params(Y_parameter, X_parameters, prod_col_dict, kernel_type)
-
+    X_parameters, Y_parameter = _get_params(Y_parameter, X_parameters,
+                                            prod_col_dict, kernel_type)
 
     test_y = df[Y_parameter].values
     test_X = df[X_parameters].values
