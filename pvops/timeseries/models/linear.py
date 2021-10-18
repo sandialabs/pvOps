@@ -58,6 +58,7 @@ class Model:
             Xnew = sm.add_constant(Xnew)
             est = sm.OLS(y, Xnew)
             est2 = est.fit()
+            self.statsmodels_est = est2
             statsdf = est2.summary()
 
             # @dev the below snippet calculates statistical parameters
@@ -209,12 +210,19 @@ class TimeWeightedProcess:
                 time_bins = self.train_index.hour
             elif data_split == 'test':
                 time_bins = self.test_index.hour
+        elif time_weighted == 'capacity':
+            if data_split == 'train':
+                time_bins = self.train_capacity_bins
+            elif data_split == 'test':
+                time_bins = self.test_capacity_bins
 
         if data_split == 'train':
             self.set_time_bins = set(time_bins)
-        elif data_split == 'test' and not isinstance(self.set_time_bins, set):
+        elif data_split == 'test' and not isinstance(self.set_time_bins, (set,
+                                                                          np.ndarray,
+                                                                          list)):
             raise Exception(
-                "Must construct train before constructing test " +
+                "Must construct train before constructing test "
                 "if using the TimeWeightedProcess.")
 
         if self.verbose >= 1:
@@ -228,10 +236,14 @@ class TimeWeightedProcess:
             indices[group] = df[df["time_bins"] == group].index
 
         new_variable_names = []
-        for ii, param in enumerate(self.variate_names):
+        for ii, (param,
+                 covariate_profile) in enumerate(zip(self.variate_names,
+                                                     self.covariate_degree_combinations)):
             df[f"col_{ii}"] = X[:, ii]
             # add groups
-            for group in self.set_time_bins:
+            for time_idx, group in enumerate(self.set_time_bins):
+                if covariate_profile + [time_idx] in self.exclude_params:
+                    continue
                 vals = np.zeros(len(df))
                 vals[indices[group]] = df.iloc[indices[group]][f"col_{ii}"]
                 df[f"col_{ii}_{group}"] = vals
@@ -244,18 +256,31 @@ class TimeWeightedProcess:
         self.variate_names = new_variable_names
         return xs
 
+
 class DefaultModel(Model, TimeWeightedProcess):
-    """Generate a simple model using the input data, without any data transposition.
+    """Generate a simple model using the input data, without
+    any data transposition.
     """
-    def __init__(self, time_weighted=None, estimators=None, verbose=0, X_parameters=[]):
+    _model_name = 'default'
+
+    def __init__(self, time_weighted=None, estimators=None,
+                 verbose=0, X_parameters=[]):
         super().__init__(estimators)
         self.verbose = verbose
         self.time_weighted = time_weighted
         self.X_parameters = X_parameters
+        # Set to null as default, this is used in PolynomialModel
+        self.exclude_params = []
 
     def construct(self, X, y, data_split='train'):
-
         self.variate_names = self.X_parameters
+        num_variates = len(self.variate_names)
+        self.covariate_degree_combinations = []
+        for i in range(num_variates):
+            list_sub = [0] * num_variates
+            list_sub[i] = 1
+            self.covariate_degree_combinations.append(list_sub)
+
         if not isinstance(self.time_weighted, type(None)):
             X = self.time_weight(
                 X, time_weighted=self.time_weighted, data_split=data_split)
@@ -270,16 +295,20 @@ class DefaultModel(Model, TimeWeightedProcess):
 class PolynomialModel(Model, TimeWeightedProcess):
     """Add all interactions between terms with a degree.
     """
+    _model_name = "polynomial"
+
     def __init__(self, degree=2,
                  estimators=None,
                  time_weighted=None,
                  verbose=0,
-                 X_parameters=[]):
+                 X_parameters=[],
+                 exclude_params=[]):
         super().__init__(estimators)
         self.degree = degree
         self.time_weighted = time_weighted
         self.verbose = verbose
         self.X_parameters = X_parameters
+        self.exclude_params = exclude_params
 
     def construct(self, X, y, data_split='train'):
 
@@ -306,8 +335,19 @@ class PolynomialModel(Model, TimeWeightedProcess):
         # list of polynomial powers
         poly_powers = []
         self.variate_names = []
+        self.covariate_degree_combinations = []
         for combinations in all_combinations:
             for combination in combinations:
+                covariate_profile = list(np.array(combination).sum(axis=0))
+                # Check if this term was to be excluded.
+                if isinstance(self.time_weighted, type(None)):
+                    if covariate_profile in self.exclude_params:
+                        # Skip the params which are meant to be excluded.
+                        continue
+                else:
+                    self.covariate_degree_combinations.append(
+                        covariate_profile)
+
                 sum_arr = np.zeros(num_inputs, dtype=int)
                 sum_arr += sum((np.array(j) for j in combination))
                 s = ""
@@ -337,46 +377,36 @@ class PolynomialModel(Model, TimeWeightedProcess):
             A = self.time_weight(
                 A, time_weighted=self.time_weighted, data_split=data_split)
 
+        print("Design matrix shape:", A.shape)
+
         if data_split == 'train':
+            self.train_df = pd.DataFrame(A,
+                                         columns=self.variate_names,
+                                         index=self.train_index)
             self.train_X = A
             self.train_y = y
         elif data_split == 'test':
+            self.test_df = pd.DataFrame(A,
+                                        columns=self.variate_names,
+                                        index=self.test_index)
             self.test_X = A
             self.test_y = y
 
-        return
 
-class DiodeInspiredModel(Model, TimeWeightedProcess):
-    """Generate a regression kernel derived from the diode model, originally meant to model voltage.
+def _get_params(Y_parameter, X_parameters, prod_col_dict, kernel_type):
+    if Y_parameter is None:
+        Y_parameter = prod_col_dict['powerprod']
+    if kernel_type == 'polynomial_log':
+        try:
+            X_parameters.remove(prod_col_dict['irradiance'])
+            # Place irradiance in front.
+            X_parameters = [prod_col_dict['irradiance']] + X_parameters
+        except ValueError:
+            raise ValueError(
+                "The `prod_col_dict['irradiance']` definition must be in your " +
+                "X_parameters input for the `polynomial_log` model.")
 
-    (static equation):  Y(α , X) = α_0 + α_1 POA + α_2 Temp + α_3 ln(POA) + α_4 ln(Temp)
-    """
-    def __init__(self,
-                 estimators=None,
-                 time_weighted=None,
-                 verbose=0,
-                 X_parameters=[]):
-        super().__init__(estimators)
-        self.time_weighted = time_weighted
-        self.verbose = verbose
-        self.X_parameters = X_parameters
-
-    def construct(self, X, y, data_split='train'):
-        # Diode Inspired
-        # Requires that xs inputs be [POA, Temp], in that order
-        xs = np.hstack((X, np.log(X)))
-
-        if not isinstance(self.time_weighted, type(None)):
-            X = self.time_weight(
-                X, time_weighted=self.time_weighted, data_split=data_split)
-
-        if data_split == 'train':
-            self.train_X = xs
-            self.train_y = y
-        elif data_split == 'test':
-            self.test_X = xs
-            self.test_y = y
-        return
+    return X_parameters, Y_parameter
 
 
 def modeller(prod_col_dict,
@@ -390,16 +420,18 @@ def modeller(prod_col_dict,
              train_df=None,
              test_df=None,
              degree=3,
+             exclude_params=[],
              verbose=0):
     """Wrapper method to conduct the modelling of the timeseries data.
 
     To input the data, there are two options.
 
-    Option 1: include full production data in `prod_df` parameter and `test_split` so
-              that the test split is conducted
+    Option 1: include full production data in `prod_df`
+              parameter and `test_split` so that the test split is conducted
 
-    Option 2: conduct the test-train split prior to calling the function and pass in data
-              under `test_df` and `train_df`
+    Option 2: conduct the test-train split prior to calling
+              the function and pass in data under `test_df`
+              and `train_df`
 
     Parameters
 
@@ -430,9 +462,6 @@ def modeller(prod_col_dict,
           covariates (Xs) and degrees (n). For example, with 2 covariates and a
           degree of 2, the formula would be:
           Y(α , X) = α_0 + α_1 X_1 + α_2 X_2 + α_3 X_1 X_2 + α_4 X_1^2 + α_5 X_2^2
-        - 'diode_inspired', reverse-engineered formula from single diode formula, initially
-          intended for modelling voltage.
-          (static equation):  Y(α , X) = α_0 + α_1 POA + α_2 Temp + α_3 ln(POA) + α_4 ln(Temp)
 
     time_weighted : str or None
         Interval for time-based feature generation. For each interval in this time-weight,
@@ -483,6 +512,18 @@ def modeller(prod_col_dict,
         Utilized for 'polynomial' and 'polynomial_log' `kernel_type` options, this 
         parameter defines the highest degree utilized in the polynomial kernel.
 
+    exclude_params : list
+        A list of parameter definitions (defined as lists) to be excluded in the model. For 
+        example, if want to exclude a parameter in a 4-covariate model that uses 1 degree on first covariate,
+        2 degrees on second covariate, and no degrees for 3rd and 4th covariates, you would specify a 
+        exclude_params as `[ [1,2,0,0] ]`. Multiple definitions can be added to list depending
+        on how many terms need to be excluded.
+
+        If a time_weighted parameter is selected, a time weighted definition will need to be appended to
+        *each* exclusion definition. Continuing the example above, if one wants to exclude "hour 0" for the
+        same term, then the exclude_params must be `[ [1,2,0,0,0] ]`, where the last 0 represents the
+        time-weighted partition setting.
+
     verbose : int
         Define the specificity of the print statements during this function's
         execution.
@@ -500,28 +541,9 @@ def modeller(prod_col_dict,
     estimators = estimators or {'OLS': {'estimator': LinearRegression()},
                                 'RANSAC': {'estimator': RANSACRegressor()}}
 
-    if Y_parameter is None:
-        Y_parameter = prod_col_dict['powerprod']
-    if kernel_type == 'polynomial_log':
-        try:
-            X_parameters.remove(prod_col_dict['irradiance'])
-            # Place irradiance in front.
-            X_parameters = [prod_col_dict['irradiance']] + X_parameters
-        except ValueError:
-            raise ValueError(
-                "The `prod_col_dict['irradiance']` definition must be in your " +
-                "X_parameters input for the `polynomial_log` model.")
-    elif kernel_type == 'diode_inspired':
-        try:
-            X_parameters.remove(prod_col_dict['irradiance'])
-            X_parameters.remove(prod_col_dict['temperature'])
-            # Place irradiance and temperature in front.
-            X_parameters = [prod_col_dict['irradiance'],
-                            prod_col_dict['temperature']] + X_parameters
-        except ValueError:
-            raise ValueError("The `prod_col_dict['irradiance']` and `prod_col_dict['irradiance']`" +
-                             "definitions must be in your X_parameters input for the " +
-                             "`polynomial_log` model.")
+    X_parameters, Y_parameter = _get_params(Y_parameter, X_parameters,
+                                            prod_col_dict, kernel_type)
+
     if (not isinstance(prod_df, type(None))) and (not isinstance(test_split, type(None))):
         # Split into test-train
         mask = np.array(range(len(prod_df))) < int(
@@ -550,16 +572,15 @@ def modeller(prod_col_dict,
             estimators=estimators,
             degree=degree,
             verbose=verbose,
-            X_parameters=X_parameters)
-    elif kernel_type == 'diode_inspired':
-        model = DiodeInspiredModel(
-            time_weighted=time_weighted,
-            estimators=estimators,
-            verbose=verbose,
-            X_parameters=X_parameters)
+            X_parameters=X_parameters,
+            exclude_params=exclude_params)
 
     model.train_index = train_df.index
     model.test_index = test_df.index
+
+    # Support in future versions
+    # model.train_capacity_bins = train_capacity_bins
+    # model.test_capacity_bins = test_capacity_bins
 
     # Always construct train first in case of using time_weighted,
     # which caches the time regions in training to reuse in testing.
@@ -568,3 +589,24 @@ def modeller(prod_col_dict,
     model.train()
     model.predict()
     return model, train_df, test_df
+
+
+def predicter(model, df, Y_parameter, X_parameters, prod_col_dict, verbose=0):
+    kernel_type = model._model_name
+
+    X_parameters, Y_parameter = _get_params(Y_parameter, X_parameters,
+                                            prod_col_dict, kernel_type)
+
+    test_y = df[Y_parameter].values
+    test_X = df[X_parameters].values
+
+    if verbose > 0:
+        print(X_parameters)
+        print(Y_parameter)
+        print(test_y.shape)
+        print(test_X.shape)
+
+    model.test_index = df.index
+    model.construct(test_X, test_y, data_split='test')
+    model.predict()
+    return model, test_y, test_X

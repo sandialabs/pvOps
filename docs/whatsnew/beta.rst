@@ -22,3 +22,8 @@ Bug fixes
 * Basic package fixes to README (PR #27) and documentation configuration (PR #24)
 * Fix IV simulator bug for edge case where two IV curves added have equal I_{sc} (PR #30)
 * Neural network configuration referencing in 1D CNN (PR #32)
+
+Docs
+~~~~
+
+* Update how to reference pvOps (PR #33)
