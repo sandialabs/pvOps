@@ -27,3 +27,7 @@ Docs
 ~~~~
 
 * Update how to reference pvOps (PR #33)
+
+Tests
+~~~~~
+* Removed python 3.6 test support due to https://github.com/actions/setup-python/issues/162.
