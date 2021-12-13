@@ -452,6 +452,10 @@ def modeller(prod_col_dict,
           in prod_df
         - **dcsize**, (*string*), should be assigned to
           preferred column name for site capacity in prod_df
+        - **powerprod**, (*string*), should be assigned to
+          the column name holding the power or energy production.
+          This will be used as the output column if Y_parameter
+          is not passed.
 
     kernel_type : str
         Type of kernel type for the statistical model
