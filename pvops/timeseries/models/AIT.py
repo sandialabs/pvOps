@@ -159,6 +159,14 @@ class AIT(Processer, Predictor):
                                         self.model_terms_highcap,
                                         prod_col_dict)
         prod_df.loc[high_cap_mask, prod_col_dict["baseline"]] = predicted
+
+        # Low-capacity systems
+        low_cap_mask = prod_df[prod_col_dict['dcsize']] <= 1000
+        predicted = self.predict_subset(prod_df.loc[low_cap_mask, :],
+                                        self.scaler_lowcap,
+                                        self.model_terms_lowcap,
+                                        prod_col_dict)
+        prod_df.loc[low_cap_mask, prod_col_dict["baseline"]] = predicted
         return prod_df
 
 
