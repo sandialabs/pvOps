@@ -175,7 +175,7 @@ class AIT(Processer, Predictor):
 def AIT_calc(prod_df, prod_col_dict):
     """
     Calculates expected energy using measured irradiance
-    based on IEC calculations
+    based on trained regression model from field data
 
     Parameters
 
