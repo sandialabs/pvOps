@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-from physics_utils import gt_correction
+from pvops.iv.physics_utils import gt_correction
 
 
 def preprocess(input_df, resmpl_resolution, iv_col_dict, resmpl_cutoff=0.03,
