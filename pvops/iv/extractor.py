@@ -14,7 +14,7 @@ from physics_utils import iv_cutoff, T_to_tcell
 
 class BruteForceExtractor():
     '''Process measured IV curves
-        Requires a set of curves to create Isc vs Irr and Voc vs Temp vs Isc(Irr)
+    Requires a set of curves to create Isc vs Irr and Voc vs Temp vs Isc(Irr)
     '''
 
     def __init__(self, input_df, current_col, voltage_col, irradiance_col, temperature_col, T_type, windspeed_col=None,
@@ -235,16 +235,18 @@ class BruteForceExtractor():
         return msse_tot
 
     def fit_params(self, cell_parameters, n_mods, bounds_func, user_func=None, verbose=0):
-        """Fit diode parameters from a set of IV curves.
+        """
+        Fit diode parameters from a set of IV curves.
 
         Parameters
-
         ----------
         cell_parameters : dict
-            Cell-level parameters, usually extracted from the CEC database, which will be used as the
+            Cell-level parameters, usually extracted from the CEC 
+            database, which will be used as the
             initial guesses in the optimization process.
         n_mods : int
-            if int, defines the number of modules in a string(1=simulate a single module)
+            if int, defines the number of modules in a 
+            string(1=simulate a single module)
         bounds_func : function
             Function to establish the bounded search space
             See below for an example:
@@ -259,8 +261,10 @@ class BruteForceExtractor():
                             (nnsvth - 10*nnsvth*perc_adjust, nnsvth + 10*nnsvth*perc_adjust))
 
         user_func : function
-            Optional, a function similar to `self.create_string_object` which has the following inputs:
-            `self, iph, io, rs, rsh, nnsvth`. This can be used to extract unique failure parameterization.
+            Optional, a function similar to `self.create_string_object` 
+            which has the following inputs:
+            `self, iph, io, rs, rsh, nnsvth`. This can be used to 
+            extract unique failure parameterization.
         verbose : int
             if verbose >= 1, print information about fitting
             if verbose >= 2, plot information about each iteration

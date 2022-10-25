@@ -12,7 +12,6 @@ def establish_solar_loc(prod_df, prod_col_dict, meta_df, meta_col_dict):
     sites simultaneously.
 
     Parameters
-
     ----------
     prod_df: DataFrame
         A data frame corresponding to production data containing a datetime index.
@@ -35,7 +34,6 @@ def establish_solar_loc(prod_df, prod_col_dict, meta_df, meta_col_dict):
         - **latitude** (*string*), should be assigned to site's latitude
 
     Returns
-
     -------
     Original dataframe (copied) with new timeseries solar position data using
     the same column name definitions provided in pvLib.
@@ -73,7 +71,6 @@ def normalize_production_by_capacity(prod_df,
     sites simultaneously.
 
     Parameters
-
     ----------
     prod_df: DataFrame
         A data frame corresponding to production data.
@@ -86,6 +83,7 @@ def normalize_production_by_capacity(prod_df,
         - **siteid** (*string*), should be assigned to site-ID column name in prod_df
         - **capacity_normalized_power** (*string*), should be assigned to a column name 
           where the normalized output signal will be stored
+          
     meta_df: DataFrame
         A data frame corresponding to site metadata.
         At the least, the columns in meta_col_dict be present.
@@ -128,7 +126,6 @@ def prod_irradiance_filter(prod_df, prod_col_dict, meta_df, meta_col_dict,
     THIS METHOD IS CURRENTLY IN DEVELOPMENT.
 
     Parameters
-
     ----------
     prod_df: DataFrame
         A data frame corresponding to production data.
@@ -138,7 +135,7 @@ def prod_irradiance_filter(prod_df, prod_col_dict, meta_df, meta_col_dict,
         which consist of at least:
 
         - **timestamp** (*string*), should be assigned to associated time-stamp
-        column name in prod_df
+          column name in prod_df
         - **siteid** (*string*), should be assigned to site-ID column name in prod_df
         - **irradiance** (*string*), should be assigned to associated irradiance column name in prod_df
         - **clearsky_irr** (*string*), should be assigned to clearsky irradiance column name in prod_df
@@ -163,7 +160,6 @@ def prod_irradiance_filter(prod_df, prod_col_dict, meta_df, meta_col_dict,
         A pvanalytics parameter of maximum ratio of measured to clearsky (clearsky index).
 
     Returns
-
     -------
     prod_df: DataFrame
         A dataframe with new **clearsky_irr** column. If drop=True, a filtered prod_df according to clearsky.
@@ -260,7 +256,6 @@ def prod_inverter_clipping_filter(prod_df, prod_col_dict, meta_df, meta_col_dict
     """Filter rows of production data frame according to performance and data quality
 
     Parameters
-
     ----------
     prod_df: DataFrame
         A data frame corresponding to production data.
@@ -270,7 +265,7 @@ def prod_inverter_clipping_filter(prod_df, prod_col_dict, meta_df, meta_col_dict
         which consist of at least:
 
         - **timestamp** (*string*), should be assigned to associated time-stamp
-        column name in prod_df
+          column name in prod_df
         - **siteid** (*string*), should be assigned to site-ID column name in prod_df
         - **powerprod** (*string*), should be assigned to associated power production column name in prod_df
 
@@ -293,7 +288,6 @@ def prod_inverter_clipping_filter(prod_df, prod_col_dict, meta_df, meta_col_dict
         Extra parameters passed to the relevant pvanalytics model. If none passed, defaults are used.
 
     Returns
-
     -------
     prod_df: DataFrame
         If drop=True, a filtered dataframe with clipping periods removed is returned.

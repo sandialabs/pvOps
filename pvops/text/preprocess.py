@@ -14,7 +14,6 @@ def preprocessor(
     """Preprocessing function which processes the raw text data into processed text data and extracts dates
 
     Parameters
-
     ----------
     om_df : DataFrame
         A pandas dataframe containing O&M data, which contains at least the columns within col_dict.
@@ -33,7 +32,6 @@ def preprocessor(
         If False, return with preprocessed text and extracted dates
 
     Returns
-
     -------
     DataFrame
         Contains the original columns as well as the processed data, located in columns defined by the inputs
@@ -146,7 +144,6 @@ def get_dates(
     extract_dates_only = True.
 
     Parameters
-
     ----------
     document : str
         String representation of a document
@@ -168,7 +165,6 @@ def get_dates(
         Recommendation: set True if you frequently publish documents and your dataframe is ordered chronologically
 
     Returns
-
     -------
     list
         List of dates found in text
@@ -286,7 +282,6 @@ def text_remove_nondate_nums(document, PRINT_INFO=False):
     as a date by the date extractor.
 
     Parameters
-
     ----------
     document : str
         String representation of a document
@@ -295,7 +290,6 @@ def text_remove_nondate_nums(document, PRINT_INFO=False):
         progress
 
     Returns
-
     -------
     string
         string of processed document
@@ -421,7 +415,6 @@ def text_remove_numbers_stopwords(document, lst_stopwords):
     """Conduct final processing steps after date extraction
 
     Parameters
-
     ----------
     document : str
         String representation of a document
@@ -429,7 +422,6 @@ def text_remove_numbers_stopwords(document, lst_stopwords):
         List of stop words which will be filtered in final preprocessing step
 
     Returns
-
     -------
     string
         string of processed document

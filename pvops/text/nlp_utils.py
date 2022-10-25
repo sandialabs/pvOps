@@ -94,20 +94,19 @@ class DataDensifier(BaseEstimator):
     This process is usually incorporated in this library when doing unsupervised machine learning.
     This class is built specifically to work inside a sklearn pipeline.
     Therefore, it uses the default ``transform``, ``fit``, ``fit_transform`` method structure.
+    
     """
 
     def transform(self, X, y=None):
         """Return a dense array if the input array is sparse.
 
         Parameters
-
         ----------
         X : array
             Input data of numerical values. For this package, these values could
             represent embedded representations of documents.
 
         Returns
-
         -------
         dense array
         """
@@ -120,14 +119,12 @@ class DataDensifier(BaseEstimator):
         """Placeholder method to conform to the sklearn class structure.
 
         Parameters
-
         ----------
         X : array
             Input data
         y : Not utilized.
 
         Returns
-
         -------
         DataDensifier object
         """
@@ -138,14 +135,12 @@ class DataDensifier(BaseEstimator):
         which returns a dense array when the input is sparse.
 
         Parameters
-
         ----------
         X : array
             Input data
         y : Not utilized.
 
         Returns
-
         -------
         dense array
         """
@@ -156,8 +151,7 @@ def create_stopwords(lst_langs=["english"], lst_add_words=[], lst_keep_words=[])
     """Concatenate a list of stopwords using both words grabbed from nltk and user-specified words.
 
     Parameters
-
-    ---------
+    ----------
     lst_langs: list
         List of strings designating the languages for a nltk.corpus.stopwords.words query. If empty list is passed, no stopwords will be queried from nltk.
     lst_add_words: list
@@ -166,7 +160,6 @@ def create_stopwords(lst_langs=["english"], lst_add_words=[], lst_keep_words=[])
         List of words(e.g., "before" or "until") to remove from stopwords list. This is usually used to modify default stop words that might be of interest to PV.
 
     Returns
-
     -------
     List
         List of alphabetized stopwords
@@ -189,16 +182,14 @@ def summarize_text_data(om_df, colname):
     in total.
 
     Parameters
-
-    ---------
+    ----------
     om_df : DataFrame
         A pandas dataframe containing O&M data, which contains at least the colname of interest
     colname : str
         Column name of column with text
 
     Returns
-
-    ------
+    -------
     None
     """
     df = om_df.copy()

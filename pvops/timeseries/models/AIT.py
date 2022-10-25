@@ -4,6 +4,9 @@ from sklearn.metrics import mean_squared_error, r2_score
 
 
 class Predictor:
+    """
+    Predictor class
+    """
     def __init__(self):
         super(Predictor, self).__init__()
 
@@ -19,10 +22,12 @@ class Predictor:
         model_terms : list of tuples
             Contain model coefficients and powers. For example,
 
-            [(0.29359785963294494, [1, 0]),
-            (0.754806343190528, [0, 1]),
-            (0.396833207207238, [1, 1]),
-            (-0.0588375219110795, [0, 0])]
+            .. code-block:: python
+
+                [(0.29359785963294494, [1, 0]),
+                (0.754806343190528, [0, 1]),
+                (0.396833207207238, [1, 1]),
+                (-0.0588375219110795, [0, 0])]
 
         prod_col_dict : dict
             Dictionary mapping nicknamed parameters to
@@ -178,7 +183,6 @@ def AIT_calc(prod_df, prod_col_dict):
     based on trained regression model from field data
 
     Parameters
-
     ----------
     prod_df: DataFrame
         A data frame corresponding to the production data
@@ -200,20 +204,20 @@ def AIT_calc(prod_df, prod_col_dict):
           in prod_df
 
     Example
-
     -------
 
-    production_col_dict = {'irradiance': 'irrad_poa_Wm2',
-                           'ambient_temperature': 'temp_amb_C',
-                           'dcsize': 'capacity_DC_kW',
-                           'energyprod': 'energy_generated_kWh',
-                           'baseline': 'predicted'
-                           }
-    data = AIT_calc(data, production_col_dict)
+    .. code-block:: python
+
+        production_col_dict = {'irradiance': 'irrad_poa_Wm2',
+                            'ambient_temperature': 'temp_amb_C',
+                            'dcsize': 'capacity_DC_kW',
+                            'energyprod': 'energy_generated_kWh',
+                            'baseline': 'predicted'
+                            }
+        data = AIT_calc(data, production_col_dict)
 
 
     Returns
-
     -------
     DataFrame
         A data frame for production data with a new column,
