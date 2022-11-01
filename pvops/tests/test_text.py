@@ -1,10 +1,7 @@
 import os
 import sys
 
-pvops_path = os.path.join("pvops")
-sys.path.append(pvops_path)
-
-from text import visualize, preprocess, nlp_utils
+from pvops.text import visualize, preprocess, nlp_utils
 
 import pandas as pd
 import numpy as np
