@@ -425,13 +425,11 @@ def modeller(prod_col_dict,
     """Wrapper method to conduct the modelling of the timeseries data.
 
     To input the data, there are two options.
-
-    Option 1: include full production data in `prod_df`
-              parameter and `test_split` so that the test split is conducted
-
-    Option 2: conduct the test-train split prior to calling
-              the function and pass in data under `test_df`
-              and `train_df`
+    
+    - Option 1: include full production data in `prod_df`
+      parameter and `test_split` so that the test split is conducted
+    - Option 2: conduct the test-train split prior to calling
+      the function and pass in data under `test_df` and `train_df`
 
     Parameters
     ----------
@@ -439,7 +437,7 @@ def modeller(prod_col_dict,
         A dictionary that contains the column names relevant
         for the production data
 
-        - **siteid** (*string*), should be assigned to
+        - siteid (*string*), should be assigned to
           site-ID column name in prod_df
         - **timestamp** (*string*), should be assigned to
           time-stamp column name in prod_df
@@ -519,12 +517,12 @@ def modeller(prod_col_dict,
         A list of parameter definitions (defined as lists) to be excluded in the model. For 
         example, if want to exclude a parameter in a 4-covariate model that uses 1 degree on first covariate,
         2 degrees on second covariate, and no degrees for 3rd and 4th covariates, you would specify a 
-        exclude_params as `[ [1,2,0,0] ]`. Multiple definitions can be added to list depending
+        exclude_params as ``[ [1,2,0,0] ]``. Multiple definitions can be added to list depending
         on how many terms need to be excluded.
 
         If a time_weighted parameter is selected, a time weighted definition will need to be appended to
         *each* exclusion definition. Continuing the example above, if one wants to exclude "hour 0" for the
-        same term, then the exclude_params must be `[ [1,2,0,0,0] ]`, where the last 0 represents the
+        same term, then the exclude_params must be ``[ [1,2,0,0,0] ]``, where the last 0 represents the
         time-weighted partition setting.
 
     verbose : int
@@ -533,12 +531,14 @@ def modeller(prod_col_dict,
 
     Returns
     -------
-    `model`, which is a `pvops.timeseries.models.linear.Model` object, has a useful attribute
-    `estimators`, which allows access to model performance and data splitting information.
-
-    `train_df`, which is the training split of prod_df
-
-    `test_df`, which is the testing split of prod_df
+    model
+        which is a ``pvops.timeseries.models.linear.Model`` object, has a useful attribute
+    estimators
+        which allows access to model performance and data splitting information.
+    train_df
+        which is the training split of prod_df
+    test_df
+        which is the testing split of prod_df
     """
     estimators = estimators or {'OLS': {'estimator': LinearRegression()},
                                 'RANSAC': {'estimator': RANSACRegressor()}}

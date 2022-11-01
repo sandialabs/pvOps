@@ -13,17 +13,15 @@ def interpolate_data(prod_df, om_df, prod_col_dict, om_col_dict, om_cols_to_tran
 
     Parameters
     ----------
-    prod_df: DataFrame
+    prod_df : DataFrame
         A data frame corresponding to the production
         data after having been processed by the perf_om_NA_qc function. This
         data frame needs the columns specified in prod_col_dict.
-
-    om_df: DataFrame
+    om_df : DataFrame
         A data frame corresponding to the O&M data after
         having been processed by the perf_om_NA_qc function. This data frame
         needs the columns specified in om_col_dict.
-
-    prod_col_dict: dict of {str : str}
+    prod_col_dict : dict of {str : str}
         A dictionary that contains the column names relevant for the production data
 
         - **siteid** (*string*), should be assigned to associated site-ID column name in prod_df
@@ -34,7 +32,7 @@ def interpolate_data(prod_df, om_df, prod_col_dict, om_col_dict, om_cols_to_tran
         - **irradiance** (*string*), should be assigned to associated irradiance column name in
           prod_df
 
-    om_col_dict: dict of {str : str}
+    om_col_dict : dict of {str : str}
         A dictionary that contains the column names relevant for the O&M data
 
         - **siteid** (*string*), should be assigned to associated site-ID column name in om_df
@@ -49,7 +47,7 @@ def interpolate_data(prod_df, om_df, prod_col_dict, om_col_dict, om_cols_to_tran
 
     Returns
     -------
-    prod_output: DataFrame
+    prod_output : DataFrame
         A data frame that includes statistics for the production data per site in the data frame.
         Two statistical parameters are calculated and assigned to separate columns:
 
@@ -58,7 +56,7 @@ def interpolate_data(prod_df, om_df, prod_col_dict, om_col_dict, om_cols_to_tran
         - **Max # Time Stamps** (*datetime.datetime*), maximum number of production time-stamps,
           including NANs
 
-    om_out: DataFrame
+    om_out : DataFrame
         A data frame that includes statistics for the O&M data per site in the data frame.
         Three statistical parameters are calculated and assigned to separate columns:
 
@@ -113,17 +111,16 @@ def summarize_overlaps(prod_df, om_df, prod_col_dict, om_col_dict):
 
     Parameters
     ----------
-    prod_df: DataFrame
+    prod_df : DataFrame
         A data frame corresponding to the production
         data after having been processed by the perf_om_NA_qc function. This
         data frame needs the columns specified in prod_col_dict.
-
-    om_df: DataFrame
+    om_df : DataFrame
         A data frame corresponding to the O&M data after
         having been processed by the perf_om_NA_qc function. This data frame
         needs the columns specified in om_col_dict.
 
-    prod_col_dict: dict of {str : str}
+    prod_col_dict : dict of {str : str}
         A dictionary that contains the column names relevant for the production data
 
         - **siteid** (*string*), should be assigned to associated site-ID column name in prod_df
@@ -134,7 +131,7 @@ def summarize_overlaps(prod_df, om_df, prod_col_dict, om_col_dict):
         - **irradiance** (*string*), should be assigned to associated irradiance column name in
           prod_df
 
-    om_col_dict: dict of {str : str}
+    om_col_dict : dict of {str : str}
         A dictionary that contains the column names relevant for the O&M data
 
         - **siteid** (*string*), should be assigned to associated site-ID column name in om_df
@@ -145,16 +142,16 @@ def summarize_overlaps(prod_df, om_df, prod_col_dict, om_col_dict):
 
     Returns
     -------
-    prod_output: DataFrame
+    prod_output : DataFrame
         A data frame that includes statistics for the production data per site in the data frame.
         Two statistical parameters are calculated and assigned to separate columns:
 
         - **Actual # Time Stamps** (*datetime.datetime*), total number of overlapping
           production time-stamps
-        - **Max # Time Stamps** (*datetime.datetime), maximum number of production time-stamps,
+        - **Max # Time Stamps** (*datetime.datetime*), maximum number of production time-stamps,
           including NANs
 
-    om_out: DataFrame
+    om_out : DataFrame
         A data frame that includes statistics for the O&M data per site in the data frame.
         Three statistical parameters are calculated and assigned to separate columns:
 
@@ -210,15 +207,15 @@ def om_summary_stats(om_df, meta_df, om_col_dict, meta_col_dict):
 
     Parameters
     ----------
-    om_df: DataFrame
+    om_df : DataFrame
         A data frame corresponding to the O&M data after having been pre-processed
         by the QC and overlappingDFs functions. This data frame needs
         to have the columns specified in om_col_dict.
 
-    meta_df: DataFrame
+    meta_df : DataFrame
         A data frame corresponding to the metadata that contains columns specified in meta_col_dict.
 
-    om_col_dict: dict of {str : str}
+    om_col_dict : dict of {str : str}
         A dictionary that contains the column names relevant for the O&M data which consist of
         at least:
 
@@ -234,7 +231,7 @@ def om_summary_stats(om_df, meta_df, om_col_dict, meta_col_dict):
         - **agedatestart** (*string*), should be assigned to column name desired for calculated
           age of site when event started (calculated here, in days)
 
-    meta_col_dict: dict
+    meta_col_dict : dict
         A dictionary that contains the column names relevant for the meta-data
 
         - **siteid** (*string*), should be assigned to associated site-ID column name in meta_df
@@ -243,7 +240,7 @@ def om_summary_stats(om_df, meta_df, om_col_dict, meta_col_dict):
 
     Returns
     -------
-    om_df: DataFrame
+    om_df : DataFrame
         An updated version of the input dataframe, but with three new columns
         added for visualizations:  event duration, month of event occurrence, and
         age of system at time of event occurrence.  See om_col_dict for mapping
@@ -316,20 +313,18 @@ def overlapping_data(prod_df, om_df, prod_col_dict, om_col_dict):
 
     Parameters
     ----------
-    prod_df: DataFrame
+    prod_df : DataFrame
         A data frame corresponding to the production
         data after having been processed by the perf_om_NA_qc function. This
         data frame needs the columns specified in prod_col_dict. The
         time-stamp column should not have any NANs for proper operation
         of this function.
-
-    om_df: DataFrame
+    om_df : DataFrame
         A data frame corresponding to the O&M data after
         having been processed by the perf_om_NA_qc function. This data frame needs
         the columns specified in om_col_dict. The time-stamp columns should not
         have any NANs for proper operation of this function.
-
-    prod_col_dict: dict of {str : str}
+    prod_col_dict : dict of {str : str}
         A dictionary that contains the column names relevant for the production data
 
         - **siteid** (*string*), should be assigned to associated site-ID column name in prod_df
@@ -340,7 +335,7 @@ def overlapping_data(prod_df, om_df, prod_col_dict, om_col_dict):
         - **irradiance** (*string*), should be assigned to associated irradiance
           column name in prod_df
 
-    om_col_dict: dict of {str : str}
+    om_col_dict : dict of {str : str}
         A dictionary that contains the column names relevant for the O&M data
 
         - **siteid** (*string*), should be assigned to associated site-ID column name in om_df
@@ -351,11 +346,10 @@ def overlapping_data(prod_df, om_df, prod_col_dict, om_col_dict):
 
     Returns
     -------
-    prod_df: DataFrame
+    prod_df : DataFrame
         Production data frame similar to the input data frame, but truncated
         to only contain data that overlaps in time with the O&M data.
-
-    om_df: DataFrame
+    om_df : DataFrame
         O&M data frame similar to the input data frame, but truncated to only
         contain data that overlaps in time with the production data.
 
@@ -452,36 +446,32 @@ def prod_anomalies(prod_df, prod_col_dict, minval=1.0, repval=np.nan, ffill=True
 
     Parameters
     ----------
-    prod_df: DataFrame
+    prod_df : DataFrame
         A data frame corresponding to production data were production is logged on
         a cumulative basis.
-
-    prod_col_dict: dict of {str : str}
+    prod_col_dict : dict of {str : str}
         A dictionary that contains the column names associated with the production data,
         which consist of at least:
 
         - **energyprod** (*string*), should be assigned to the associated cumulative
           production column name in prod_df
 
-    minval: float
+    minval : float
         Cutoff value for production data that determines where anomalies are defined. Any production
         values below minval will be addressed by this function. Default minval is 1.0
-
-    repval: float
+    repval : float
         Value that should replace the anomalies in a cumulative production data format.
         Default value is numpy's NAN.
-
-    ffill: boolean
+    ffill : boolean
         Boolean flag that determines whether NANs in production column in prod_df
         should be filled using a forward-fill method.
 
     Returns
     -------
-    prod_df: DataFrame
+    prod_df : DataFrame
         An updated version of the input dataframe, but with zero production values
         converted to user's preference.
-
-    addressed: DataFrame
+    addressed : DataFrame
         A data frame showing rows from the input that were addressed by this function.
     """
 
@@ -507,12 +497,11 @@ def prod_quant(prod_df, prod_col_dict, comp_type, ecumu=True):
 
     Parameters
     ----------
-    prod_df: DataFrame
+    prod_df : DataFrame
         A data frame corresponding to the production data after having been
         processed by the QC and overlappingDFs functions. This data
         frame needs at least the columns specified in prod_col_dict.
-
-    prod_col_dict: dict of {str : str}
+    prod_col_dict : dict of {str : str}
         A dictionary that contains the column names relevant for the production data
 
         - **siteid** (*string*), should be assigned to associated site-ID column name in prod_df
@@ -527,13 +516,12 @@ def prod_quant(prod_df, prod_col_dict, comp_type, ecumu=True):
         - **energy_pstep** (*string*), should be assigned to column name desired for
           energy per time-step (calculated here)
 
-    comp_type: str
+    comp_type : str
         Flag that specifies how the energy production should be compared to the
         expected baseline. A flag of 'diff' shows the subtracted difference between
         the two (baseline - observed). A flag of 'norm' shows the ratio of the two
         (observed/baseline)
-
-    ecumu: bool
+    ecumu : bool
         Boolean flag that specifies whether the production (energy output)
         data is input as cumulative information ("True") or on a per time-step basis ("False").
 

@@ -184,10 +184,10 @@ def AIT_calc(prod_df, prod_col_dict):
 
     Parameters
     ----------
-    prod_df: DataFrame
+    prod_df : DataFrame
         A data frame corresponding to the production data
 
-    prod_col_dict: dict of {str : str}
+    prod_col_dict : dict of {str : str}
         A dictionary that contains the column names relevant
         for the production data
 
