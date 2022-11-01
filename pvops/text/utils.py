@@ -11,18 +11,18 @@ def remap_attributes(om_df, remapping_df, remapping_col_dict,
     ----------
     om_df : DataFrame
         A pandas dataframe containing O&M data, which needs to be remapped.
-    remapping_df : dataframe
+    remapping_df : DataFrame
         Holds columns that define the remappings
     remapping_col_dict : dict of {str : str}
         A dictionary that contains the column names that describes how
         remapping is going to be done
 
-        - **attribute_col** (*string*), should be assigned to associated
+        - attribute_col : string, should be assigned to associated
           column name in om_df which will be remapped
-        - **remapping_col_from** (*string*), should be assigned
+        - remapping_col_from : string, should be assigned
           to associated column name in remapping_df that matches
           original attribute of interest in om_df
-        - **remapping_col_to** (*string*), should be assigned to
+        - remapping_col_to : string, should be assigned to
           associated column name in remapping_df that contains the
           final mapped entries
     allow_missing_mappings : bool

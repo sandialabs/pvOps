@@ -29,7 +29,7 @@ from sklearn.ensemble import (
 
 
 def supervised_classifier_defs(settings_flag):
-    """Esablish supervised classifier definitions 
+    """Establish supervised classifier definitions 
     which are non-specific to embeddor, and therefore, 
     non-specific to the natural language processing application
 
@@ -44,9 +44,9 @@ def supervised_classifier_defs(settings_flag):
 
     Returns
     -------
-    search_space: dict
+    search_space : dict
       Hyperparameter instances for each clusterer
-    classifiers: dict
+    classifiers : dict
       Contains sklearn classifiers instances
     """
     if settings_flag == "light":
@@ -272,9 +272,9 @@ def unsupervised_classifier_defs(setting_flag, n_clusters):
 
     Returns
     -------
-    search_space: dict
+    search_space : dict
       Hyperparameter instances for each clusterer
-    clusterers: dict
+    clusterers : dict
       Contains sklearn cluster instances
     """
 
