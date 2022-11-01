@@ -15,26 +15,25 @@ from pvops.iv.physics_utils import iv_cutoff, T_to_tcell, \
 class BruteForceExtractor():
     '''Process measured IV curves
     Requires a set of curves to create Isc vs Irr and Voc vs Temp vs Isc(Irr)
+
+    Parameters
+    ----------
+    input_df, df
+        Contains IV curves with a datetime index
+    current_col, str
+        Indicates column where current values in IV curve are located; each cell is an array of current values in a single IV curve
+    voltage_col, str
+        Indicates column where voltage values in IV curve are located; each cell is an array of voltage values in a single IV curve
+    irradiance_col, str
+        Indicates column where irradiance value (W/m2)
+    temperature_col, str
+        Indicates column where temperature value (C)
+    T_type: string,
+        Describe input temperature, either 'ambient' or 'module' or 'cell'
     '''
 
     def __init__(self, input_df, current_col, voltage_col, irradiance_col, temperature_col, T_type, windspeed_col=None,
                  Simulator_mod_specs=None, Simulator_pristine_condition=None):
-        '''
-        Parameters
-        ----------
-        input_df, df
-            Contains IV curves with a datetime index
-        current_col, str
-            Indicates column where current values in IV curve are located; each cell is an array of current values in a single IV curve
-        voltage_col, str
-            Indicates column where voltage values in IV curve are located; each cell is an array of voltage values in a single IV curve
-        irradiance_col, str
-            Indicates column where irradiance value (W/m2)
-        temperature_col, str
-            Indicates column where temperature value (C)
-        T_type: string,
-            Describe input temperature, either 'ambient' or 'module' or 'cell'
-        '''
 
         self.Simulator_mod_specs = Simulator_mod_specs
         self.Simulator_pristine_condition = Simulator_pristine_condition
@@ -76,6 +75,7 @@ class BruteForceExtractor():
         self.params = {}
 
     def create_string_object(self, iph, io, rs, rsh, nnsvth):
+        #TODO write docstring
         kwargs = {}
         if self.Simulator_mod_specs is not None:
             kwargs.update({'mod_specs': self.Simulator_mod_specs})
@@ -127,7 +127,7 @@ class BruteForceExtractor():
         return sim
 
     def f_multiple_samples(self, params):
-
+        #TODO write docstring
         iph, io, rs, rsh, nnsvth = params
 
         if self.user_func is None:

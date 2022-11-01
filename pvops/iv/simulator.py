@@ -30,34 +30,28 @@ class Simulator():
         A full condition is defined as a dictionary with the
         following key/value pairs:
 
-        - 'identifier': IDENTIFIER_NAME,
-        - 'E': IRRADIANCE,
-        - 'Tc': CELL_TEMPERATURE,
-        - 'Rsh_mult': RSH_MULTIPLIER,
-        - 'Rs_mult': RS_MULTIPLIER,
-        - 'Io_mult': IO_MULTIPLIER,
-        - 'Il_mult': IL_MULTIPLIER,
-        - 'nnsvth_mult': NNSVTH_MULTIPLIER,
-        - 'modname': MODULE_NAME_IN_CECDB
+        .. code-block:: python
 
-        IDENTIFIER_NAME: str,
-            Name used to define condition
-        IRRADIANCE: numerical,
-            Value of irradiance (Watts per meter-squared)
-        CELL_TEMPERATURE: numerical,
-            Value of cell temperature (Celcius)
-        RSH_MULTIPLIER: numerical,
-            Multiplier usually less than 1 to simulate a drop in Rsh
-        RS_MULTIPLIER: numerical,
-            Multiplier usually greater than 1 to simulate increase in Rs
-        IO_MULTIPLIER: numerical,
-            Multiplier usually less than 1 to simulate a drop in IO
-        IL_MULTIPLIER: numerical,
-            Multiplier usually less than 1 to simulate a drop in IL
-        NNSVTH_MULTIPLIER: numerical,
-            Multiplier usually less than 1 to simulate a drop in NNSVTH, and therefore a_ref
-        MODULE_NAME_IN_CECDB: str
-            Module name in CEC database (e.g. Jinko_Solar_Co___Ltd_JKMS260P_60)
+            {
+                'identifier': IDENTIFIER_NAME, # (str) Name used to define condition
+                'E': IRRADIANCE, # (numeric) Value of irradiance (Watts per meter-squared)
+                'Tc': CELL_TEMPERATURE, # (numeric) Multiplier usually less than 1 
+                                        # to simulate a drop in Rsh
+                'Rsh_mult': RSH_MULTIPLIER, # (numeric) Multiplier usually less than 1 
+                                            # to simulate a drop in RSH
+                'Rs_mult': RS_MULTIPLIER, # (numeric) Multiplier usually less than 1 
+                                          # to simulate an increase in RS
+                'Io_mult': IO_MULTIPLIER, # (numeric) Multiplier usually less than 1 
+                                          # to simulate a drop in IO
+                'Il_mult': IL_MULTIPLIER, # (numeric) Multiplier usually less than 1 
+                                          # to simulate a drop in IL
+                'nnsvth_mult': NNSVTH_MULTIPLIER, # (numeric) Multiplier usually less 
+                                                  # than 1 to simulate a drop in NNSVTH, and therefore a_ref
+                'modname': MODULE_NAME_IN_CECDB # (str) Module name in CEC database 
+                                                # (e.g. Jinko_Solar_Co___Ltd_JKMS260P_60)
+            }
+
+            
 
     replacement_5params : dict
         Optional, replace the definitions of the five electrical parameters, which normally 
@@ -66,11 +60,15 @@ class Simulator():
 
         Key/value pairs:
 
-        - 'I_L_ref': None
-        - 'I_o_ref': None
-        - 'R_s': None
-        - 'R_sh_ref': None
-        - 'a_ref': None
+        .. code-block:: python
+
+            {
+                'I_L_ref': None,
+                'I_o_ref': None,
+                'R_s': None,
+                'R_sh_ref': None,
+                'a_ref': None
+            }
 
     simulation_method : int
         Module simulation method (1 or 2)
@@ -88,11 +86,11 @@ class Simulator():
         Dictionary containing the simulated IV curves
 
         - For nth-definition of string curves, 
-          multilevel_ivdata['string']['STRING IDENTIFIER'][n]
+          ``multilevel_ivdata['string']['STRING IDENTIFIER'][n]``
         - For nth-definition of module curves,
-          multilevel_ivdata['module']['MODULE IDENTIFIER'][n]
+          ``multilevel_ivdata['module']['MODULE IDENTIFIER'][n]``
         - For nth-definition of substring (substr_id = 1,2,3,...) curves,
-          multilevel_ivdata['module']['MODULE IDENTIFIER']['substr{sbstr_id}'][n]
+          ``multilevel_ivdata['module']['MODULE IDENTIFIER']['substr{sbstr_id}'][n]``
 
     pristine_condition : dict
         Dictionary of conditions defining the pristine case
@@ -221,8 +219,8 @@ class Simulator():
         
         kwargs: variables dependent on which fault_name you choose, see above
 
-        Tip:
-        ----
+        Tip
+        ---
         For a wider spectrum of cases, run all of these multiple times. Each time it's run, the case is saved 
         """
         acceptible_fault_names = [
@@ -298,13 +296,12 @@ class Simulator():
                 - 1D list: Give a single situation for this condition
                 - 2D list: Give multiple situations for this condition
                 - A list where each value signifies a cell's condition. 
-                
-                See below for example. 
-                
+                                
                 If key is same as an existing key, the list is appended to list of scenarios \\
                 which that key owns
         condition_dict: dict
             Define the numerical value written in modcell
+
             .. note:: 
 
                If the variable is not defined, values will default to those specified \\
@@ -314,36 +311,21 @@ class Simulator():
 
             .. code-block:: python
 
-                {ID: {'identifier': IDENTIFIER_NAME,
-                      'E': IRRADIANCE,
-                      'Tc': CELL_TEMPERATURE,
-                      'Rsh_mult': RSH_MULTIPLIER,
-                      'Rs_mult': RS_MULTIPLIER,
-                      'Io_mult': IO_MULTIPLIER,
-                      'Il_mult': IL_MULTIPLIER,
-                      'nnsvth_mult': NNSVTH_MULTIPLIER 
-                }
-
-            Key/value pairs:
-
-                ID: int,
-                    Value corresponding to those in modcell
-                IDENTIFIER_NAME: str,
-                    Name used to define condition
-                IRRADIANCE: numerical,
-                    Value of irradiance (Watts per meter-squared)
-                CELL_TEMPERATURE: numerical,
-                    Value of cell temperature (Celcius)
-                RSH_MULTIPLIER: numerical,
-                    Multiplier usually less than 1 to simulate a drop in Rsh
-                RS_MULTIPLIER: numerical,
-                    Multiplier usually greater than 1 to simulate increase in Rs
-                IO_MULTIPLIER: numerical,
-                    Multiplier usually less than 1 to simulate a drop in IO
-                IL_MULTIPLIER: numerical,
-                    Multiplier usually less than 1 to simulate a drop in IL
-                NNSVTH_MULTIPLIER: numerical,
-                    Multiplier usually less than 1 to simulate a drop in NNSVTH, and therefore a_ref
+                {ID: {'identifier': IDENTIFIER_NAME, # (str) Name used to define condition
+                      'E': IRRADIANCE, # (numeric) Value of irradiance (Watts per meter-squared)
+                      'Tc': CELL_TEMPERATURE, # (numeric) Value of cell temperature (Celcius)
+                      'Rsh_mult': RSH_MULTIPLIER, # (numeric) Multiplier usually less than 1 
+                                                  # to simulate a drop in Rsh
+                      'Rs_mult': RS_MULTIPLIER, # (numeric) Multiplier usually greater than 1 
+                                                # to simulate increase in Rs
+                      'Io_mult': IO_MULTIPLIER, # (numeric) Multiplier usually less than 1 
+                                                # to simulate a drop in IO
+                      'Il_mult': IL_MULTIPLIER, # (numeric) Multiplier usually less than 1 
+                                                # to simulate a drop in IL
+                      'nnsvth_mult': NNSVTH_MULTIPLIER # (numeric) Multiplier usually less than 1 to 
+                                                       # simulate a drop in NNSVTH, and therefore a_ref
+                    }
+                }      
         """
         self._add_conditions(modcell, condition_dict)
 
@@ -624,12 +606,13 @@ class Simulator():
         Returns
         -------
         Dataframe with columns:
-            'current': IV trace current
-            'voltage': IV trace voltage
-            'E': Average irradiance for all samples used to build this array
-            'T': Average cell temperature for all samples used to build this array
-            'mode': failure name
-            'level': level of system (i.e. module, string), as defined by the input `focus` parameter
+
+            - 'current': IV trace current
+            - 'voltage': IV trace voltage
+            - 'E': Average irradiance for all samples used to build this array
+            - 'T': Average cell temperature for all samples used to build this array
+            - 'mode': failure name
+            - 'level': level of system (i.e. module, string), as defined by the input `focus` parameter
 
         #TODO: create focus for cell. For now, one can do it manually themselves.
         """
@@ -1125,20 +1108,20 @@ class Simulator():
 
             One does not need to define distributions for all parameters, only those that you want altered.
 
-            distributions = {
-                 'Rsh_mult':{'mean':None,
-                             'std': None,
-                             'low': None,
-                             'upp': None},
-                 'Rs_mult': {'mean':None,
-                             'std': None,
-                             'low': None,
-                             'upp': None},
+            .. code-block:: python
 
-                    ...
-
-                  All keys in self.acceptible_keys
-                }
+                distributions = {
+                    'Rsh_mult':{'mean':None,
+                                'std': None,
+                                'low': None,
+                                'upp': None},
+                    'Rs_mult': {'mean':None,
+                                'std': None,
+                                'low': None,
+                                'upp': None},
+                        ...
+                        # All keys in self.acceptible_keys
+                    }
 
         default_sample : 
             If provided, use this sample to replace the parameters which do not have distributions specified. Else, uses
@@ -1959,6 +1942,20 @@ class Simulator():
 
 
 def create_df(Varr, Iarr, POA, T, mode):
+    """Builds a dataframe from the given parameters
+
+    Parameters
+    ----------
+    Varr
+    Iarr
+    POA
+    T
+    mode
+
+    Returns
+    -------
+    df : DataFrame
+    """
     df = pd.DataFrame()
     df['voltage'] = Varr
     df['current'] = Iarr

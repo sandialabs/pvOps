@@ -52,13 +52,14 @@ extensions = [
 
 
 coverage_show_missing_items = True
-napoleon_numpy_docstring = True
-napoleon_google_docstring = False
-napoleon_use_rtype = False
+napoleon_numpy_docstring = True # use numpy style
+napoleon_google_docstring = False # not google style
+napoleon_use_rtype = False # option for return section formatting
 numpydoc_show_class_members = True
 numpydoc_show_inherited_class_members = False
 numpydoc_class_members_toctree = False
-
+napoleon_use_ivar = True # option for attribute section formatting
+napoleon_use_param = False # option for parameter section formatting
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]

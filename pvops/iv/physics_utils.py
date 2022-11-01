@@ -304,8 +304,8 @@ def add_series(voltage_1, current_1, voltage_2=None, current_2=None, v_bypass=No
     current : numeric
         Current for combined IV curve [V]
 
-    Notes
-    -----
+    Note
+    ----
     Current for the combined IV curve is the sorted union of the current of the
     two input IV curves. At current values in the other IV curve, voltage is
     determined by linear interpolation. Voltage at current values outside an
