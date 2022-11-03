@@ -17,3 +17,18 @@ timeseries.models.linear module
    :undoc-members:
    :show-inheritance:
 
+timeseries.models.AIT module
+-------------------------------
+
+.. automodule:: timeseries.models.AIT
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+timeseries.models.iec module
+-------------------------------
+
+.. automodule:: timeseries.models.iec
+   :members:
+   :undoc-members:
+   :show-inheritance:
