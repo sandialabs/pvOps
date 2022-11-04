@@ -25,7 +25,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Install pandoc
-        runs: apt-get update -y && apt-get install -y pandoc
+        run: apt-get update -y && apt-get install -y pandoc
       - uses: actions/setup-python@v2
         with: 
           python-version: '3.8' 
