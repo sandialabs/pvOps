@@ -82,7 +82,7 @@ def normalize_production_by_capacity(prod_df,
         - **siteid** (*string*), should be assigned to site-ID column name in prod_df
         - **capacity_normalized_power** (*string*), should be assigned to a column name 
           where the normalized output signal will be stored
-    
+
     meta_df: DataFrame
         A data frame corresponding to site metadata.
         At the least, the columns in meta_col_dict be present.
@@ -92,7 +92,7 @@ def normalize_production_by_capacity(prod_df,
         - **siteid** (*string*), should be assigned to site-ID column name
         - **dcsize** (*string*), should be assigned to column name corresponding
           to site's DC size
-    
+
     Returns
     -------
     prod_df : DataFrame

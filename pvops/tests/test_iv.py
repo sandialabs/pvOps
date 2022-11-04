@@ -137,10 +137,10 @@ def test_classification():
 
     # Irradiance & Temperature correction, and normalize axes
     prep_df = pvops.iv.preprocess.preprocess(df, 0.05, iv_col_dict,
-                                    resmpl_cutoff=0.03, correct_gt=True,
-                                    normalize_y=False,
-                                    CECmodule_parameters=sim.module_parameters,
-                                    n_mods=12, gt_correct_option=3)
+                                             resmpl_cutoff=0.03, correct_gt=True,
+                                             normalize_y=False,
+                                             CECmodule_parameters=sim.module_parameters,
+                                             n_mods=12, gt_correct_option=3)
     # Shuffle
     bigdf = prep_df.sample(frac=1).reset_index(drop=True)
     bigdf.dropna(inplace=True)

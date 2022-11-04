@@ -7,6 +7,7 @@ import scipy
 import numpy as np
 from gensim.models import Word2Vec
 
+
 class Doc2VecModel(BaseEstimator):
     """Performs a gensim Doc2Vec transformation of the input documents to create
     embedded representations of the documents. See gensim's
@@ -93,8 +94,7 @@ class DataDensifier(BaseEstimator):
     """A data structure transformer which converts sparse data to dense data.
     This process is usually incorporated in this library when doing unsupervised machine learning.
     This class is built specifically to work inside a sklearn pipeline.
-    Therefore, it uses the default ``transform``, ``fit``, ``fit_transform`` method structure.
-    
+    Therefore, it uses the default ``transform``, ``fit``, ``fit_transform`` method structure.  
     """
 
     def transform(self, X, y=None):
@@ -175,6 +175,7 @@ def create_stopwords(lst_langs=["english"], lst_add_words=[], lst_keep_words=[])
     lst_stopwords = lst_stopwords.union(lst_add_words)
     lst_stopwords = list(set(lst_stopwords) - set(lst_keep_words))
     return sorted(list(set(lst_stopwords)))
+
 
 def summarize_text_data(om_df, colname):
     """Display information about a set of documents located in a dataframe, including

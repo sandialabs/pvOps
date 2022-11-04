@@ -157,10 +157,10 @@ def get_dates(
         by first starting at the nearest rows.
     col_dict : dict of {str : str}
         A dictionary that contains the column names relevant for the get_dates fn
-        
+
         - data : string, should be assigned to associated column which stores the text logs
         - eventstart : string, should be assigned to associated column which stores the log submission datetime
-    
+
     print_info : bool
         Flag indicating whether to print information about the preprocessing progress
     infer_date_surrounding_rows : bool
