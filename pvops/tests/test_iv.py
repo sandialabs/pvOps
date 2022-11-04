@@ -1,6 +1,5 @@
 import random
 import os
-import sys
 import pandas as pd
 import numpy as np
 import pvops.iv.timeseries_simulator

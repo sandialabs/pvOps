@@ -1,10 +1,10 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from datetime import timedelta
-import simulator
+from pvops.iv.simulator import Simulator
 
 
-class IVTimeseriesGenerator(simulator.Simulator):
+class IVTimeseriesGenerator(Simulator):
 
     def __init__(self, **iv_sim_kwargs):
         """Simulate a PV System across time.
