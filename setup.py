@@ -14,7 +14,7 @@ a collection of functions for working with text-based data
 from photovoltaic power systems. The library includes functions for
 processing text data as well as fusion of the text information with
 time series data for visualization of contextual details for data
-analysis. 
+analysis.
 
 Documentation: https://pvops.readthedocs.io/en/latest/index.html
 
@@ -50,7 +50,7 @@ INSTALL_REQUIRES = [
     'pyDOE',
     'keras>=2.3.0',
     'tensorflow>=2.2.0',
-    'protobuf==3.20.*' 
+    'protobuf==3.20.*'
 ]
 
 DOCS_REQUIRE = [
