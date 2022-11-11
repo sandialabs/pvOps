@@ -1,10 +1,3 @@
-import sys
-import os
-
-sys.path.append("..")
-pvops_directory = os.path.join("..", "pvops")
-sys.path.append(pvops_directory)
-
 # Utilities
 from pvops.text import nlp_utils
 from pvops.text import utils
