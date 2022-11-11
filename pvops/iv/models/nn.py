@@ -118,10 +118,10 @@ def feature_generation(bigdf, iv_col_dict,
     derivative_col = iv_col_dict["derivative"]
     current_diff_col = iv_col_dict["current_diff"]
 
-    pristine = bigdf[bigdf[failure_mode_col] == pristine_mode_identifier]
+    pristine = bigdf.loc[bigdf[failure_mode_col] == pristine_mode_identifier, :].copy()
     pristine.sort_values(by=[irradiance_col, temperature_col], ascending=[
                          False, True], inplace=True)
-    sub = bigdf[bigdf[failure_mode_col] != pristine_mode_identifier]
+    sub = bigdf.loc[bigdf[failure_mode_col] != pristine_mode_identifier, :].copy()
 
     pristine_V = pristine[voltage_col].values[0]
     pristine_I = pristine[current_col].values[0]
