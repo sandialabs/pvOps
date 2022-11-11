@@ -33,9 +33,9 @@ TESTS_REQUIRE = [
 ]
 
 INSTALL_REQUIRES = [
-    'numpy >= 1.15.0',
-    'pandas >= 0.23.0',
-    'scipy >= 1.2.0',
+    'numpy',
+    'pandas',
+    'scipy',
     'scikit-learn',
     'nltk',
     'datefinder',
@@ -48,9 +48,7 @@ INSTALL_REQUIRES = [
     'pvanalytics',
     'timezonefinder',
     'pyDOE',
-    'keras>=2.3.0',
-    'tensorflow>=2.2.0',
-    'protobuf==3.20.*'
+    'tensorflow',
 ]
 
 DOCS_REQUIRE = [
