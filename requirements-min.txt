@@ -1,6 +1,6 @@
-pandas>=0.23.0
-numpy>=1.15.0
-scipy>=1.2.0
+pandas
+numpy
+scipy
 scikit-learn
 nltk
 datefinder
@@ -13,5 +13,4 @@ pvlib
 pvanalytics
 timezonefinder
 pyDOE
-keras==2.3.0
-tensorflow==2.2.0rc4
+tensorflow

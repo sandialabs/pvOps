@@ -12,16 +12,13 @@ def visualize_counts(om_df, om_col_dict, count_var, fig_sets):
     """
     Produces a seaborn countplot of an O&M categorical column using sns.countplot()
 
-
     Parameters
-
     ----------
-    om_df: DataFrame
+    om_df : DataFrame
         A data frame corresponding to the O&M data after having been pre-processed
         to address NANs and date consistency, and after applying the ``om_summary_stats`` function.
         This data frame needs at least the columns specified in om_col_dict.
-
-    om_col_dict: dict of {str : str}
+    om_col_dict : dict of {str : str}
         A dictionary that contains the column names relevant for the O&M data
 
         - **siteid** (*string*), should be assigned to column name for associated site-ID in om_df.
@@ -30,8 +27,7 @@ def visualize_counts(om_df, om_col_dict, count_var, fig_sets):
 
     count_var:str
         Column name that contains categorical variable to be plotted
-
-    fig_sets: dict
+    fig_sets : dict
         A dictionary that contains the settings to be used for the
         figure to be generated, and those settings should include:
 
@@ -39,7 +35,6 @@ def visualize_counts(om_df, om_col_dict, count_var, fig_sets):
         - **fontsize** (*int*), which is the desired font-size for the figure
 
     Returns
-
     -------
     None
 
@@ -95,19 +90,19 @@ def visualize_counts(om_df, om_col_dict, count_var, fig_sets):
 
 def visualize_categorical_scatter(om_df, om_col_dict, cat_varx, cat_vary, fig_sets):
     """
-    Produces a seaborn categorical scatter plot to show the relationship between
-    an O&M numerical column and a categorical column using sns.catplot()
-
+    Produces a seaborn categorical scatter plot to show 
+    the relationship between an O&M numerical column and 
+    a categorical column using sns.catplot()
 
     Parameters
-
     ----------
-    om_df: DataFrame
-        A data frame corresponding to the O&M data after having been pre-processed
-        to address NANs and date consistency, and after applying the ``om_summary_stats`` function.
-        This data frame needs at least the columns specified in om_col_dict.
-
-    om_col_dict: dict of {str : str}
+    om_df : DataFrame
+        A data frame corresponding to the O&M data after having been 
+        pre-processed to address NANs and date consistency, and after 
+        applying the ``om_summary_stats`` function.
+        This data frame needs at least the columns specified 
+        in om_col_dict.
+    om_col_dict : dict of {str : str}
         A dictionary that contains the column names relevant for the O&M data
 
         - **eventdur** (*string*), should be assigned to column name desired for repair duration.
@@ -115,13 +110,11 @@ def visualize_categorical_scatter(om_df, om_col_dict, cat_varx, cat_vary, fig_se
         - **agedatestart** (*string*), should be assigned to column name desired for age of
           site when event started. This column is calculated by ``om_summary_stats``
 
-    cat_varx: str
+    cat_varx : str
         Column name that contains categorical variable to be plotted
-
-    cat_vary: str
+    cat_vary : str
         Column name that contains numerical variable to be plotted
-
-    fig_sets: dict
+    fig_sets : dict
         A dictionary that contains the settings to be used for the
         figure to be generated, and those settings should include:
 
@@ -129,10 +122,8 @@ def visualize_categorical_scatter(om_df, om_col_dict, cat_varx, cat_vary, fig_se
         - **fontsize** (*int*), which is the desired font-size for the figure
 
     Returns
-
     -------
     None
-
     """
     # assigning dictionary items to local variables for cleaner code
     om_rep_dur = om_col_dict["eventdur"]
@@ -196,21 +187,17 @@ def visualize_om_prod_overlap(
     Creates Plotly figures of performance data overlaid with coinciding O&M tickets.
     A separate figure for each site in the production data frame (prod_df) is generated.
 
-
     Parameters
-
     ----------
-    prod_df: DataFrame
+    prod_df : DataFrame
         A data frame corresponding to the performance data after (ideally) having been
         processed by the perf_om_NA_qc and overlappingDFs functions. This data
         frame needs to contain the columns specified in prod_col_dict.
-
-    om_df: DataFrame
+    om_df : DataFrame
         A data frame corresponding to the O&M data after (ideally) having been processed
         by the perf_om_NA_qc and overlappingDFs functions. This data frame needs
         to contain the columns specified in om_col_dict.
-
-    prod_col_dict: dict of {str : str}
+    prod_col_dict : dict of {str : str}
         A dictionary that contains the column names relevant for the production data
 
         - **siteid** (*string*), should be assigned to associated site-ID column name in
@@ -222,12 +209,12 @@ def visualize_om_prod_overlap(
         - **irradiance** (*string*), should be assigned to associated irradiance column name in
           prod_df. Data should be in [W/m^2].
 
-    om_col_dict: dict of {str : str}
+    om_col_dict : dict of {str : str}
         A dictionary that contains the column names relevant for the O&M data
 
         - **siteid** (*string*), should be assigned to column name for user's site-ID
         - **datestart** (*string*), should be assigned to column name for user's
-        O&M event start-date
+          O&M event start-date
         - **dateend** (*string*), should be assigned to column name for user's O&M event end-date
         - **workID** (*string*), should be assigned to column name for user's O&M unique event ID
         - **worktype** (*string*), should be assigned to column name for user's
@@ -235,29 +222,24 @@ def visualize_om_prod_overlap(
         - **asset** (*string*), should be assigned to column name for affected asset in user's
           O&M ticket
 
-    prod_fldr: str
+    prod_fldr : str
         Path to directory where plots should be saved.
-
-    e_cumu: bool
+    e_cumu : bool
         Boolean flag that specifies whether the production (energy output)
         data is input as cumulative information ("True") or on a per time-step basis ("False").
-
-    be_cumu: bool
+    be_cumu : bool
         Boolean that specifies whether the baseline production data is input as cumulative
         information ("True") or on a per time-step basis ("False").
-
-    samp_freq: str
+    samp_freq : str
         Specifies how the performance data should be resampled.
         String value is any frequency that is valid for pandas.DataFrame.resample().
         For example, a value of 'D' will resample on a daily basis, and a
         value of 'H' will resample on an hourly basis.
-
-    pshift: float
+    pshift : float
         Value that specifies how many hours the performance data
         should be shifted by to help align performance data with O&M data.
         Mostly necessary when resampling frequencies are larger than an hour
-
-    baselineflag: bool
+    baselineflag : bool
         Boolean that specifies whether or not to display the baseline (i.e.,
         expected production profile) as calculated with the irradiance data
         using the baseline production data. A value of 'True' will display the
@@ -265,11 +247,9 @@ def visualize_om_prod_overlap(
         'False' will not.
 
     Returns
-
     -------
     list
         List of Plotly figure handles generated by function for each site within prod_df.
-
     """
 
     # assigning dictionary items to local variables for cleaner code

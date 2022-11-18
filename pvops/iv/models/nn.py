@@ -22,7 +22,6 @@ def get_diff_array(sample_V, sample_I, pristine_V, pristine_I, debug=False):
     """Generate IV current differential between sample and pristine.
 
     Parameters
-
     ----------
     sample_V : array
         Voltage array for a sample's IV curve
@@ -34,7 +33,6 @@ def get_diff_array(sample_V, sample_I, pristine_V, pristine_I, debug=False):
         Current array for a pristine IV curve
 
     Returns
-
     -------
     all_V : array
         Combined voltage array
@@ -82,13 +80,13 @@ def feature_generation(bigdf, iv_col_dict,
     slope of the cuve.
 
     Parameters
-
     ----------
     bigdf : dataframe
         Dataframe holding columns from `iv_col_dict`, except for the 
         `derivative` and `current_diff` which are calculated here.
     iv_col_dict : dict
         Dictionary containing definitions for the column names in `df`
+
         - **current** (*str*): column name for IV current arrays.
         - **voltage** (*str*): column name for IV voltage arrays.
         - **mode** (*str*): column name for failure mode identifier.
@@ -98,14 +96,14 @@ def feature_generation(bigdf, iv_col_dict,
           calculated in this function.
         - **current_diff** (*str*): column name for current differential, as
           calculated in `get_diff_array`.
+
     pristine_mode_identifier : str
         Pristine array identifier. The pristine curve is utilized in
-        `get_diff_array`. If multiple rows exist at this
-        `pristine_mode_identifier`, the one with the highest irradiance and
+        ``get_diff_array``. If multiple rows exist at this
+        ``pristine_mode_identifier``, the one with the highest irradiance and
         lowest temperature definitions is chosen.
 
     Returns
-
     -------
     all_V : array
         Combined voltage array
@@ -154,7 +152,6 @@ def balance_df(df, iv_col_dict, balance_tactic='truncate'):
     unique `ycol` definition.
 
     Parameters
-
     ----------
     bigdf : dataframe
         Dataframe containing the `ycol` column.
@@ -170,9 +167,9 @@ def balance_df(df, iv_col_dict, balance_tactic='truncate'):
         towards a central target.
 
     Returns
-
     -------
-    dataframe, balanced according to the `balance_tactic`.
+    balanced_df : DataFrame
+        balanced according to the `balance_tactic`.
     """
 
     ycol = iv_col_dict['mode']
@@ -275,7 +272,6 @@ def plot_profiles(df, colx, coly, iv_col_dict, cmap_name='brg'):
     in definitions.
 
     Parameters
-
     ----------
     df : dataframe
         Dataframe containing the `colx`, `coly`, and iv_col_dict['mode'] column
@@ -292,7 +288,6 @@ def plot_profiles(df, colx, coly, iv_col_dict, cmap_name='brg'):
         Matplotlib colormap.
 
     Returns
-
     -------
     matplotlib figure
     """
@@ -394,7 +389,6 @@ def classify_curves(df, iv_col_dict, nn_config):
     """Build and evaluate an IV trace failure `mode` classifier.
 
     Parameters
-
     ----------
     df : dataframe
         Data with columns in `iv_col_dict`
@@ -402,39 +396,7 @@ def classify_curves(df, iv_col_dict, nn_config):
         Dictionary containing definitions for the column names in `df`
         **mode** (*str*): column name for failure mode identifier
     nn_config : dict
-        Parameters used for the IV trace classifier. These parameters are 
-        disseminated into four categories.
-
-        * Neural network parameters
-
-        - **model_choice** (*str*), model choice, either "1DCNN" or
-            "LSTM_multihead"
-        - **params** (*list of str*), column names in train & test
-            dataframes, used in neural network. Each value in this column
-            must be a list.
-        - **dropout_pct** (*float*), rate at which to set input units
-            to zero.
-        - **verbose** (*int*), control the specificity of the prints.
-
-        * Training parameters
-
-        - **train_size** (*float*), split of training data used for training
-        - **shuffle_split** (*bool*), shuffle data during test-train split
-        - **balance_tactic** (*str*), mode balancing tactic, either "truncate"
-            or "gravitate". Truncate will utilize the exact same number of samples
-            for each category. Gravitate will sway the original number of samples 
-            towards the same number. Default= truncate.
-
-        * LSTM parameters
-
-        - **use_attention_lstm** (*bool*), if True,
-            use attention in LSTM network
-        - **units** (*int*), number of neurons in initial NN layer
-
-        * 1DCNN parameters
-
-        - **nfilters** (*int*), number of filters in the convolution.
-        - **kernel_size** (*int*), length of the convolution window.
+        Parameters used for the IV trace classifier.
     """
     # Balance ys
     bal_df = balance_df(
@@ -464,54 +426,13 @@ class IVClassifier:
         """Structure the data according to the chosen network model's input structure.
 
         Parameters
-
         ----------
         train : dataframe
             Train data containing IV data and associated features
         test : dataframe
             Test data containing IV data and associated features
         nn_config : dict
-            Parameters used for the IV trace classifier. These parameters are
-            disseminated into four categories.
-
-            * Neural network parameters
-
-            - **model_choice** (*str*), model choice, either "1DCNN" or
-              "LSTM_multihead"
-            - **params** (*list of str*), column names in train & test
-              dataframes, used in neural network. Each value in this column
-              must be a list.
-            - **dropout_pct** (*float*), rate at which to set input units
-              to zero.
-            - **verbose** (*int*), control the specificity of the prints.
-
-            * Training parameters
-
-            - **train_size** (*float*), split of training data used for
-              training
-            - **shuffle_split** (*bool*), shuffle data during test-train
-              split
-            - **balance_tactic** (*str*), mode balancing tactic, either
-              "truncate" or "gravitate". Truncate will utilize the exact
-              same number of samples for each category. Gravitate will sway
-              the original number of samples towards the same number.
-              Default= truncate.
-            - **n_split** (*int*), number of splits in the stratified KFold
-              cross validation.
-            - **batch_size** (*int*), number of samples per gradient update.
-            - **max_epochs** (*int*), maximum number of passes through the
-              training process.
-
-            * LSTM parameters
-
-            - **use_attention_lstm** (*bool*), if True,
-              use attention in LSTM network
-            - **units** (*int*), number of neurons in initial NN layer
-
-            * 1DCNN parameters
-
-            - **nfilters** (*int*), number of filters in the convolution.
-            - **kernel_size** (*int*), length of the convolution window.
+            Parameters used for the IV trace classifier. 
         """
 
         num_params = len(self.params)
@@ -605,7 +526,6 @@ class IVClassifier:
         """Predict using the trained model.
 
         Parameters
-
         ----------
         batch_size : int
             Number of samples per gradient update

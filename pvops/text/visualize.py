@@ -31,14 +31,18 @@ def visualize_attribute_connectivity(
     ``ATTRIBUTE1_COL`` and ``ATTRIBUTE2_COL``
 
     Parameters
-
     ----------
     om_df : DataFrame
         A pandas dataframe containing O&M data, which contains columns specified in om_col_dict
-    om_col_dict: dict of {str : str}
-        A dictionary that contains the column names that describes how remapping is going to be done
-        - **attribute1_col** (*string*), should be assigned to associated column name for first attribute of interest in om_df
-        - **attribute2_col** (*string*), should be assigned to associated column name for second attribute of interest in om_df
+    om_col_dict : dict of {str : str}
+        A dictionary that contains the column names to be used in
+        visualization::
+
+            {
+                'attribute1_col' : string,
+                'attribute2_col' : string
+            }
+
     figsize : tuple
         Figure size
     attribute_colors : list
@@ -46,22 +50,22 @@ def visualize_attribute_connectivity(
     edge_width_scalar : numeric
         Weight utilized to cause dynamic widths based on number of connections between Attribute 1
         and Attribute 2.
-    graph_aargs
+    graph_aargs : dict
         Optional, arguments passed to networkx graph drawer.
         Suggested attributes to pass:
-            with_labels=True
-            font_weight='bold'
-            node_size=19000
-            font_size=35
-            node_color='darkred'
-            font_color='red'
+
+        - with_labels=True
+        - font_weight='bold'
+        - node_size=19000
+        - font_size=35
+        - node_color='darkred'
+        - font_color='red'
 
     Returns
-
     -------
     Matplotlib figure instance,
     networkx EdgeView object
-        i.e. [('A', 'X'), ('X', 'B'), ('C', 'Y'), ('C', 'Z')]
+    i.e. [('A', 'X'), ('X', 'B'), ('C', 'Y'), ('C', 'Z')]
     """
     df = om_df.copy()
     ATTRIBUTE1_COL = om_col_dict["attribute1_col"]
@@ -110,17 +114,18 @@ def visualize_attribute_timeseries(
     for each label within the label column
 
     Parameters
-
     ----------
     om_df : DataFrame
         A pandas dataframe of O&M data, which contains columns in om_col_dict
-    om_col_dict: dict of {str : str}
+    om_col_dict : dict of {str : str}
         A dictionary that contains the column names relevant for the get_dates fn
+
         - **label** (*string*), should be assigned to associated column name for the label/attribute of interest in om_df
         - **date** (*string*), should be assigned to associated column name for the dates relating to the documents in om_df
+
     date_structure : str
         Controls the resolution of the bar chart's timeseries
-        Default: "%Y-%m". Can change to include finer resolutions (e.g., by including day, "%Y-%m-%d")
+        Default : "%Y-%m". Can change to include finer resolutions (e.g., by including day, "%Y-%m-%d")
         or coarser resolutions (e.g., by year, "%Y")
     figsize : tuple
         Optional, figure size
@@ -128,7 +133,6 @@ def visualize_attribute_timeseries(
         Optional, color map name in matplotlib
 
     Returns
-
     -------
     Matplotlib figure instance
     """
@@ -197,7 +201,6 @@ def visualize_cluster_entropy(
     """Visualize entropy of embedding space parition. Currently only supports doc2vec embedding.
 
     Parameters
-
     ----------
     doc2vec : Doc2Vec model instance
         Instance of gensim.models.doc2vec.Doc2Vec
@@ -222,7 +225,6 @@ def visualize_cluster_entropy(
         Optional, color map
 
     Returns
-
     -------
     Matplotlib figure instance
     """
@@ -283,7 +285,6 @@ def visualize_document_clusters(cluster_tokens, min_frequency=20):
     the results of an unsupervised partitioning of documents.
 
     Parameters
-
     ----------
     cluster_tokens : list
         List of tokenized documents
@@ -291,7 +292,6 @@ def visualize_document_clusters(cluster_tokens, min_frequency=20):
         Minimum number of occurrences that a word must have in a cluster for it to be visualized
 
     Returns
-
     -------
     Matplotlib figure instance
     """
@@ -362,7 +362,6 @@ def visualize_word_frequency_plot(
     """Visualize the frequency distribution of words within a set of documents
 
     Parameters
-
     ----------
     tokenized_words : list
         List of tokenized words
@@ -370,11 +369,10 @@ def visualize_word_frequency_plot(
         Optional, title of plot
     font_size : int
         Optional, font size
-    **aargs :
+    aargs :
         Optional, other parameters passed to nltk.FreqDist.plot()
 
     Returns
-
     -------
     Matplotlib figure instance
     """

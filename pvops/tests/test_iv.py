@@ -1,15 +1,11 @@
 import random
 import os
-import sys
 import pandas as pd
 import numpy as np
-
-iv_directory = os.path.join("pvops", "iv")
-sys.path.append(iv_directory)
-import timeseries_simulator
-import preprocess
-import simulator
-from models import nn
+import pvops.iv.timeseries_simulator
+import pvops.iv.preprocess
+import pvops.iv.simulator
+from pvops.iv.models import nn
 
 datadir = os.path.join('examples', 'example_data')
 example_prodpath = os.path.join(
@@ -19,7 +15,7 @@ example_prodpath = os.path.join(
 def test_simulation():
     random.seed(0)
 
-    sim = simulator.Simulator()
+    sim = pvops.iv.simulator.Simulator()
 
     # test adding presets
     heavy_shading = {'identifier': 'heavy_shade',
@@ -104,7 +100,7 @@ def test_simulation():
 
 def test_classification():
 
-    sim = simulator.Simulator()
+    sim = pvops.iv.simulator.Simulator()
 
     condition = {'identifier': 'shade', 'Il_mult': 0.6}
     sim.add_preset_conditions('complete', condition,
@@ -140,11 +136,11 @@ def test_classification():
     }
 
     # Irradiance & Temperature correction, and normalize axes
-    prep_df = preprocess.preprocess(df, 0.05, iv_col_dict,
-                                    resmpl_cutoff=0.03, correct_gt=True,
-                                    normalize_y=False,
-                                    CECmodule_parameters=sim.module_parameters,
-                                    n_mods=12, gt_correct_option=3)
+    prep_df = pvops.iv.preprocess.preprocess(df, 0.05, iv_col_dict,
+                                             resmpl_cutoff=0.03, correct_gt=True,
+                                             normalize_y=False,
+                                             CECmodule_parameters=sim.module_parameters,
+                                             n_mods=12, gt_correct_option=3)
     # Shuffle
     bigdf = prep_df.sample(frac=1).reset_index(drop=True)
     bigdf.dropna(inplace=True)
@@ -197,7 +193,7 @@ def test_timeseries_simulator():
     # Reduce number of simulations for test
     env_df = env_df.iloc[0:100]
 
-    failureA = timeseries_simulator.TimeseriesFailure()
+    failureA = pvops.iv.timeseries_simulator.TimeseriesFailure()
     longterm_fcn_dict = {
         'Rs_mult': "degrade"
     }
@@ -215,7 +211,7 @@ def test_timeseries_simulator():
 
     env_df['identifier'] = env_df.index.strftime("%Y-%m-%d %H:%M:%S")
 
-    time_simulator = timeseries_simulator.IVTimeseriesGenerator()
+    time_simulator = pvops.iv.timeseries_simulator.IVTimeseriesGenerator()
     time_simulator.generate(
         env_df, [failureA], iv_col_dict, 'identifier', plot_trends=False)
 

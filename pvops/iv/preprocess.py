@@ -1,12 +1,28 @@
 import numpy as np
 import pandas as pd
-from physics_utils import gt_correction
+from pvops.iv.physics_utils import gt_correction
 
 
 def preprocess(input_df, resmpl_resolution, iv_col_dict, resmpl_cutoff=0.03,
                correct_gt=False, normalize_y=True, CECmodule_parameters=None,
                n_mods=None, gt_correct_option=3):
     """IV processing function which supports irradiance & temperature correction
+
+    Parameters
+    ----------
+    input_df : DataFrame
+    resmpl_resolution : float
+    iv_col_dict : dict
+    resmpl_cutoff : float
+    correct_gt : bool
+    normalize_y : bool
+    CECmodule_parameters : None
+    n_mods : int
+    gt_correct_option : int
+
+    Returns
+    -------
+    df : DataFrame
     """
 
     current_col = iv_col_dict["current"]

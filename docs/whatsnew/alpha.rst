@@ -1,5 +1,3 @@
-.. _whatsnew_alpha:
-
 First push
 -----------------------
 

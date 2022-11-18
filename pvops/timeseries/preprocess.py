@@ -12,30 +12,28 @@ def establish_solar_loc(prod_df, prod_col_dict, meta_df, meta_col_dict):
     sites simultaneously.
 
     Parameters
-
     ----------
-    prod_df: DataFrame
+    prod_df : DataFrame
         A data frame corresponding to production data containing a datetime index.
 
-    prod_col_dict: dict of {str : str}
+    prod_col_dict : dict of {str : str}
         A dictionary that contains the column names associated with the production data,
         which consist of at least:
 
         - **siteid** (*string*), should be assigned to site-ID column name in prod_df
 
-    meta_df: DataFrame
+    meta_df : DataFrame
         A data frame corresponding to site metadata.
         At the least, the columns in meta_col_dict be present.
         The index must contain the site IDs used in prod_df.
 
-    meta_col_dict: dict of {str : str}
+    meta_col_dict : dict of {str : str}
         A dictionary that contains the column names relevant for the meta-data
 
         - **longitude** (*string*), should be assigned to site's longitude
         - **latitude** (*string*), should be assigned to site's latitude
 
     Returns
-
     -------
     Original dataframe (copied) with new timeseries solar position data using
     the same column name definitions provided in pvLib.
@@ -73,11 +71,9 @@ def normalize_production_by_capacity(prod_df,
     sites simultaneously.
 
     Parameters
-
     ----------
     prod_df: DataFrame
         A data frame corresponding to production data.
-
     prod_df_col_dict: dict of {str : str}
         A dictionary that contains the column names associated with the production data,
         which consist of at least:
@@ -86,16 +82,21 @@ def normalize_production_by_capacity(prod_df,
         - **siteid** (*string*), should be assigned to site-ID column name in prod_df
         - **capacity_normalized_power** (*string*), should be assigned to a column name 
           where the normalized output signal will be stored
+
     meta_df: DataFrame
         A data frame corresponding to site metadata.
         At the least, the columns in meta_col_dict be present.
-
     meta_col_dict: dict of {str : str}
         A dictionary that contains the column names relevant for the meta-data
 
         - **siteid** (*string*), should be assigned to site-ID column name
         - **dcsize** (*string*), should be assigned to column name corresponding
           to site's DC size
+
+    Returns
+    -------
+    prod_df : DataFrame
+        normalized production data
     """
 
     prod_df = prod_df.copy()
@@ -128,26 +129,25 @@ def prod_irradiance_filter(prod_df, prod_col_dict, meta_df, meta_col_dict,
     THIS METHOD IS CURRENTLY IN DEVELOPMENT.
 
     Parameters
-
     ----------
-    prod_df: DataFrame
+    prod_df : DataFrame
         A data frame corresponding to production data.
 
-    prod_df_col_dict: dict of {str : str}
+    prod_df_col_dict : dict of {str : str}
         A dictionary that contains the column names associated with the production data,
         which consist of at least:
 
         - **timestamp** (*string*), should be assigned to associated time-stamp
-        column name in prod_df
+          column name in prod_df
         - **siteid** (*string*), should be assigned to site-ID column name in prod_df
         - **irradiance** (*string*), should be assigned to associated irradiance column name in prod_df
         - **clearsky_irr** (*string*), should be assigned to clearsky irradiance column name in prod_df
 
-    meta_df: DataFrame
+    meta_df : DataFrame
         A data frame corresponding to site metadata.
         At the least, the columns in meta_col_dict be present.
 
-    meta_col_dict: dict of {str : str}
+    meta_col_dict : dict of {str : str}
         A dictionary that contains the column names relevant for the meta-data
 
         - **siteid** (*string*), should be assigned to site-ID column name
@@ -163,7 +163,6 @@ def prod_irradiance_filter(prod_df, prod_col_dict, meta_df, meta_col_dict,
         A pvanalytics parameter of maximum ratio of measured to clearsky (clearsky index).
 
     Returns
-
     -------
     prod_df: DataFrame
         A dataframe with new **clearsky_irr** column. If drop=True, a filtered prod_df according to clearsky.
@@ -260,32 +259,29 @@ def prod_inverter_clipping_filter(prod_df, prod_col_dict, meta_df, meta_col_dict
     """Filter rows of production data frame according to performance and data quality
 
     Parameters
-
     ----------
-    prod_df: DataFrame
+    prod_df : DataFrame
         A data frame corresponding to production data.
-
-    prod_df_col_dict: dict of {str : str}
+    prod_df_col_dict : dict of {str : str}
         A dictionary that contains the column names associated with the production data,
         which consist of at least:
 
         - **timestamp** (*string*), should be assigned to associated time-stamp
-        column name in prod_df
+          column name in prod_df
         - **siteid** (*string*), should be assigned to site-ID column name in prod_df
         - **powerprod** (*string*), should be assigned to associated power production column name in prod_df
 
-    meta_df: DataFrame
+    meta_df : DataFrame
         A data frame corresponding to site metadata.
         At the least, the columns in meta_col_dict be present.
-
-    meta_col_dict: dict of {str : str}
+    meta_col_dict : dict of {str : str}
         A dictionary that contains the column names relevant for the meta-data
 
         - **siteid** (*string*), should be assigned to site-ID column name
         - **latitude** (*string*), should be assigned to column name corresponding to site's latitude
         - **longitude** (*string*), should be assigned to column name corresponding to site's longitude
 
-    model: str
+    model : str
         A string distinguishing the inverter clipping detection model programmed in pvanalytics.
         Available options: ['geometric', 'threshold', 'levels']
 
@@ -293,9 +289,8 @@ def prod_inverter_clipping_filter(prod_df, prod_col_dict, meta_df, meta_col_dict
         Extra parameters passed to the relevant pvanalytics model. If none passed, defaults are used.
 
     Returns
-
     -------
-    prod_df: DataFrame
+    prod_df : DataFrame
         If drop=True, a filtered dataframe with clipping periods removed is returned.
     """
 

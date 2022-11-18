@@ -7,6 +7,7 @@ import scipy
 import numpy as np
 from gensim.models import Word2Vec
 
+
 class Doc2VecModel(BaseEstimator):
     """Performs a gensim Doc2Vec transformation of the input documents to create
     embedded representations of the documents. See gensim's
@@ -93,21 +94,19 @@ class DataDensifier(BaseEstimator):
     """A data structure transformer which converts sparse data to dense data.
     This process is usually incorporated in this library when doing unsupervised machine learning.
     This class is built specifically to work inside a sklearn pipeline.
-    Therefore, it uses the default ``transform``, ``fit``, ``fit_transform`` method structure.
+    Therefore, it uses the default ``transform``, ``fit``, ``fit_transform`` method structure.  
     """
 
     def transform(self, X, y=None):
         """Return a dense array if the input array is sparse.
 
         Parameters
-
         ----------
         X : array
             Input data of numerical values. For this package, these values could
             represent embedded representations of documents.
 
         Returns
-
         -------
         dense array
         """
@@ -120,14 +119,12 @@ class DataDensifier(BaseEstimator):
         """Placeholder method to conform to the sklearn class structure.
 
         Parameters
-
         ----------
         X : array
             Input data
         y : Not utilized.
 
         Returns
-
         -------
         DataDensifier object
         """
@@ -138,14 +135,12 @@ class DataDensifier(BaseEstimator):
         which returns a dense array when the input is sparse.
 
         Parameters
-
         ----------
         X : array
             Input data
         y : Not utilized.
 
         Returns
-
         -------
         dense array
         """
@@ -156,19 +151,17 @@ def create_stopwords(lst_langs=["english"], lst_add_words=[], lst_keep_words=[])
     """Concatenate a list of stopwords using both words grabbed from nltk and user-specified words.
 
     Parameters
-
-    ---------
-    lst_langs: list
+    ----------
+    lst_langs : list
         List of strings designating the languages for a nltk.corpus.stopwords.words query. If empty list is passed, no stopwords will be queried from nltk.
-    lst_add_words: list
+    lst_add_words : list
         List of words(e.g., "road" or "street") to add to stopwords list. If these words are already included in the nltk query, a duplicate will not be added.
-    lst_keep_words: list
+    lst_keep_words : list
         List of words(e.g., "before" or "until") to remove from stopwords list. This is usually used to modify default stop words that might be of interest to PV.
 
     Returns
-
     -------
-    List
+    list
         List of alphabetized stopwords
     """
     lst_stopwords = set()
@@ -183,23 +176,23 @@ def create_stopwords(lst_langs=["english"], lst_add_words=[], lst_keep_words=[])
     lst_stopwords = list(set(lst_stopwords) - set(lst_keep_words))
     return sorted(list(set(lst_stopwords)))
 
+
 def summarize_text_data(om_df, colname):
     """Display information about a set of documents located in a dataframe, including
     the number of samples, average number of words, vocabulary size, and number of words
     in total.
 
     Parameters
-
-    ---------
+    ----------
     om_df : DataFrame
         A pandas dataframe containing O&M data, which contains at least the colname of interest
     colname : str
         Column name of column with text
 
     Returns
-
-    ------
-    None
+    -------
+    dict
+        dictionary containing printed summary data
     """
     df = om_df.copy()
     text = df[colname].tolist()

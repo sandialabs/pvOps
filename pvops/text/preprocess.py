@@ -14,18 +14,19 @@ def preprocessor(
     """Preprocessing function which processes the raw text data into processed text data and extracts dates
 
     Parameters
-
     ----------
     om_df : DataFrame
         A pandas dataframe containing O&M data, which contains at least the columns within col_dict.
     lst_stopwords : list
         List of stop words which will be filtered in final preprocessing step
-    col_dict: dict of {str : str}
+    col_dict : dict of {str : str}
         A dictionary that contains the column names relevant for the get_dates fn
-        - **data** (*string*), should be assigned to associated column which stores the text logs
-        - **eventstart** (*string*), should be assigned to associated column which stores the log submission datetime
-        - **save_data_column** (*string*), should be assigned to associated column where the processed text should be stored
-        - **save_date_column** (*string*), should be assigned to associated column where the extracted dates from the text should be stored
+
+        - data : string, should be assigned to associated column which stores the text logs
+        - eventstart : string, should be assigned to associated column which stores the log submission datetime
+        - save_data_column : string, should be assigned to associated column where the processed text should be stored
+        - save_date_column : string, should be assigned to associated column where the extracted dates from the text should be stored
+
     print_info : bool
         Flag indicating whether to print information about the preprocessing progress
     extract_dates_only : bool
@@ -33,9 +34,8 @@ def preprocessor(
         If False, return with preprocessed text and extracted dates
 
     Returns
-
     -------
-    DataFrame
+    df : DataFrame
         Contains the original columns as well as the processed data, located in columns defined by the inputs
     """
 
@@ -146,7 +146,6 @@ def get_dates(
     extract_dates_only = True.
 
     Parameters
-
     ----------
     document : str
         String representation of a document
@@ -156,10 +155,12 @@ def get_dates(
         Designates the row of the dataframe which is currently being observed. This is required because if the
         current row does not have a valid date in the `eventstart`, then an iterative search is conducted
         by first starting at the nearest rows.
-    col_dict: dict of {str : str}
+    col_dict : dict of {str : str}
         A dictionary that contains the column names relevant for the get_dates fn
-        - **data** (*string*), should be assigned to associated column which stores the text logs
-        - **eventstart** (*string*), should be assigned to associated column which stores the log submission datetime
+
+        - data : string, should be assigned to associated column which stores the text logs
+        - eventstart : string, should be assigned to associated column which stores the log submission datetime
+
     print_info : bool
         Flag indicating whether to print information about the preprocessing progress
     infer_date_surrounding_rows : bool
@@ -168,7 +169,6 @@ def get_dates(
         Recommendation: set True if you frequently publish documents and your dataframe is ordered chronologically
 
     Returns
-
     -------
     list
         List of dates found in text
@@ -286,7 +286,6 @@ def text_remove_nondate_nums(document, PRINT_INFO=False):
     as a date by the date extractor.
 
     Parameters
-
     ----------
     document : str
         String representation of a document
@@ -295,7 +294,6 @@ def text_remove_nondate_nums(document, PRINT_INFO=False):
         progress
 
     Returns
-
     -------
     string
         string of processed document
@@ -421,7 +419,6 @@ def text_remove_numbers_stopwords(document, lst_stopwords):
     """Conduct final processing steps after date extraction
 
     Parameters
-
     ----------
     document : str
         String representation of a document
@@ -429,7 +426,6 @@ def text_remove_numbers_stopwords(document, lst_stopwords):
         List of stop words which will be filtered in final preprocessing step
 
     Returns
-
     -------
     string
         string of processed document

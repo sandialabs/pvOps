@@ -10,14 +10,13 @@ import copy
 import random
 from tqdm import tqdm
 import pvlib
-from utils import get_CEC_params
-from physics_utils import voltage_pts, add_series, bypass
-from physics_utils import intersection, iv_cutoff, gt_correction
+from pvops.iv.utils import get_CEC_params
+from pvops.iv.physics_utils import voltage_pts, add_series, bypass,\
+    intersection, iv_cutoff, gt_correction
 
 
 class Simulator():
-    """
-    An object which simulates Photovoltaic (PV) current-voltage (IV) curves wth failures
+    """An object which simulates Photovoltaic (PV) current-voltage (IV) curves with failures
 
     Parameters
     ----------
@@ -26,63 +25,55 @@ class Simulator():
         in the the CEC database. The `key` in this dictionary is the name of the 
         module in the CEC database. The `values` are `ncols`, which is the number of
         columns in the module, and `nsubstrings`, which is the number of substrings.
-            {
-            key: Module name in CEC database
-                {
-                'ncols': int
-                'nsubstrings': int
-                }
-            }
     pristine_condition : dict
-        Define the pristine condition
-        A full condition is defined as:
-                {'identifier': IDENTIFIER_NAME,
-                    'E': IRRADIANCE,
-                    'Tc': CELL_TEMPERATURE,
-                    'Rsh_mult': RSH_MULTIPLIER,
-                    'Rs_mult': RS_MULTIPLIER,
-                    'Io_mult': IO_MULTIPLIER,
-                    'Il_mult': IL_MULTIPLIER,
-                    'nnsvth_mult': NNSVTH_MULTIPLIER,
-                    'modname': MODULE_NAME_IN_CECDB
-                }
+        Defines the pristine condition. 
+        A full condition is defined as a dictionary with the
+        following key/value pairs:
 
-        DICTIONARY PARAMETERS:
-        ----------------------
-            IDENTIFIER_NAME: str,
-                Name used to define condition
-            IRRADIANCE: numerical,
-                Value of irradiance (Watts per meter-squared)
-            CELL_TEMPERATURE: numerical,
-                Value of cell temperature (Celcius)
-            RSH_MULTIPLIER: numerical,
-                Multiplier usually less than 1 to simulate a drop in Rsh
-            RS_MULTIPLIER: numerical,
-                Multiplier usually greater than 1 to simulate increase in Rs
-            IO_MULTIPLIER: numerical,
-                Multiplier usually less than 1 to simulate a drop in IO
-            IL_MULTIPLIER: numerical,
-                Multiplier usually less than 1 to simulate a drop in IL
-            NNSVTH_MULTIPLIER: numerical,
-                Multiplier usually less than 1 to simulate a drop in NNSVTH, and therefore a_ref
-            MODULE_NAME_IN_CECDB: str
-                Module name in CEC database (e.g. Jinko_Solar_Co___Ltd_JKMS260P_60)
+        .. code-block:: python
+
+            {
+                'identifier': IDENTIFIER_NAME, # (str) Name used to define condition
+                'E': IRRADIANCE, # (numeric) Value of irradiance (Watts per meter-squared)
+                'Tc': CELL_TEMPERATURE, # (numeric) Multiplier usually less than 1 
+                                        # to simulate a drop in Rsh
+                'Rsh_mult': RSH_MULTIPLIER, # (numeric) Multiplier usually less than 1 
+                                            # to simulate a drop in RSH
+                'Rs_mult': RS_MULTIPLIER, # (numeric) Multiplier usually less than 1 
+                                          # to simulate an increase in RS
+                'Io_mult': IO_MULTIPLIER, # (numeric) Multiplier usually less than 1 
+                                          # to simulate a drop in IO
+                'Il_mult': IL_MULTIPLIER, # (numeric) Multiplier usually less than 1 
+                                          # to simulate a drop in IL
+                'nnsvth_mult': NNSVTH_MULTIPLIER, # (numeric) Multiplier usually less 
+                                                  # than 1 to simulate a drop in NNSVTH, and therefore a_ref
+                'modname': MODULE_NAME_IN_CECDB # (str) Module name in CEC database 
+                                                # (e.g. Jinko_Solar_Co___Ltd_JKMS260P_60)
+            }
 
     replacement_5params : dict
         Optional, replace the definitions of the five electrical parameters, which normally 
         are extracted from the CEC database. These parameters can be determined by 
         the :py:class:`IVProcessor` class
 
-        replacement_5params = {'I_L_ref': None,
-                            'I_o_ref': None,
-                            'R_s': None,
-                            'R_sh_ref': None,
-                            'a_ref': None}
+        Key/value pairs:
+
+        .. code-block:: python
+
+            {
+                'I_L_ref': None,
+                'I_o_ref': None,
+                'R_s': None,
+                'R_sh_ref': None,
+                'a_ref': None
+            }
 
     simulation_method : int
         Module simulation method (1 or 2)
-        1 : Avalanche breakdown model, as hypothesized in Ref. [1]_
-        2 : Add-on to method 1, includes a rebalancing of the $I_sc$ prior to adding in series
+
+        1) Avalanche breakdown model, as hypothesized in Ref. [1]_
+
+        2) : Add-on to method 1, includes a rebalancing of the $I_sc$ prior to adding in series
 
         .. [1] "Computer simulation of the effects of electrical mismatches in photovoltaic cell 
             interconnection circuits" JW Bishop, Solar Cell (1988) DOI: 10.1016/0379-6787(88)90059-2
@@ -90,106 +81,21 @@ class Simulator():
     Attributes
     ----------
     multilevel_ivdata : dict
-        Dictionary containing the simulated IV curves 
-        For nth-definition of string curves, 
-            multilevel_ivdata['string']['STRING IDENTIFIER'][n]
-        For nth-definition of module curves,
-            multilevel_ivdata['module']['MODULE IDENTIFIER'][n]
-        For nth-definition of substring (substr_id= 1,2,3,...) curves,
-            multilevel_ivdata['module']['MODULE IDENTIFIER']['substr{sbstr_id}'][n]
+        Dictionary containing the simulated IV curves
+
+        - For nth-definition of string curves, 
+          ``multilevel_ivdata['string']['STRING IDENTIFIER'][n]``
+        - For nth-definition of module curves,
+          ``multilevel_ivdata['module']['MODULE IDENTIFIER'][n]``
+        - For nth-definition of substring (substr_id = 1,2,3,...) curves,
+          ``multilevel_ivdata['module']['MODULE IDENTIFIER']['substr{sbstr_id}'][n]``
+
     pristine_condition : dict
         Dictionary of conditions defining the pristine case
     module_parameters : dict
         Dictionary of module-level parameters
     cell_parameters : dict
         Dictionary of cell-level parameters
-
-    Methods
-    -------
-    add_preset_conditions(fault_name, fault_condition, save_name = None, **kwargs)
-        Define a failure condition using a preset condition. See :py:mod:`add_preset_conditions`
-    add_manual_conditions(modcell, condition_dict)
-        Define a failure by passing in modcell and cell condition definitons manually. See :py:mod:`add_manual_conditions`
-    generate_many_samples(identifier, N, distributions = None, default_sample = None)
-        Generate `N` more definitions of the same failure cell condition by defining parameter `distributions`
-    build_strings(config_dict)
-        Define a string as a list of modules which were defined in :py:mod:`add_preset_conditions` or :py:mod:`add_manual_conditions`
-    simulate(sample_limit)
-        Simulate cell, substring, module, and string-level definitions
-    print_info()
-        Display the number of definitions on the cell, module, and string levels
-    visualize(lim = False)
-        Visualize the definitions and render parameter distributions
-
-    Process
-    -------
-    A `pristine` condition is created automatically
-    1. Specify failure conditions either by 
-        1) add a preset configuration
-            add_preset_conditions('complete', fault_condition)
-            add_preset_conditions('landscape', fault_condition, rows_aff = 2)
-            add_preset_conditions('portrait', fault_condition, cols_aff = 2)
-            add_preset_conditions('pole', fault_condition, width = 2, pos = None)
-            add_preset_conditions('bird_droppings', fault_condition, n_droppings = None)
-
-        2) add a manual configuration
-            add_manual_conditions(modcell, condition_dict)
-        3) both
-    2. (Optional) Generate many definitions of a cell condition
-        generate_many_samples(identifier, N, distributions = None, default_sample = None)
-    3. (Optional) Define a string as a list of modules
-        build_strings(config_dict)
-    4. Simulate all levels of the designed PV system
-        simulate(sample_limit)
-    5. (Optional) Display information about the system
-        print_info()
-        visualize(lim = False)
-    6. Access simulations for your intended use
-        1) Export simulations as dataframe, which has columns:
-            df = sims_to_df(cutoff=False)
-        2) Access simulations manually
-            Inspect `Simulator().multilevel_ivdata`
-            See `Attributes` above for information on multilevel_ivdata.
-
-    Example
-    -------
-    sim = Simulator(
-                 mod_specs = {
-                                'Jinko_Solar_Co___Ltd_JKM270PP_60': {'ncols': 6,
-                                                                     'nsubstrings': 3
-                                                                    }
-                             },
-                 pristine_condition = {
-                                        'identifier': 'pristine',
-                                        'E': 1000,
-                                        'Tc': 50,
-                                        'Rsh_mult': 1,
-                                        'Rs_mult': 1,
-                                        'Io_mult': 1,
-                                        'Il_mult': 1,
-                                        'nnsvth_mult': 1,
-                                        },
-                 # Optional, Determined by IVProcessor()
-                 replacement_5params = {'I_L_ref': 9.06157444e+00,
-                                        'I_o_ref': 1.67727320e-10, # 0.3e-10,
-                                        'R_s': 5.35574950e-03,
-                                        'R_sh_ref': 3.03330425e+00,
-                                        'a_ref': 2.54553421e-02}
-    )
-
-    condition = {'identifier':'light_shade','E':925}
-    sim.add_preset_conditions('complete', condition, save_name = f'Complete_lightshading')
-
-    sim.build_strings({'Partial_lightshading': ['pristine']*6 + ['Complete_lightshading']*6})
-
-    sim.simulate()
-
-    sim.print_info()
-
-    # Look at a result!
-    Vsim = sim.multilevel_ivdata['string']['Partial_lightshading']['V'][0]
-    Isim = sim.multilevel_ivdata['string']['Partial_lightshading']['I'][0]
-
     """
 
     def __init__(self,
@@ -278,33 +184,41 @@ class Simulator():
         ----------
         fault_name: str
             Options:
+
             - 'complete': entire module has fault_condition (e.g. Full module shading)
-                Requires no other specifications
-                e.g. add_preset_conditions('complete', fault_condition)
+              Requires no other specifications
+              e.g. add_preset_conditions('complete', fault_condition)
             - 'landscape': entire rows are affected by fault_condition (e.g. interrow shading)
-                Requires specification of rows_aff
-                e.g. add_preset_conditions('landscape', fault_condition, rows_aff = 2)
+              Requires specification of rows_aff
+              e.g. add_preset_conditions('landscape', fault_condition, rows_aff = 2)
             - 'portrait': entire columns are affected by fault_condition (e.g. vegetation growth shading)
-                Requires specification of cols_aff
-                e.g. add_preset_conditions('portrait', fault_condition, cols_aff = 2)
+              Requires specification of cols_aff
+
+                - e.g. add_preset_conditions('portrait', fault_condition, cols_aff = 2)
+
             - 'pole': Place pole shadow over module
-                Requires specification of width (integer), which designates the width of main shadow and \\
-                requires light_shading fault_condition specification which specifies less intense shading \\
-                on edges of shadow
-                Optional: pos = (left, right) designates the start and end of the pole shading,
-                            where left is number in the first column and right is number in last column
-                    if pos not specified, the positions are chosen randomly
-                e.g. add_preset_conditions('pole', fault_condition, light_shading = light_fault_condition, width = 2, pos = (5, 56))
+              Requires specification of width (integer), which designates the width of main shadow and \\
+              requires light_shading fault_condition specification which specifies less intense shading \\
+              on edges of shadow
+
+                - Optional: pos = (left, right) designates the start and end of the pole shading,
+                  where left is number in the first column and right is number in last column
+                  if pos not specified, the positions are chosen randomly
+                  e.g. add_preset_conditions('pole', fault_condition, light_shading = light_fault_condition, width = 2, pos = (5, 56))
+
             - 'bird_droppings': Random positions are chosen for bird_dropping simulations
-                Optional specification is n_droppings. If not specified, chosen as random number between 
+
+              - Optional specification is n_droppings. If not specified, chosen as random number between 
                 1 and the number of cells in a column
                 e.g. add_preset_conditions('bird_droppings', fault_condition, n_droppings = 3)
+
         fault_location: dict
             Same dict as one shown in __init__.
-        **kwargs: variables defined by which fault_name you choose, see above
 
-        Tip:
-        ----
+        kwargs: variables dependent on which fault_name you choose, see above
+
+        Tip
+        ---
         For a wider spectrum of cases, run all of these multiple times. Each time it's run, the case is saved 
         """
         acceptible_fault_names = [
@@ -371,95 +285,45 @@ class Simulator():
     def add_manual_conditions(self, modcell, condition_dict):
         """Create cell-level fault conditions manually
 
-        Parameters:
-        -----------
-        modcell: dict
+        Parameters
+        ----------
+        modcell : dict
             Key: name of the condition
             Value: list,
-                1D list: Give a single situation for this condition
-                2D list: Give multiple situations for this condition
-                A list where each value signifies a cell's condition
-                See below for example
+
+                - 1D list: Give a single situation for this condition
+                - 2D list: Give multiple situations for this condition
+                - A list where each value signifies a cell's condition. 
 
                 If key is same as an existing key, the list is appended to list of scenarios \\
                 which that key owns
         condition_dict: dict
             Define the numerical value written in modcell
-            ** If the variable is not defined, values will default to those specified \\
-                in the pristine condition, defined in __init__.
+
+            .. note::
+
+               If the variable is not defined, values will default to those specified \\
+               in the pristine condition, defined in __init__.
+
             A full condition is defined as:
 
             .. code-block:: python
 
-                {ID: {'identifier': IDENTIFIER_NAME,
-                      'E': IRRADIANCE,
-                      'Tc': CELL_TEMPERATURE,
-                      'Rsh_mult': RSH_MULTIPLIER,
-                      'Rs_mult': RS_MULTIPLIER,
-                      'Io_mult': IO_MULTIPLIER,
-                      'Il_mult': IL_MULTIPLIER,
-                      'nnsvth_mult': NNSVTH_MULTIPLIER 
-                }
-
-            condition_dict PARAMETERS:
-            --------------------------
-
-                ID: int,
-                    Value corresponding to those in modcell
-                IDENTIFIER_NAME: str,
-                    Name used to define condition
-                IRRADIANCE: numerical,
-                    Value of irradiance (Watts per meter-squared)
-                CELL_TEMPERATURE: numerical,
-                    Value of cell temperature (Celcius)
-                RSH_MULTIPLIER: numerical,
-                    Multiplier usually less than 1 to simulate a drop in Rsh
-                RS_MULTIPLIER: numerical,
-                    Multiplier usually greater than 1 to simulate increase in Rs
-                IO_MULTIPLIER: numerical,
-                    Multiplier usually less than 1 to simulate a drop in IO
-                IL_MULTIPLIER: numerical,
-                    Multiplier usually less than 1 to simulate a drop in IL
-                NNSVTH_MULTIPLIER: numerical,
-                    Multiplier usually less than 1 to simulate a drop in NNSVTH, and therefore a_ref
-
-        Example:
-        --------
-
-        .. code-block:: python
-
-            modcells  =  {'unique_shading':   [0,0,0,0,0,0,0,0,0,0,  # Using 1D list 
-                                            1,1,1,1,1,1,1,1,1,1,
-                                            1,1,1,1,1,1,1,1,1,1, 
-                                            1,1,1,1,1,1,1,1,1,1,
-                                            1,1,1,1,1,1,1,1,1,1,  
-                                            0,0,0,0,0,0,0,0,0,0],
-                        'another_example':  [[0,0,0,0,0,0,0,0,0,0,  # Using 2D list (aka, multiple conditions as input)
-                                            1,1,1,1,1,1,1,1,1,1,
-                                            1,1,1,0,0,0,0,1,1,1, 
-                                            1,1,1,0,0,0,0,1,1,1,
-                                            1,1,1,0,0,0,0,1,1,1,  
-                                            0,0,0,0,0,0,0,0,0,0],
-                                            [0,1,0,0,0,0,0,0,0,0,  
-                                            1,1,1,1,1,1,1,1,1,1,
-                                            1,1,1,1,1,1,1,1,1,1, 
-                                            0,0,0,1,1,1,0,0,0,0,
-                                            0,0,0,1,1,1,0,0,0,0,  
-                                            0,0,0,0,0,0,0,0,0,0]]
-                        }
-            # All numbers used in modcells must be defined here
-            # If defining a pristine condition, pass a blank dictionary
-            # If making edits to a pristine condition (e.g. dropping irradiance to 400) \\
-            # you only need to a) specify the change made, and b) name an identifier string (for future reference)
-            # The pristine condition can be changed when first creating the class object
-            # To define a pristine, you can either pass an empty dictionary or pass {'identifier':'pristine'}
-            condition_dict = {0: {},
-                            1: {'identifier': 'shading_cond1',
-                                'E': 400,
-                                }                              
-                            }
-            add_manual_conditions(modcell, condition_dict)
-
+                {ID: {'identifier': IDENTIFIER_NAME, # (str) Name used to define condition
+                      'E': IRRADIANCE, # (numeric) Value of irradiance (Watts per meter-squared)
+                      'Tc': CELL_TEMPERATURE, # (numeric) Value of cell temperature (Celcius)
+                      'Rsh_mult': RSH_MULTIPLIER, # (numeric) Multiplier usually less than 1 
+                                                  # to simulate a drop in Rsh
+                      'Rs_mult': RS_MULTIPLIER, # (numeric) Multiplier usually greater than 1 
+                                                # to simulate increase in Rs
+                      'Io_mult': IO_MULTIPLIER, # (numeric) Multiplier usually less than 1 
+                                                # to simulate a drop in IO
+                      'Il_mult': IL_MULTIPLIER, # (numeric) Multiplier usually less than 1 
+                                                # to simulate a drop in IL
+                      'nnsvth_mult': NNSVTH_MULTIPLIER # (numeric) Multiplier usually less than 1 to 
+                                                       # simulate a drop in NNSVTH, and therefore a_ref
+                    }
+                }      
         """
         self._add_conditions(modcell, condition_dict)
 
@@ -467,14 +331,12 @@ class Simulator():
         """Utility function to conglomerate a dictionary with 2d lists as value
 
         Parameters
-
         ----------
         d : dict
         k : a key in `d` dictionary
         v : value to update at key
 
         Returns
-
         -------
         Dictionary with updated v value
         """
@@ -489,13 +351,11 @@ class Simulator():
         Dictionary[k] = key value
 
         Parameters
-
         ----------
         d : dict
         key : a key in `d` dictionary
 
         Returns
-
         -------
         A reformatted dictionary
         """
@@ -734,7 +594,6 @@ class Simulator():
         """Return the failure definitions as a dataframe.
 
         Parameters
-
         ----------
         focus : list of string
             Subset the definitions to a level of the system
@@ -743,15 +602,15 @@ class Simulator():
             Cutoff curves to only return on positive voltage domain
 
         Returns
-
         -------
         Dataframe with columns:
-            'current': IV trace current
-            'voltage': IV trace voltage
-            'E': Average irradiance for all samples used to build this array
-            'T': Average cell temperature for all samples used to build this array
-            'mode': failure name
-            'level': level of system (i.e. module, string), as defined by the input `focus` parameter
+
+            - 'current': IV trace current
+            - 'voltage': IV trace voltage
+            - 'E': Average irradiance for all samples used to build this array
+            - 'T': Average cell temperature for all samples used to build this array
+            - 'mode': failure name
+            - 'level': level of system (i.e. module, string), as defined by the input `focus` parameter
 
         #TODO: create focus for cell. For now, one can do it manually themselves.
         """
@@ -840,7 +699,6 @@ class Simulator():
         """Simulate the cell, substring, module, and string-level IV curves using the defined conditions
 
         Parameters
-
         ----------
         sample_limit : int
             Optional, used when want to restrict number of combinations of failures at the string level.
@@ -882,7 +740,6 @@ class Simulator():
         """Wrapper method which simulates a module depending on the defined simulation_method.
 
         Parameters
-
         ----------
         mod_key : str
             Module name as defined in condiction_dict and modcells
@@ -1249,20 +1106,20 @@ class Simulator():
 
             One does not need to define distributions for all parameters, only those that you want altered.
 
-            distributions = {
-                 'Rsh_mult':{'mean':None,
-                             'std': None,
-                             'low': None,
-                             'upp': None},
-                 'Rs_mult': {'mean':None,
-                             'std': None,
-                             'low': None,
-                             'upp': None},
+            .. code-block:: python
 
-                    ...
-
-                  All keys in self.acceptible_keys
-                }
+                distributions = {
+                    'Rsh_mult':{'mean':None,
+                                'std': None,
+                                'low': None,
+                                'upp': None},
+                    'Rs_mult': {'mean':None,
+                                'std': None,
+                                'low': None,
+                                'upp': None},
+                        ...
+                        # All keys in self.acceptible_keys
+                    }
 
         default_sample : 
             If provided, use this sample to replace the parameters which do not have distributions specified. Else, uses
@@ -1436,8 +1293,17 @@ class Simulator():
         """Pass a dictionary into object memory
 
         e.g. For 6 modules faulted with modcell specification 'complete'
-        config_dict = {'faulting_bottom_mods': ['pristine', 'pristine', 'pristine', 'pristine', 'pristine', 'pristine', 
-                                                'complete', 'complete', 'complete', 'complete', 'complete', 'complete']}
+
+        .. code-block:: python
+
+            config_dict = {
+                'faulting_bottom_mods': [
+                    'pristine', 'pristine', 'pristine', 
+                    'pristine', 'pristine', 'pristine', 
+                    'complete', 'complete', 'complete', 
+                    'complete', 'complete', 'complete'
+                    ]
+                }
         """
 
         # print(config_dict)
@@ -1618,7 +1484,6 @@ class Simulator():
         If the object has multiple definitions, all definitions will be plotted
 
         Parameters
-
         ----------
         ax : matplotlib axes
             Optional, pass an axes to add visualization
@@ -1635,7 +1500,6 @@ class Simulator():
             Here, cutoff must also be True.
 
         Returns
-
         -------
         matplotlib axes
         """
@@ -1708,7 +1572,6 @@ class Simulator():
         """Visualize multiple cell traces
 
         Parameters
-
         ----------
         list_cell_identifiers : list
             list of cell identifiers. call `self.print_info()` for full list.
@@ -1716,7 +1579,6 @@ class Simulator():
             If True, only visualize IV curves in positive voltage domain
 
         Returns
-
         -------
         matplotlib axes
         """
@@ -1780,7 +1642,6 @@ class Simulator():
         """Visualize IV curves for cell_identifier and tabulate the definitions.
 
         Parameters
-
         ----------
         cell_identifier : str
             Cell identifier. Call `self.print_info()` for full list.
@@ -1792,7 +1653,6 @@ class Simulator():
             Matplotli subplots axes
 
         Returns
-
         -------
         matplotlib axes
 
@@ -1901,7 +1761,6 @@ class Simulator():
         """Visualize failure locations on a module.
 
         Parameters
-
         ----------
         module_identifier : int
             Module identifier. Call `self.print_info()` for full list.
@@ -1911,7 +1770,6 @@ class Simulator():
             Number of plots to render in a single figure.
 
         Returns
-
         -------
         matplotlib axes
 
@@ -2082,6 +1940,20 @@ class Simulator():
 
 
 def create_df(Varr, Iarr, POA, T, mode):
+    """Builds a dataframe from the given parameters
+
+    Parameters
+    ----------
+    Varr
+    Iarr
+    POA
+    T
+    mode
+
+    Returns
+    -------
+    df : DataFrame
+    """
     df = pd.DataFrame()
     df['voltage'] = Varr
     df['current'] = Iarr

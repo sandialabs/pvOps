@@ -27,7 +27,6 @@ def classification_deployer(
     To see an example of this method's application, see ``examples//text_class_example.py``
 
     Parameters
-
     ----------
     X : list of str
         List of documents (str). The documents will be passed through the pipeline_steps, where they will be transformed into vectors.
@@ -43,9 +42,9 @@ def classification_deployer(
         .. code-block:: python
 
             classifiers = {
-                'LinearSVC': LinearSVC(),
-                'AdaBoostClassifier': AdaBoostClassifier(),
-                'RidgeClassifier': RidgeClassifier()
+                'LinearSVC' : LinearSVC(),
+                'AdaBoostClassifier' : AdaBoostClassifier(),
+                'RidgeClassifier' : RidgeClassifier()
             }
 
         See ``supervised_classifier_defs.py`` or ``unsupervised_classifier_defs.py`` for this package's defaults.
@@ -55,18 +54,18 @@ def classification_deployer(
         .. code-block:: python
 
             search_space = {
-                'LinearSVC': {
-                'clf__C': [1e-2,1e-1],
+                'LinearSVC' : {
+                'clf__C' : [1e-2,1e-1],
                 'clf__max_iter':[800,1000],
                 },
-                'AdaBoostClassifier': {
-                'clf__n_estimators': [50,100],
+                'AdaBoostClassifier' : {
+                'clf__n_estimators' : [50,100],
                 'clf__learning_rate':[1.,0.9,0.8],
-                'clf__algorithm': ['SAMME.R']
+                'clf__algorithm' : ['SAMME.R']
                 },
-                'RidgeClassifier': {
-                'clf__alpha': [0.,1e-3,1.],
-                'clf__normalize': [False,True]
+                'RidgeClassifier' : {
+                'clf__alpha' : [0.,1e-3,1.],
+                'clf__normalize' : [False,True]
                 }
             }
 
@@ -114,7 +113,6 @@ def classification_deployer(
         The frequency of the messages increase with the verbosity level.
 
     Returns
-
     -------
     DataFrame
         Summarization of results from all of the classifiers
@@ -165,11 +163,11 @@ def classification_deployer(
         for param, score, time in zip(params, all_scores, r2):
             param["mean_fit_time"] = time
             d = {
-                "estimator": key,
-                "min_score": min(score),
-                "max_score": max(score),
-                "mean_score": np.mean(score),
-                "std_score": np.std(score),
+                "estimator" : key,
+                "min_score" : min(score),
+                "max_score" : max(score),
+                "mean_score" : np.mean(score),
+                "std_score" : np.std(score),
             }
             rows.append((pd.Series({**param, **d})))
 

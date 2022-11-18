@@ -14,7 +14,7 @@ a collection of functions for working with text-based data
 from photovoltaic power systems. The library includes functions for
 processing text data as well as fusion of the text information with
 time series data for visualization of contextual details for data
-analysis. 
+analysis.
 
 Documentation: https://pvops.readthedocs.io/en/latest/index.html
 
@@ -33,9 +33,9 @@ TESTS_REQUIRE = [
 ]
 
 INSTALL_REQUIRES = [
-    'numpy >= 1.15.0',
-    'pandas >= 0.23.0',
-    'scipy >= 1.2.0',
+    'numpy',
+    'pandas',
+    'scipy',
     'scikit-learn',
     'nltk',
     'datefinder',
@@ -46,7 +46,9 @@ INSTALL_REQUIRES = [
     'networkx',
     'pvlib',
     'pvanalytics',
-    'timezonefinder'
+    'timezonefinder',
+    'pyDOE',
+    'tensorflow',
 ]
 
 DOCS_REQUIRE = [
