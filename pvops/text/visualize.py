@@ -34,10 +34,15 @@ def visualize_attribute_connectivity(
     ----------
     om_df : DataFrame
         A pandas dataframe containing O&M data, which contains columns specified in om_col_dict
-    om_col_dict: dict of {str : str}
-        A dictionary that contains the column names that describes how remapping is going to be done
-        - **attribute1_col** (*string*), should be assigned to associated column name for first attribute of interest in om_df
-        - **attribute2_col** (*string*), should be assigned to associated column name for second attribute of interest in om_df
+    om_col_dict : dict of {str : str}
+        A dictionary that contains the column names to be used in
+        visualization::
+
+            {
+                'attribute1_col' : string,
+                'attribute2_col' : string
+            }
+
     figsize : tuple
         Figure size
     attribute_colors : list
@@ -45,10 +50,10 @@ def visualize_attribute_connectivity(
     edge_width_scalar : numeric
         Weight utilized to cause dynamic widths based on number of connections between Attribute 1
         and Attribute 2.
-    graph_aargs
+    graph_aargs : dict
         Optional, arguments passed to networkx graph drawer.
         Suggested attributes to pass:
-            
+
         - with_labels=True
         - font_weight='bold'
         - node_size=19000
@@ -112,7 +117,7 @@ def visualize_attribute_timeseries(
     ----------
     om_df : DataFrame
         A pandas dataframe of O&M data, which contains columns in om_col_dict
-    om_col_dict: dict of {str : str}
+    om_col_dict : dict of {str : str}
         A dictionary that contains the column names relevant for the get_dates fn
 
         - **label** (*string*), should be assigned to associated column name for the label/attribute of interest in om_df
@@ -120,7 +125,7 @@ def visualize_attribute_timeseries(
 
     date_structure : str
         Controls the resolution of the bar chart's timeseries
-        Default: "%Y-%m". Can change to include finer resolutions (e.g., by including day, "%Y-%m-%d")
+        Default : "%Y-%m". Can change to include finer resolutions (e.g., by including day, "%Y-%m-%d")
         or coarser resolutions (e.g., by year, "%Y")
     figsize : tuple
         Optional, figure size

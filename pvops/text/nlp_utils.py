@@ -152,16 +152,16 @@ def create_stopwords(lst_langs=["english"], lst_add_words=[], lst_keep_words=[])
 
     Parameters
     ----------
-    lst_langs: list
+    lst_langs : list
         List of strings designating the languages for a nltk.corpus.stopwords.words query. If empty list is passed, no stopwords will be queried from nltk.
-    lst_add_words: list
+    lst_add_words : list
         List of words(e.g., "road" or "street") to add to stopwords list. If these words are already included in the nltk query, a duplicate will not be added.
-    lst_keep_words: list
+    lst_keep_words : list
         List of words(e.g., "before" or "until") to remove from stopwords list. This is usually used to modify default stop words that might be of interest to PV.
 
     Returns
     -------
-    List
+    list
         List of alphabetized stopwords
     """
     lst_stopwords = set()
@@ -190,7 +190,8 @@ def summarize_text_data(om_df, colname):
 
     Returns
     -------
-    None
+    dict
+        dictionary containing printed summary data
     """
     df = om_df.copy()
     text = df[colname].tolist()
