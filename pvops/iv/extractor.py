@@ -127,7 +127,7 @@ class BruteForceExtractor():
         return sim
 
     def f_multiple_samples(self, params):
-        #TODO write docstring
+        # TODO write docstring
         iph, io, rs, rsh, nnsvth = params
 
         if self.user_func is None:
