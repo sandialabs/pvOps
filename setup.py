@@ -46,7 +46,11 @@ INSTALL_REQUIRES = [
     'networkx',
     'pvlib',
     'pvanalytics',
-    'timezonefinder'
+    'timezonefinder',
+    'pyDOE',
+    'keras>=2.3.0',
+    'tensorflow>=2.2.0',
+    'protobuf==3.20.*' 
 ]
 
 DOCS_REQUIRE = [
