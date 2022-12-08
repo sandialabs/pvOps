@@ -434,7 +434,6 @@ def modeller(prod_col_dict,
               and `train_df`
 
     Parameters
-
     ----------
     prod_col_dict: dict of {str : str}
         A dictionary that contains the column names relevant
@@ -533,7 +532,6 @@ def modeller(prod_col_dict,
         execution.
 
     Returns
-
     -------
     `model`, which is a `pvops.timeseries.models.linear.Model` object, has a useful attribute
     `estimators`, which allows access to model performance and data splitting information.

@@ -27,7 +27,6 @@ def classification_deployer(
     To see an example of this method's application, see ``examples//text_class_example.py``
 
     Parameters
-
     ----------
     X : list of str
         List of documents (str). The documents will be passed through the pipeline_steps, where they will be transformed into vectors.
@@ -114,7 +113,6 @@ def classification_deployer(
         The frequency of the messages increase with the verbosity level.
 
     Returns
-
     -------
     DataFrame
         Summarization of results from all of the classifiers

@@ -12,7 +12,6 @@ def calculate_IVparams(v, c):
     hardcoded regions.
 
     Parameters
-
     ----------
     x : numpy array
         X-axis data
@@ -24,7 +23,6 @@ def calculate_IVparams(v, c):
         Optional, polyfit degree
 
     Returns
-
     -------
     Dictionary of IV curve parameters
     """
@@ -78,7 +76,6 @@ def smooth_curve(x, y, npts=50, deg=12):
     """Smooth curve using a polyfit
 
     Parameters
-
     ----------
     x : numpy array
         X-axis data
@@ -90,7 +87,6 @@ def smooth_curve(x, y, npts=50, deg=12):
         Optional, polyfit degree
 
     Returns
-
     -------
     smoothed x array
     smoothed y array
@@ -105,7 +101,6 @@ def iv_cutoff(Varr, Iarr, val):
     """Cut IV curve greater than voltage `val` (usually 0)
 
     Parameters
-
     ----------
     V: numpy array
         Voltage array
@@ -115,7 +110,6 @@ def iv_cutoff(Varr, Iarr, val):
         Filter threshold
 
     Returns
-
     -------
     V_cutoff, I_cutoff
     """
@@ -128,7 +122,6 @@ def intersection(x1, y1, x2, y2):
     Adapted from https://stackoverflow.com/a/5462917
 
     Parameters
-
     ----------
     x1: numpy array
         X-axis data for curve 1
@@ -140,7 +133,6 @@ def intersection(x1, y1, x2, y2):
         Y-axis data for curve 2
 
     Returns
-
     -------
     intersection coordinates
     """
@@ -240,18 +232,17 @@ def T_to_tcell(POA, T, WS, T_type, a=-3.56, b=-0.0750, delTcnd=3):
     WS: numerical,
         Wind speed at height of 10 meters, in m/s
     a,b,delTcnd: numerical,
-        Page 12 in Ref. [1]_
+        Page 12 in Ref. [Dierauf]_
     T_type: string,
         Describe input temperature, either 'ambient' or 'module'
 
     Returns
-
     -------
     numerical
         Cell temperature, in Celcius
 
 
-    .. [1] Dierauf, Timothy, et al. Weather-corrected performance ratio. No. NREL/TP-5200-57991. 
+    .. [Dierauf] Dierauf, Timothy, et al. Weather-corrected performance ratio. No. NREL/TP-5200-57991. 
           National Renewable Energy Lab.(NREL), Golden, CO (United States), 2013.
           https://www.nrel.gov/docs/fy13osti/57991.pdf
     '''
@@ -383,7 +374,6 @@ def gt_correction(v, i, gact, tact, cecparams, n_units=1, option=3):
     Three correction options are provided, two of which are from an IEC standard.
 
     Parameters
-
     ----------
     v : numpy array
         Voltage array
@@ -401,7 +391,6 @@ def gt_correction(v, i, gact, tact, cecparams, n_units=1, option=3):
         Correction method choice. See method for specifics.
 
     Returns
-
     -------
     vref
         Corrected voltage array

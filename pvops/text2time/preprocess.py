@@ -12,7 +12,6 @@ def data_site_na(pom_df, df_col_dict):
     or O&M data.
 
     Parameters
-
     ----------
     pom_df: DataFrame
         A data frame corresponding to either the production or O&M 
@@ -28,7 +27,6 @@ def data_site_na(pom_df, df_col_dict):
         user's site-ID
 
     Returns
-
     -------
     pom_df: DataFrame
         An updated version of the input data frame, where rows with 
@@ -56,9 +54,7 @@ def om_date_convert(om_df, om_col_dict, toffset=0.0):
     Converts dates from string format to date time object in O&M
     dataframe.
 
-
     Parameters
-
     ----------
     om_df: DataFrame
         A data frame corresponding to O&M data.
@@ -78,7 +74,6 @@ def om_date_convert(om_df, om_col_dict, toffset=0.0):
        don't align as they should
 
     Returns
-
     -------
     DataFrame
         An updated version of the input dataframe, but with 
@@ -111,9 +106,7 @@ def om_datelogic_check(om_df, om_col_dict, om_dflag="swap"):
     either dropped or the dates are swapped, depending on the user's
     preference.
 
-
     Parameters
-
     ----------
     om_df: DataFrame
         A data frame corresponding to O&M data.
@@ -134,7 +127,6 @@ def om_datelogic_check(om_df, om_col_dict, om_dflag="swap"):
        that row.
 
     Returns
-
     -------
     om_df: DataFrame
         An updated version of the input dataframe, but with O&M data
@@ -177,7 +169,6 @@ def om_nadate_process(om_df, om_col_dict, om_dendflag="drop"):
     preference.
 
     Parameters
-
     ----------
     om_df: DataFrame
         A data frame corresponding to O&M data.
@@ -199,7 +190,6 @@ def om_nadate_process(om_df, om_col_dict, om_dendflag="drop"):
        rows untouched.
 
     Returns
-
     -------
     om_df: DataFrame
         An updated version of the input dataframe, but with no
@@ -247,7 +237,6 @@ def prod_date_convert(prod_df, prod_col_dict, toffset=0.0):
 
 
     Parameters
-
     ----------
     prod_df: DataFrame
         A data frame corresponding to production data.
@@ -265,7 +254,6 @@ def prod_date_convert(prod_df, prod_col_dict, toffset=0.0):
        and O&M data don't align as they should.
 
     Returns
-
     -------
     DataFrame
         An updated version of the input dataframe, but with
@@ -295,7 +283,6 @@ def prod_nadate_process(prod_df, prod_col_dict, pnadrop=False):
 
 
     Parameters
-
     ----------
     prod_df: DataFrame
         A data frame corresponding to production data.
@@ -315,7 +302,6 @@ def prod_nadate_process(prod_df, prod_col_dict, pnadrop=False):
         will output the same input data frame with no modifications.
 
     Returns
-
     -------
     prod_df: DataFrame
         The output data frame.  If pflag = 'drop', an updated version
