@@ -5,13 +5,7 @@ import shutil
 import sys
 import os
 import pandas.api.types as ptypes
-
-# Set sytem paths
-pvops_path = os.path.join('pvops')
-# T2time_path = os.path.join('.', 'text2time')
-
-sys.path.append(pvops_path)
-from text2time import preprocess, utils
+from pvops.text2time import preprocess, utils
 
 # from om_data_convert import om_data_convert
 # Import modules

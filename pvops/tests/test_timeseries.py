@@ -2,12 +2,9 @@ import os
 import sys
 import pandas as pd
 import numpy as np
-
-pvops_directory = os.path.join("pvops")
-sys.path.append(pvops_directory)
-from timeseries.models import linear
-from timeseries import preprocess as tprep
-from text2time import preprocess as t2tprep
+from pvops.timeseries.models import linear
+from pvops.timeseries import preprocess as tprep
+from pvops.text2time import preprocess as t2tprep
 
 # Define csv paths
 datadir = os.path.join('examples', 'example_data')
