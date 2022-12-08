@@ -13,26 +13,23 @@ def data_site_na(pom_df, df_col_dict):
 
     Parameters
     ----------
-    pom_df: DataFrame
+    pom_df : DataFrame
         A data frame corresponding to either the production or O&M 
         data.
-
-    df_col_dict: dict of {str : str}
+    df_col_dict : dict of {str : str}
         A dictionary that contains the column names associated with 
         the 
         input `pom_df` and contains at least:
 
         - **siteid** (*string*), should be assigned to column name 
-        for 
-        user's site-ID
+          for user's site-ID
 
     Returns
     -------
-    pom_df: DataFrame
+    pom_df : DataFrame
         An updated version of the input data frame, where rows with 
         site-IDs of NAN are dropped.
-
-    addressed: DataFrame
+    addressed : DataFrame
         A data frame showing rows from the input that were removed 
         by this function.
     """
@@ -56,10 +53,9 @@ def om_date_convert(om_df, om_col_dict, toffset=0.0):
 
     Parameters
     ----------
-    om_df: DataFrame
+    om_df : DataFrame
         A data frame corresponding to O&M data.
-
-    om_col_dict: dict of {str : str}
+    om_col_dict : dict of {str : str}
         A dictionary that contains the column names associated with
         the O&M data, which consist of at least:
 
@@ -68,7 +64,7 @@ def om_date_convert(om_df, om_col_dict, toffset=0.0):
           - **dateend** (*string*), should be assigned to column name
             for O&M event end date  in om_df
 
-    toffset: float
+    toffset : float
        Value that specifies how many hours the O&M data should be
        shifted by in case time-stamps in production data and O&M data
        don't align as they should
@@ -108,10 +104,9 @@ def om_datelogic_check(om_df, om_col_dict, om_dflag="swap"):
 
     Parameters
     ----------
-    om_df: DataFrame
+    om_df : DataFrame
         A data frame corresponding to O&M data.
-
-    om_col_dict: dict of {str : str}
+    om_col_dict : dict of {str : str}
         A dictionary that contains the column names associated with
         the O&M data, which consist of at least:
 
@@ -120,7 +115,7 @@ def om_datelogic_check(om_df, om_col_dict, om_dflag="swap"):
           - **dateend** (*string*), should be assigned to column name
             for associated O&M event end date in om_df
 
-    om_dflag: str
+    om_dflag : str
        A flag that specifies how to address rows where the start of
        an event occurs after its conclusion. A flag of 'drop' will
        drop those rows, and a flag of 'swap' swap the two dates for
@@ -128,12 +123,11 @@ def om_datelogic_check(om_df, om_col_dict, om_dflag="swap"):
 
     Returns
     -------
-    om_df: DataFrame
+    om_df : DataFrame
         An updated version of the input dataframe, but with O&M data
         quality issues addressed to ensure the start of an event
         precedes the event end date.
-
-    addressed: DataFrame
+    addressed : DataFrame
         A data frame showing rows from the input that were addressed
         by this function.
     """
@@ -162,7 +156,7 @@ def om_datelogic_check(om_df, om_col_dict, om_dflag="swap"):
 def om_nadate_process(om_df, om_col_dict, om_dendflag="drop"):
     """
     Addresses issues with O&M dataframe where dates are missing
-    (NAN). Two operations are performed: 1) rows are dropped 
+    (NAN). Two operations are performed : 1) rows are dropped 
     where start of an event is missing and (2) rows where the 
     conclusion of an event is NAN can either be dropped or marked 
     with the time at which program is run, depending on the user's
@@ -170,10 +164,10 @@ def om_nadate_process(om_df, om_col_dict, om_dendflag="drop"):
 
     Parameters
     ----------
-    om_df: DataFrame
+    om_df : DataFrame
         A data frame corresponding to O&M data.
 
-    om_col_dict: dict of {str : str}
+    om_col_dict : dict of {str : str}
         A dictionary that contains the column names associated with
         the O&M data, which consist of at least:
 
@@ -182,7 +176,7 @@ def om_nadate_process(om_df, om_col_dict, om_dendflag="drop"):
           - **dateend** (*string*), should be assigned to column name
             for user's O&M event end-date
 
-    om_dendflag: str
+    om_dendflag : str
        A flag that specifies how to address rows where the conclusion
        of an event is missing (NAN). A flag of 'drop' will drop those
        rows, and a flag of 'today' will replace the NAN with the time
@@ -191,11 +185,11 @@ def om_nadate_process(om_df, om_col_dict, om_dendflag="drop"):
 
     Returns
     -------
-    om_df: DataFrame
+    om_df : DataFrame
         An updated version of the input dataframe, but with no
         missing time-stamps in the O&M data.
 
-    addressed: DataFrame
+    addressed : DataFrame
         A data frame showing rows from the input that were addressed
         by this function.
     """
@@ -238,17 +232,17 @@ def prod_date_convert(prod_df, prod_col_dict, toffset=0.0):
 
     Parameters
     ----------
-    prod_df: DataFrame
+    prod_df : DataFrame
         A data frame corresponding to production data.
 
-    prod_col_dict: dict of {str : str}
+    prod_col_dict : dict of {str : str}
         A dictionary that contains the column names associated with 
         the production data, which consist of at least:
 
           - **timestamp** (*string*), should be assigned to user's
             time-stamp column name
 
-    toffset: float
+    toffset : float
        Value that specifies how many hours the production data 
        should be shifted by in case time-stamps in production data
        and O&M data don't align as they should.
@@ -284,17 +278,17 @@ def prod_nadate_process(prod_df, prod_col_dict, pnadrop=False):
 
     Parameters
     ----------
-    prod_df: DataFrame
+    prod_df : DataFrame
         A data frame corresponding to production data.
 
-    prod_df_col_dict: dict of {str : str}
+    prod_df_col_dict : dict of {str : str}
         A dictionary that contains the column names associated with
         the production data, which consist of at least:
 
           - **timestamp** (*string*), should be assigned to
             associated time-stamp column name in prod_df
 
-    pnadrop: bool
+    pnadrop : bool
         Boolean flag that determines what to do with rows where
         time-stamp is missing. A value of `True` will drop these
         rows.  Leaving the default value of `False` will identify
@@ -303,13 +297,13 @@ def prod_nadate_process(prod_df, prod_col_dict, pnadrop=False):
 
     Returns
     -------
-    prod_df: DataFrame
+    prod_df : DataFrame
         The output data frame.  If pflag = 'drop', an updated version
         of the input data frame is output, but rows with missing
         time-stamps are removed. If default value is maintained, the
         input data frame is output with no modifications.
 
-    addressed: DataFrame
+    addressed : DataFrame
         A data frame showing rows from the input that were addressed
         or identified by this function.
     """

@@ -18,17 +18,17 @@ class BruteForceExtractor():
 
     Parameters
     ----------
-    input_df, df
+    input_df : DataFrame
         Contains IV curves with a datetime index
-    current_col, str
+    current_col : string
         Indicates column where current values in IV curve are located; each cell is an array of current values in a single IV curve
-    voltage_col, str
+    voltage_col : string
         Indicates column where voltage values in IV curve are located; each cell is an array of voltage values in a single IV curve
-    irradiance_col, str
+    irradiance_col : string
         Indicates column where irradiance value (W/m2)
-    temperature_col, str
+    temperature_col : string
         Indicates column where temperature value (C)
-    T_type: string,
+    T_type : string
         Describe input temperature, either 'ambient' or 'module' or 'cell'
     '''
 

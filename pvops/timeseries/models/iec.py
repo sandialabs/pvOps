@@ -2,21 +2,18 @@ import numpy as np
 
 def iec_calc(prod_df, prod_col_dict, meta_df, meta_col_dict,
              gi_ref=1000.0):
-    """
-    Calculates expected energy using measured irradiance
+    """Calculates expected energy using measured irradiance
     based on IEC calculations
 
-
     Parameters
-
     ----------
-    prod_df: DataFrame
+    prod_df : DataFrame
         A data frame corresponding to the production data
         after having been processed by the perf_om_NA_qc
         and overlappingDFs functions. This data frame needs
         at least the columns specified in prod_col_dict.
 
-    prod_col_dict: dict of {str : str}
+    prod_col_dict : dict of {str : str}
         A dictionary that contains the column names relevant
         for the production data
 
@@ -33,12 +30,12 @@ def iec_calc(prod_df, prod_col_dict, meta_df, meta_col_dict,
         - **dcsize**, (*string*), should be assigned to
           preferred column name for site capacity in prod_df
 
-    meta_df: DataFrame
+    meta_df : DataFrame
         A data frame corresponding to site metadata.
         At the least, the columns in meta_col_dict be
         present.
 
-    meta_col_dict: dict of {str : str}
+    meta_col_dict : dict of {str : str}
         A dictionary that contains the column names relevant
         for the meta-data
 
@@ -48,14 +45,12 @@ def iec_calc(prod_df, prod_col_dict, meta_df, meta_col_dict,
           column name corresponding to site capacity, where
           data is in [kW]
 
-    gi_ref: float
+    gi_ref : float
         reference plane of array irradiance in W/m^2 at
         which a site capacity is determined (default value
         is 1000 [W/m^2])
 
-
     Returns
-
     -------
     DataFrame
         A data frame for production data with a new column,
