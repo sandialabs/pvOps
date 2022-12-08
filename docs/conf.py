@@ -13,31 +13,15 @@
 import os
 import sys
 
-import mock
-MODULES = ['numpy', 'nltk', 'sklearn.pipeline', 'sklearn.model_selection',
-           'scipy.sparse', 'pandas', 'scipy', 'sklearn.base',
-           'gensim.models.doc2vec', 'nltk.tokenize', 'datefinder',
-           'text_remove_nondate_nums', 'text_remove_numbers_stopwords',
-           'get_dates', 'gensim.models', 'sklearn.svm', 'sklearn.tree',
-           'sklearn.neural_network', 'sklearn.linear_model',
-           'sklearn.ensemble', "sklearn.cluster", "networkx", "matplotlib",
-           "matplotlib.pyplot", "gensim.models.doc2vec",
-           "sklearn.feature_extraction.text", "nltk.tokenize",
-           "plotly.graph_objects", "scipy.signal", 'matplotlib.colors',
-           'seaborn', 'matplotlib.ticker', 'scipy.signal.find_peaks',
-           'pvlib', 'pvanalytics', 'timezonefinder', 'sklearn', "pyDOE",
-           "sklearn.metrics", "scipy.interpolate", "keras", "keras.layers",
-           "sklearn.utils", "sklearn.preprocessing", "keras.models",
-           "keras.utils"]
-
-for module in MODULES:
-    sys.modules[module] = mock.Mock()
 
 sys.path.insert(0, os.path.abspath("../pvops"))
 sys.path.insert(0, os.path.abspath("../pvops/text2time"))
 sys.path.insert(0, os.path.abspath("../pvops/text"))
 sys.path.insert(0, os.path.abspath("../pvops/timeseries"))
+sys.path.insert(0, os.path.abspath("../pvops/timeseries/models"))
 sys.path.insert(0, os.path.abspath("../pvops/iv"))
+sys.path.insert(0, os.path.abspath("../pvops/iv/models"))
+
 
 
 # -- Project information -----------------------------------------------------
@@ -55,10 +39,19 @@ release = "0.1"
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ["sphinx.ext.autodoc",
-              "nbsphinx",
-              "nbsphinx_link",
-              "sphinx_copybutton"]
+extensions = [
+    "sphinx.ext.autodoc", #pull in documentation from docstrings in a semi-automatic way.
+    "nbsphinx", # nbsphinx is a Sphinx extension that provides a source parser for *.ipynb files
+    "nbsphinx_link", # A sphinx extension for including notebook files from outside the sphinx source root.
+    "sphinx_copybutton", # adds copy button to code blocks
+    "sphinx.ext.coverage", # `make coverage` summarizes what has docstrings
+    'sphinx.ext.doctest', # allows for testing of code snippets
+    'sphinx.ext.viewcode', # add links to highlighted source code
+    'sphinx.ext.napoleon' # add parsing for google/numpy style docs
+    ] 
+
+
+coverage_show_missing_items = True
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
