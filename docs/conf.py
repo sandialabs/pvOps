@@ -40,7 +40,7 @@ release = "0.1"
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    "sphinx.ext.autodoc", #pull in documentation from docstrings in a semi-automatic way.
+    "sphinx.ext.autodoc", # pull in documentation from docstrings in a semi-automatic way.
     "nbsphinx", # nbsphinx is a Sphinx extension that provides a source parser for *.ipynb files
     "nbsphinx_link", # A sphinx extension for including notebook files from outside the sphinx source root.
     "sphinx_copybutton", # adds copy button to code blocks

@@ -12,7 +12,6 @@ def visualize_counts(om_df, om_col_dict, count_var, fig_sets):
     """
     Produces a seaborn countplot of an O&M categorical column using sns.countplot()
 
-
     Parameters
     ----------
     om_df: DataFrame
@@ -93,15 +92,18 @@ def visualize_counts(om_df, om_col_dict, count_var, fig_sets):
 
 def visualize_categorical_scatter(om_df, om_col_dict, cat_varx, cat_vary, fig_sets):
     """
-    Produces a seaborn categorical scatter plot to show the relationship between
-    an O&M numerical column and a categorical column using sns.catplot()
+    Produces a seaborn categorical scatter plot to show 
+    the relationship between an O&M numerical column and 
+    a categorical column using sns.catplot()
 
     Parameters
     ----------
     om_df: DataFrame
-        A data frame corresponding to the O&M data after having been pre-processed
-        to address NANs and date consistency, and after applying the ``om_summary_stats`` function.
-        This data frame needs at least the columns specified in om_col_dict.
+        A data frame corresponding to the O&M data after having been 
+        pre-processed to address NANs and date consistency, and after 
+        applying the ``om_summary_stats`` function.
+        This data frame needs at least the columns specified 
+        in om_col_dict.
 
     om_col_dict: dict of {str : str}
         A dictionary that contains the column names relevant for the O&M data
@@ -220,7 +222,7 @@ def visualize_om_prod_overlap(
 
         - **siteid** (*string*), should be assigned to column name for user's site-ID
         - **datestart** (*string*), should be assigned to column name for user's
-        O&M event start-date
+          O&M event start-date
         - **dateend** (*string*), should be assigned to column name for user's O&M event end-date
         - **workID** (*string*), should be assigned to column name for user's O&M unique event ID
         - **worktype** (*string*), should be assigned to column name for user's
