@@ -425,7 +425,7 @@ def modeller(prod_col_dict,
     """Wrapper method to conduct the modelling of the timeseries data.
 
     To input the data, there are two options.
-    
+
     - Option 1: include full production data in `prod_df`
       parameter and `test_split` so that the test split is conducted
     - Option 2: conduct the test-train split prior to calling

@@ -21,9 +21,11 @@ class BruteForceExtractor():
     input_df : DataFrame
         Contains IV curves with a datetime index
     current_col : string
-        Indicates column where current values in IV curve are located; each cell is an array of current values in a single IV curve
+        Indicates column where current values in IV curve are located;
+        each cell is an array of current values in a single IV curve
     voltage_col : string
-        Indicates column where voltage values in IV curve are located; each cell is an array of voltage values in a single IV curve
+        Indicates column where voltage values in IV curve are located;
+        each cell is an array of voltage values in a single IV curve
     irradiance_col : string
         Indicates column where irradiance value (W/m2)
     temperature_col : string
@@ -75,7 +77,7 @@ class BruteForceExtractor():
         self.params = {}
 
     def create_string_object(self, iph, io, rs, rsh, nnsvth):
-        #TODO write docstring
+        # TODO write docstring
         kwargs = {}
         if self.Simulator_mod_specs is not None:
             kwargs.update({'mod_specs': self.Simulator_mod_specs})
@@ -241,11 +243,11 @@ class BruteForceExtractor():
         Parameters
         ----------
         cell_parameters : dict
-            Cell-level parameters, usually extracted from the CEC 
+            Cell-level parameters, usually extracted from the CEC
             database, which will be used as the
             initial guesses in the optimization process.
         n_mods : int
-            if int, defines the number of modules in a 
+            if int, defines the number of modules in a
             string(1=simulate a single module)
         bounds_func : function
             Function to establish the bounded search space
@@ -261,9 +263,9 @@ class BruteForceExtractor():
                             (nnsvth - 10*nnsvth*perc_adjust, nnsvth + 10*nnsvth*perc_adjust))
 
         user_func : function
-            Optional, a function similar to `self.create_string_object` 
+            Optional, a function similar to `self.create_string_object`
             which has the following inputs:
-            `self, iph, io, rs, rsh, nnsvth`. This can be used to 
+            `self, iph, io, rs, rsh, nnsvth`. This can be used to
             extract unique failure parameterization.
         verbose : int
             if verbose >= 1, print information about fitting

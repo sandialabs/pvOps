@@ -51,8 +51,6 @@ class Simulator():
                                                 # (e.g. Jinko_Solar_Co___Ltd_JKMS260P_60)
             }
 
-            
-
     replacement_5params : dict
         Optional, replace the definitions of the five electrical parameters, which normally 
         are extracted from the CEC database. These parameters can be determined by 
@@ -207,16 +205,16 @@ class Simulator():
                   where left is number in the first column and right is number in last column
                   if pos not specified, the positions are chosen randomly
                   e.g. add_preset_conditions('pole', fault_condition, light_shading = light_fault_condition, width = 2, pos = (5, 56))
-            
+
             - 'bird_droppings': Random positions are chosen for bird_dropping simulations
-              
+
               - Optional specification is n_droppings. If not specified, chosen as random number between 
                 1 and the number of cells in a column
                 e.g. add_preset_conditions('bird_droppings', fault_condition, n_droppings = 3)
-        
+
         fault_location: dict
             Same dict as one shown in __init__.
-        
+
         kwargs: variables dependent on which fault_name you choose, see above
 
         Tip
@@ -296,13 +294,13 @@ class Simulator():
                 - 1D list: Give a single situation for this condition
                 - 2D list: Give multiple situations for this condition
                 - A list where each value signifies a cell's condition. 
-                                
+
                 If key is same as an existing key, the list is appended to list of scenarios \\
                 which that key owns
         condition_dict: dict
             Define the numerical value written in modcell
 
-            .. note:: 
+            .. note::
 
                If the variable is not defined, values will default to those specified \\
                in the pristine condition, defined in __init__.
