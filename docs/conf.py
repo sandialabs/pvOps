@@ -13,7 +13,7 @@
 import os
 import sys
 
-
+sys.path.insert(0, os.path.abspath('../'))
 sys.path.insert(0, os.path.abspath("../pvops"))
 sys.path.insert(0, os.path.abspath("../pvops/text2time"))
 sys.path.insert(0, os.path.abspath("../pvops/text"))
@@ -68,7 +68,7 @@ numpydoc_show_inherited_class_members = False
 numpydoc_class_members_toctree = False
 napoleon_use_ivar = True  # option for attribute section formatting
 napoleon_use_param = False  # option for parameter section formatting
-
+viewcode_import = True  # tries to find the source files
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
 
