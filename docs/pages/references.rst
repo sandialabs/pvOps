@@ -43,3 +43,11 @@ iv/
 
   Hopwood, M. W., Gunda, T., Seigneur, H., & Walters, J. "Neural network-based classification 
   of string-level IV curves from physically-induced failures of photovoltaic modules", IEEE Access (2020), 8, 161480-161487.
+
+.. code-block:: text
+  
+  Michael W. Hopwood, Joshua S. Stein, Jennifer L. Braid, and Hubert P. Seigneur
+  "Physics-Based Method for Generating Fully Synthetic IV Curve
+  Training Datasets for Machine Learning Classification of
+  PV Failures" Energies (2022) DOI: 10.3390/en15145085
+
