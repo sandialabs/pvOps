@@ -56,10 +56,10 @@ metad_col_dict = {'siteid': 'randid',
 
 # Read data
 prod_data = pd.read_csv(
-    example_prodpath, error_bad_lines=False, engine='python')
-om_data = pd.read_csv(example_OMpath, error_bad_lines=False, engine='python')
+    example_prodpath, on_bad_lines='skip', engine='python')
+om_data = pd.read_csv(example_OMpath, on_bad_lines='skip', engine='python')
 metadata = pd.read_csv(
-    example_metapath, error_bad_lines=False, engine='python')
+    example_metapath, on_bad_lines='skip', engine='python')
 
 
 def check_same(df1, df2, col):
