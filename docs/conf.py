@@ -56,7 +56,7 @@ extensions = [
     # add links to highlighted source code
     'sphinx.ext.napoleon'
     # add parsing for google/numpy style docs
-            ]
+]
 
 
 coverage_show_missing_items = True
