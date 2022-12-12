@@ -212,3 +212,41 @@ Example
     # Look at a result!
     Vsim = sim.multilevel_ivdata['string']['Partial_lightshading']['V'][0]
     Isim = sim.multilevel_ivdata['string']['Partial_lightshading']['I'][0]
+
+
+            Example:
+        --------
+
+        .. code-block:: python
+
+            modcells  =  {'unique_shading':   [0,0,0,0,0,0,0,0,0,0,  # Using 1D list 
+                                            1,1,1,1,1,1,1,1,1,1,
+                                            1,1,1,1,1,1,1,1,1,1, 
+                                            1,1,1,1,1,1,1,1,1,1,
+                                            1,1,1,1,1,1,1,1,1,1,  
+                                            0,0,0,0,0,0,0,0,0,0],
+                        'another_example':  [[0,0,0,0,0,0,0,0,0,0,  # Using 2D list (aka, multiple conditions as input)
+                                            1,1,1,1,1,1,1,1,1,1,
+                                            1,1,1,0,0,0,0,1,1,1, 
+                                            1,1,1,0,0,0,0,1,1,1,
+                                            1,1,1,0,0,0,0,1,1,1,  
+                                            0,0,0,0,0,0,0,0,0,0],
+                                            [0,1,0,0,0,0,0,0,0,0,  
+                                            1,1,1,1,1,1,1,1,1,1,
+                                            1,1,1,1,1,1,1,1,1,1, 
+                                            0,0,0,1,1,1,0,0,0,0,
+                                            0,0,0,1,1,1,0,0,0,0,  
+                                            0,0,0,0,0,0,0,0,0,0]]
+                        }
+            # All numbers used in modcells must be defined here
+            # If defining a pristine condition, pass a blank dictionary
+            # If making edits to a pristine condition (e.g. dropping irradiance to 400) \\
+            # you only need to a) specify the change made, and b) name an identifier string (for future reference)
+            # The pristine condition can be changed when first creating the class object
+            # To define a pristine, you can either pass an empty dictionary or pass {'identifier':'pristine'}
+            condition_dict = {0: {},
+                            1: {'identifier': 'shading_cond1',
+                                'E': 400,
+                                }                              
+                            }
+            add_manual_conditions(modcell, condition_dict)

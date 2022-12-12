@@ -1,3 +1,5 @@
+.. nn config information extracted from docstring
+
 These parameters are
             disseminated into four categories.
 
