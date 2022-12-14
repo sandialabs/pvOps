@@ -4,7 +4,7 @@ text2time package
 text2time.preprocess module
 ---------------------------
 
-.. automodule:: text2time.preprocess
+.. automodule:: pvops.text2time.preprocess
    :members:
    :undoc-members:
    :show-inheritance:
@@ -12,7 +12,7 @@ text2time.preprocess module
 text2time.utils module
 ----------------------
 
-.. automodule:: text2time.utils
+.. automodule:: pvops.text2time.utils
    :members:
    :undoc-members:
    :show-inheritance:
@@ -20,7 +20,7 @@ text2time.utils module
 text2time.visualize module
 --------------------------
 
-.. automodule:: text2time.visualize
+.. automodule:: pvops.text2time.visualize
    :members:
    :undoc-members:
    :show-inheritance:

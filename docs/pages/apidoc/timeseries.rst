@@ -4,31 +4,36 @@ timeseries package
 timeseries.preprocess module
 ----------------------------
 
-.. automodule:: timeseries.preprocess
+.. automodule:: pvops.timeseries.preprocess
    :members:
    :undoc-members:
    :show-inheritance:
 
-timeseries.models.linear module
--------------------------------
+.. _timeseries models:
 
-.. automodule:: timeseries.models.linear
+timeseries models
+-----------------
+
+timeseries.models.linear module
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. automodule:: pvops.timeseries.models.linear
    :members:
    :undoc-members:
    :show-inheritance:
 
 timeseries.models.AIT module
--------------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. automodule:: timeseries.models.AIT
+.. automodule:: pvops.timeseries.models.AIT
    :members:
    :undoc-members:
    :show-inheritance:
 
 timeseries.models.iec module
--------------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. automodule:: timeseries.models.iec
+.. automodule:: pvops.timeseries.models.iec
    :members:
    :undoc-members:
    :show-inheritance:

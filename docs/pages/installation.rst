@@ -7,13 +7,13 @@ packages. See :ref:`reqs` for more information.
 The latest release of pvops is accessible via PYPI using the following
 command line prompt::
 
-    pip install pvops
+    $ pip install pvops
 
 Alternatively, the package can be installed using github::
 
-    git clone https://github.com/sandialabs/pvOps.git
-    cd pvops
-    pip install .
+    $ git clone https://github.com/sandialabs/pvOps.git
+    $ cd pvops
+    $ pip install .
 
 NLTK data
 ----------

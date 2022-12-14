@@ -4,7 +4,7 @@ API Documentation
 .. toctree::
    :maxdepth: 2
 
-   modules/text
-   modules/text2time
-   modules/timeseries
-   modules/iv
+   apidoc/text
+   apidoc/text2time
+   apidoc/timeseries
+   apidoc/iv
