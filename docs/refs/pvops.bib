@@ -1,0 +1,61 @@
+@Article{app12041872,
+AUTHOR = {Hopwood, Michael W. and Gunda, Thushara},
+TITLE = {Generation of Data-Driven Expected Energy Models for Photovoltaic Systems},
+JOURNAL = {Applied Sciences},
+VOLUME = {12},
+YEAR = {2022},
+NUMBER = {4},
+ARTICLE-NUMBER = {1872},
+URL = {https://www.mdpi.com/2076-3417/12/4/1872},
+ISSN = {2076-3417},
+ABSTRACT = {Although unique expected energy models can be generated for a given photovoltaic (PV) site, a standardized model is also needed to facilitate performance comparisons across fleets. Current standardized expected energy models for PV work well with sparse data, but they have demonstrated significant over-estimations, which impacts accurate diagnoses of field operations and maintenance issues. This research addresses this issue by using machine learning to develop a data-driven expected energy model that can more accurately generate inferences for energy production of PV systems. Irradiance and system capacity information was used from 172 sites across the United States to train a series of models using Lasso linear regression. The trained models generally perform better than the commonly used expected energy model from international standard (IEC 61724-1), with the two highest performing models ranging in model complexity from a third-order polynomial with 10 parameters (Radj2 = 0.994) to a simpler, second-order polynomial with 4 parameters (Radj2=0.993), the latter of which is subject to further evaluation. Subsequently, the trained models provide a more robust basis for identifying potential energy anomalies for operations and maintenance activities as well as informing planning-related financial assessments. We conclude with directions for future research, such as using splines to improve model continuity and better capture systems with low (&le;1000 kW DC) capacity.},
+DOI = {10.3390/app12041872}
+}
+
+@INPROCEEDINGS{9518439,  
+author={Mendoza, Hector and Hopwood, Michael and Gunda, Thushara},  
+booktitle={2021 IEEE 48th Photovoltaic Specialists Conference (PVSC)},   
+title={pvOps: Improving Operational Assessments through Data Fusion},   
+year={2021},  volume={},  number={},  pages={0112-0119},  
+doi={10.1109/PVSC43889.2021.9518439}
+}
+
+@Article{en15145085,
+AUTHOR = {Hopwood, Michael W. and Stein, Joshua S. and Braid, Jennifer L. and Seigneur, Hubert P.},
+TITLE = {Physics-Based Method for Generating Fully Synthetic IV Curve Training Datasets for Machine Learning Classification of PV Failures},
+JOURNAL = {Energies},
+VOLUME = {15},
+YEAR = {2022},
+NUMBER = {14},
+ARTICLE-NUMBER = {5085},
+URL = {https://www.mdpi.com/1996-1073/15/14/5085},
+ISSN = {1996-1073},
+ABSTRACT = {Classification machine learning models require high-quality labeled datasets for training. Among the most useful datasets for photovoltaic array fault detection and diagnosis are module or string current-voltage (IV) curves. Unfortunately, such datasets are rarely collected due to the cost of high fidelity monitoring, and the data that is available is generally not ideal, often consisting of unbalanced classes, noisy data due to environmental conditions, and few samples. In this paper, we propose an alternate approach that utilizes physics-based simulations of string-level IV curves as a fully synthetic training corpus that is independent of the test dataset. In our example, the training corpus consists of baseline (no fault), partial soiling, and cell crack system modes. The training corpus is used to train a 1D convolutional neural network (CNN) for failure classification. The approach is validated by comparing the model&rsquo;s ability to classify failures detected on a real, measured IV curve testing corpus obtained from laboratory and field experiments. Results obtained using a fully synthetic training dataset achieve identical accuracy to those obtained with use of a measured training dataset. When evaluating the measured data&rsquo;s test split, a 100% accuracy was found both when using simulations or measured data as the training corpus. When evaluating all of the measured data, a 96% accuracy was found when using a fully synthetic training dataset. The use of physics-based modeling results as a training corpus for failure detection and classification has many advantages for implementation as each PV system is configured differently, and it would be nearly impossible to train using labeled measured data.},
+DOI = {10.3390/en15145085}
+}
+
+@ARTICLE{9186596,  
+author={Hopwood, Michael W. and Gunda, Thushara and Seigneur, Hubert and Walters, Joseph},  
+journal={IEEE Access},   
+title={Neural Network-Based Classification of String-Level IV Curves From Physically-Induced Failures of Photovoltaic Modules},   
+year={2020},  
+volume={8},  
+number={},  
+pages={161480-161487},  
+doi={10.1109/ACCESS.2020.3021577}
+}
+
+@article{BISHOP198873,
+title = {Computer simulation of the effects of electrical mismatches in photovoltaic cell interconnection circuits},
+journal = {Solar Cells},
+volume = {25},
+number = {1},
+pages = {73-89},
+year = {1988},
+issn = {0379-6787},
+doi = {https://doi.org/10.1016/0379-6787(88)90059-2},
+url = {https://www.sciencedirect.com/science/article/pii/0379678788900592},
+author = {J.W. Bishop},
+abstract = {A Pascal program, PVNet, has been developed at the Commission of the European Communities Joint Research Centre, Ispra, to model the electrical behaviour of solar cell interconnection circuits. The program calculates three-quadrant solar cell current-voltage (I–V) curves using a lumped parameter equivalent circuit model, combines them to obtain the resultant I–V curve of any interconnection circuit, and calculates the operating point of each circuit element, set by user-defined operating conditions. The numerical values of the equivalent circuit parameters are generated by the program, and are varied so that the electrical parameters (short-circuit current, open-circuit voltage, fill factor) of calculated I–V curves show the same variations as those of measured crystalline silicon solar cell I–V curves. Equivalent circuit parameters can be changed by the user, making it possible to simulate the effects of electrical mismatches on the performance of an interconnection circuit. To illustrate the operation of the program, the electrical mechanisms leading to hot-spot heating in photovoltaic arrays are analysed. Three types of interconnection circuit are considered: a simple series string, a series-parallel block and a series connection of series-parallel blocks. The operation of parallel bypass diodes (used to limit hot-spot heating in series strings) and of series blocking diodes (used to prevent current imbalance in series-parallel circuits) are explained.}
+}
+
