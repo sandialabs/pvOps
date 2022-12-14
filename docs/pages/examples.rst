@@ -4,7 +4,7 @@ pvOps Examples
 Check out the examples below!
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :caption: List of examples:
 
    examples/tutorial_timeseries.nblink
