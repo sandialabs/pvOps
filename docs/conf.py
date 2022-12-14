@@ -13,14 +13,7 @@
 import os
 import sys
 
-sys.path.insert(0, os.path.abspath('../'))
-sys.path.insert(0, os.path.abspath("../pvops"))
-sys.path.insert(0, os.path.abspath("../pvops/text2time"))
-sys.path.insert(0, os.path.abspath("../pvops/text"))
-sys.path.insert(0, os.path.abspath("../pvops/timeseries"))
-sys.path.insert(0, os.path.abspath("../pvops/timeseries/models"))
-sys.path.insert(0, os.path.abspath("../pvops/iv"))
-sys.path.insert(0, os.path.abspath("../pvops/iv/models"))
+sys.path.insert(0, os.path.abspath("../"))
 
 # -- Project information -----------------------------------------------------
 
@@ -54,8 +47,10 @@ extensions = [
     # allows for testing of code snippets
     'sphinx.ext.viewcode',
     # add links to highlighted source code
-    'sphinx.ext.napoleon'
+    'sphinx.ext.napoleon',
     # add parsing for google/numpy style docs
+    'sphinxcontrib.bibtex',
+    # for bibtex referencing
 ]
 
 
@@ -69,6 +64,8 @@ numpydoc_class_members_toctree = False
 napoleon_use_ivar = True  # option for attribute section formatting
 napoleon_use_param = False  # option for parameter section formatting
 viewcode_import = True  # tries to find the source files
+bibtex_bibfiles = ['refs/pvops.bib']
+
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
 
