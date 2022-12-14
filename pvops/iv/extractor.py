@@ -13,7 +13,7 @@ from pvops.iv.physics_utils import iv_cutoff, T_to_tcell, \
 
 
 class BruteForceExtractor():
-    '''Process measured IV curves
+    '''Process measured IV curves to extract diode parameters.
     Requires a set of curves to create Isc vs Irr and Voc vs Temp vs Isc(Irr)
 
     Parameters
@@ -34,8 +34,17 @@ class BruteForceExtractor():
         Describe input temperature, either 'ambient' or 'module' or 'cell'
     '''
 
-    def __init__(self, input_df, current_col, voltage_col, irradiance_col, temperature_col, T_type, windspeed_col=None,
-                 Simulator_mod_specs=None, Simulator_pristine_condition=None):
+    def __init__(
+        self,
+        input_df,
+        current_col,
+        voltage_col,
+        irradiance_col,
+        temperature_col,
+        T_type,
+        windspeed_col=None,
+        Simulator_mod_specs=None,
+        Simulator_pristine_condition=None):
 
         self.Simulator_mod_specs = Simulator_mod_specs
         self.Simulator_pristine_condition = Simulator_pristine_condition
