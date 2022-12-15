@@ -41,6 +41,14 @@ iv.utils module
    :undoc-members:
    :show-inheritance:
 
+iv.timeseries_simulator module
+-----------------------------------
+
+.. automodule:: pvops.iv.timeseries_simulator
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 iv.models.nn module
 -------------------
 
