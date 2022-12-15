@@ -7,6 +7,6 @@ What's New
 These are new features and improvements of note in each release.
 
 
-.. include:: whatsnew/beta.rst
+.. include:: releasenotes/beta.rst
 
-.. include:: whatsnew/alpha.rst
+.. include:: releasenotes/alpha.rst

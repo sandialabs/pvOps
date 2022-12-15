@@ -23,13 +23,14 @@ production data, and current-voltage (IV) curves.
     pages/examples
     pages/modules
     pages/references
+    pages/abbreviations
     pages/development
     pages/contributing
-    pages/whatsnew
+    pages/releasenotes
 
 
 Indices and tables
-==================
+-------------------
 
 * :ref:`genindex`
 * :ref:`modindex`
