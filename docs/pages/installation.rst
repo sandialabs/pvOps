@@ -20,6 +20,7 @@ NLTK data
 
 Functions in the text package relies on the "punkt" dataset for the nltk package.
 After proper installation of pvops, run the commands::
+    
     >>> import nltk
     >>> nltk.download('punkt')
     >>> nltk.download('stopwords')
