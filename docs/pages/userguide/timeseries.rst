@@ -1,5 +1,9 @@
 Timeseries Guide
------------------------------
+==================
+
+Module Overview
+-----------------
+
 These funcions provide processing and modelling capabilities for timeseries 
 production data. Processing functions prepare data to train two 
 types of expected energy models:
@@ -36,3 +40,8 @@ Models
   using measured irradiance based on trained regression model from field data.
 * :py:func:`pvops.timeseries.models.iec.iec_calc` calculates expected energy using measured irradiance
   based on IEC calculations.
+
+Example Code
+--------------
+
+load in data and run some processing functions
