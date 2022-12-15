@@ -1,6 +1,9 @@
 Text2Time Guide
 ================
 
+Module Overview
+----------------
+
 Aligning production data with O&M tickets is not a trivial task since 
 intersection of dates and identification of anomalies depends on the nuances 
 within the two datasets. This set of functions facilitate this 
@@ -72,11 +75,28 @@ These functions visualize the processed O&M and production data:
 * :py:func:`~pvops.text2time.visualize.visualize_categorical_scatter` 
   generates categorical scatter plots of chosen variable based on specified 
   category (e.g. site ID) for the O&M data.
+
+  .. image:: ../../assets/vis_cat_scatter_example.svg
+    :width: 600
+
 * :py:func:`~pvops.text2time.visualize.visualize_counts` 
   generates a count plot of categories based on a chosen categorical variable
   column for the O&M data.  
   If that variable is the user's site ID for every ticket, a plot for total 
   count of events can be generated.
+
+  .. image:: ../../assets/vis_counts_example.svg
+    :width: 600
+
 * :py:func:`~pvops.text2time.visualize.visualize_om_prod_overlap` 
   creates a visualization that overlays the O&M data on top of the 
   coinciding production data.
+
+  .. image:: ../../assets/vis_overlap_example.png
+    :width: 600
+
+Example Code
+--------------
+
+
+load in data and run some processing functions

@@ -1,18 +1,22 @@
 IV package
 ===============
 
+Module Overview
+----------------
+
+
 These functions focus on current-voltage (IV) curve simulation and 
 classification.
 
 extractor
-----------
+^^^^^^^^^^^^^^^^^^^^^
 
-* `~pvops.iv.extractor` primarily features the 
-  :py:class:`pvops.iv.extractor.BruteForceExtractor` class, which 
+* :py:mod:`~pvops.iv.extractor` primarily features the 
+  :py:class:`~pvops.iv.extractor.BruteForceExtractor` class, which 
   extracts diode parameters from IV curves (even outdoor-collected).
 
 physics_utils
--------------
+^^^^^^^^^^^^^^^^^^^^^
 
 :py:mod:`~pvops.iv.physics_utils` contains methods which aid the IV 
 Simulator's physics-based calculations and the preprocessing pipeline's 
@@ -42,28 +46,41 @@ correction calculations.
 
 
 preprocess
-----------
+^^^^^^^^^^^^^^^^^^^^^
 
-:py:mod:`~pvops.iv.preprocess` contains the preprocessing function which 
+:py:mod:`~pvops.iv.preprocess` contains the preprocessing function 
+* :py:func:`~pvops.iv.preprocess.preprocess` which 
 corrects a set of data according to irradiance and temperature and 
 normalizes the curves so they are comparable.
 
 simulator
----------
+^^^^^^^^^^^^^^^^^^^^^
 
-:py:mod:`~pvops.iv.simulator` holds the `IV Simulator` which can simulate 
+:py:mod:`~pvops.iv.simulator` holds the 
+:py:class:`~pvops.iv.simulator.IV Simulator` class which can simulate 
 current-voltage (IV) curves under different environmental and fault 
-conditions.
+conditions. There is also a utility function 
+:py:func:`~pvops.iv.simulator.create_df` for building an IV curve dataframe
+from a set of parameters.
 
 utils
--------
+^^^^^^^^^^^^^^^^^^^^^
 
-:py:mod:`~pvops.iv.utils` holds a utility function which connects to the CEC 
+:py:mod:`~pvops.iv.utils` holds the utility function 
+:py:func:`~pvops.iv.utils.get_CEC_params` which connects to the 
+California Energy Commission (CEC) 
 database hosted by pvLib for cell-level and module-level parameters.
 
 timeseries_simulator
-----------------------
+^^^^^^^^^^^^^^^^^^^^^
 
-:py:mod:`~pvops.iv.timeseries_simulator.py` holds a timeseries wrapper of the 
-IV Simulator which allows users to specify time-based failure degradation 
-patterns.
+:py:mod:`~pvops.iv.timeseries_simulator` contains 
+:py:class:`~pvops.iv.timeseries_simulator.IVTimeseriesGenerator`, 
+a subclass of the IV Simulator,
+which allows users to specify time-based failure degradation 
+patterns. The class 
+:py:class:`~pvops.iv.timeseries_simulator.TimeseriesFailure`
+is used to define the time-based failures.
+
+Example Code
+--------------

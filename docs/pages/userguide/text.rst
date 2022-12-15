@@ -1,6 +1,9 @@
 Text Guide
 ============
 
+Module Overview
+----------------
+
 This module aims to support the consistent extraction of key features
 in O&M data:
 
@@ -89,7 +92,30 @@ Visualizations
 These functions create visualizations to get a better understanding about your documents.
 
 * :py:func:`~pvops.text.visualize.visualize_attribute_connectivity` visualizes the connectivity of two attributes.
+  
+  .. image:: ../../assets/vis_attr_connect_example.svg
+    :width: 600
+
 * :py:func:`~pvops.text.visualize.visualize_attribute_timeseries` evaluates the density of an attribute over time. 
+  
+  .. image:: ../../assets/vis_attr_timeseries_example.svg
+    :width: 600
+
 * :py:func:`~pvops.text.visualize.visualize_cluster_entropy` observes the performance of different text embeddings.
+  
+  .. image:: ../../assets/vis_cluster_entropy_example.svg
+    :width: 600
+
 * :py:func:`~pvops.text.visualize.visualize_document_clusters` visualizes popular words in clusters after a cluster analysis is ran.
+  
+  .. image:: ../../assets/vis_doc_clusters_example.svg
+    :width: 600
+
 * :py:func:`~pvops.text.visualize.visualize_word_frequency_plot` visualizes word frequencies in the associated attribute column of O&M data.
+  
+  .. image:: ../../assets/vis_freq_plot_example.svg
+    :width: 600
+
+
+Example Code
+--------------
