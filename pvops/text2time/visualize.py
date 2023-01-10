@@ -132,7 +132,9 @@ def visualize_categorical_scatter(om_df, om_col_dict, cat_varx, cat_vary, fig_se
     my_figsize = fig_sets["figsize"]
     my_fontsize = fig_sets["fontsize"]
 
-    sns.catplot(x=cat_varx, y=cat_vary, data=om_df)
+    hue = cat_varx
+
+    sns.catplot(x=cat_varx, y=cat_vary, data=om_df, hue=hue)
 
     ax = plt.gca()
     ax.set_xticklabels(
