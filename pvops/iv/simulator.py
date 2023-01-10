@@ -1439,10 +1439,10 @@ class Simulator():
                 else:
                     # Circumventing error where only one subplot needs to be defined.
                     if idx == 0:
-                        axs = sns.distplot(
+                        axs = sns.displot(
                             data, hist=False, rug=True, label=iden)
                     else:
-                        axs = sns.distplot(
+                        axs = sns.displot(
                             data, hist=False, rug=True, ax=axs, label=iden)
 
             plt.legend(loc='center left', bbox_to_anchor=(1, 0.5))
