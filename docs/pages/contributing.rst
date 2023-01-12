@@ -3,7 +3,12 @@
 Contributing
 ============
 
-Thank you for wanting to contribute to this library! We will try to make this an easy process for you.
+Thank you for wanting to contribute to this library! We will try to make this 
+an easy process for you. It is recommended that you read 
+the :ref:`development<development>` page so that you can lint 
+and test before submitting code. 
+Checking that your PR passes the required testing and linting procedures will speed up
+the acceptance of your PR.
 
 **If you find errors in the codebase:**
 
@@ -11,8 +16,10 @@ Thank you for wanting to contribute to this library! We will try to make this an
 
 **If you would like to contribute:**
 
-2. Create a pull request (PR) or help with other PRs which are in the library by referencing `pvops PR page <https://github.com/sandialabs/pvops/pulls>`_. Pull requests should contain code that follows the PEP8 python code style.
+2. Create a pull request (PR) or help with other PRs which are in the library 
+   by referencing `pvops PR page <https://github.com/sandialabs/pvops/pulls>`_. 
+   Pull requests should contain code that follows the PEP8 python code style.
 
 **If you are confused:**
 
-3. Feel free to reach out to the package maintainer, as found in setup.py. 
+3. Feel free to reach out to the package maintainer, found in ``setup.py``. 
