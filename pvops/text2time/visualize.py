@@ -137,8 +137,10 @@ def visualize_categorical_scatter(om_df, om_col_dict, cat_varx, cat_vary, fig_se
     sns.catplot(x=cat_varx, y=cat_vary, data=om_df, hue=hue)
 
     ax = plt.gca()
+    xticks = ax.get_xticks()
+    ax.set_xticks(xticks)
     ax.set_xticklabels(
-        ax.get_xticklabels(),
+        xticks,
         rotation=45,
         horizontalalignment="center",
         fontweight="medium",
