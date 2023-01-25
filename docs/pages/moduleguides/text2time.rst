@@ -98,5 +98,24 @@ These functions visualize the processed O&M and production data:
 Example Code
 --------------
 
+Load in OM data and convert dates to python date-time objects
 
-load in data and run some processing functions
+.. doctest::
+
+  >>> import pandas as pd
+  >>> import os
+  >>> from pvops.text2time import preprocess
+  
+  >>> example_OMpath = os.path.join('example_data', 'example_om_data2.csv')
+  >>> om_data = pd.read_csv(example_OMpath, on_bad_lines='skip', engine='python')
+  >>> om_col_dict = {
+  ... 'siteid': 'randid',
+  ... 'datestart': 'date_start',
+  ... 'dateend': 'date_end',
+  ... 'workID': 'WONumber',
+  ... 'worktype': 'WOType',
+  ... 'asset': 'Asset',
+  ... 'eventdur': 'EventDur', #user's name choice for new column (Repair Duration)
+  ... 'modatestart': 'MonthStart', #user's name choice for new column (Month when an event begins)
+  ... 'agedatestart': 'AgeStart'} #user's name choice for new column (Age of system when event begins)
+  >>> om_data_converted = preprocess.om_date_convert(om_data, om_col_dict)

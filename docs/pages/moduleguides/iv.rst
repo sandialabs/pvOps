@@ -43,8 +43,6 @@ correction calculations.
   trace using irradiance and temperature using one of three
   available options.
 
-
-
 preprocess
 ^^^^^^^^^^^^^^^^^^^^^
 
@@ -82,5 +80,5 @@ patterns. The class
 :py:class:`~pvops.iv.timeseries_simulator.TimeseriesFailure`
 is used to define the time-based failures.
 
-Example Code
---------------
+.. Example Code
+.. --------------

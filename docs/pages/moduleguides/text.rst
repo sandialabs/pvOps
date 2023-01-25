@@ -117,5 +117,5 @@ These functions create visualizations to get a better understanding about your d
     :width: 600
 
 
-Example Code
---------------
+.. Example Code
+.. --------------
