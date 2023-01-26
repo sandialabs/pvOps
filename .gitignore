@@ -8,5 +8,8 @@ docs/_build/
 examples/analysis/
 examples/.ipynb_checkpoints/
 *~
-pvops/.vscode/
+pvops/.vscode/*
 pvops/text2time/.vscode
+.vscode/*
+.vscode/settings.json
+.coverage
