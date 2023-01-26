@@ -92,11 +92,3 @@ setup(
     classifiers=CLASSIFIERS,
     url=URL
 )
-
-
-### Install nltk assets
-
-import nltk
-
-nltk.download("punkt")
-nltk.download("stopwords")
