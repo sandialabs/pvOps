@@ -25,8 +25,7 @@ jobs:
     - name: Install dependencies in ${{ matrix.requirements }}
       run: |
         python -m pip install --upgrade pip
-        cd pvops
-        pip install .
+        pip install -r ${{ matrix.requirements }}
     - name: Test with pytest
       run: |
         pip install pytest pytest-cov
