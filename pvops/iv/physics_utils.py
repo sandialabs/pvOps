@@ -223,7 +223,8 @@ def intersection(x1, y1, x2, y2):
 
 
 def T_to_tcell(POA, T, WS, T_type, a=-3.56, b=-0.0750, delTcnd=3):
-    ''' Ambient temperature to cell temperature according to NREL weather-correction
+    ''' Ambient temperature to cell temperature according to NREL 
+    weather-correction. See :cite:t:`osti_1078057`.
 
     Parameters
     ----------
@@ -231,8 +232,8 @@ def T_to_tcell(POA, T, WS, T_type, a=-3.56, b=-0.0750, delTcnd=3):
         Ambient temperature, in Celcius
     WS: numerical,
         Wind speed at height of 10 meters, in m/s
-    a,b,delTcnd: numerical,
-        Page 12 in Ref. [Dierauf]_
+    a, b, delTcnd: numerical,
+        Page 12 in :cite:p:`osti_1078057`
     T_type: string,
         Describe input temperature, either 'ambient' or 'module'
 
@@ -240,11 +241,6 @@ def T_to_tcell(POA, T, WS, T_type, a=-3.56, b=-0.0750, delTcnd=3):
     -------
     numerical
         Cell temperature, in Celcius
-
-
-    .. [Dierauf] Dierauf, Timothy, et al. Weather-corrected performance ratio. No. NREL/TP-5200-57991. 
-          National Renewable Energy Lab.(NREL), Golden, CO (United States), 2013.
-          https://www.nrel.gov/docs/fy13osti/57991.pdf
     '''
     Gstc = 1000
 

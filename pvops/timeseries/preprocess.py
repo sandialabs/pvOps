@@ -7,9 +7,7 @@ import pandas as pd
 
 
 def establish_solar_loc(prod_df, prod_col_dict, meta_df, meta_col_dict):
-    """Normalize power by capacity. This preprocessing step is meant as a
-    step prior to a modeling attempt where a model is trained on multiple
-    sites simultaneously.
+    """Adds solar position column using pvLib.
 
     Parameters
     ----------

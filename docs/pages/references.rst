@@ -1,6 +1,9 @@
 References
 ==========
 
+Citing Us
+---------
+
 If using this package, please cite us using the following
 
 .. code-block:: text
@@ -31,15 +34,6 @@ Additionally, some of our own content comes from published papers. See the follo
 External references
 -------------------
 
-iv/
-^^^
+.. bibliography::
+   :all:
 
-.. code-block:: text
-
-  JW Bishop. "Computer simulation of the effects of electrical mismatches in photovoltaic cell 
-  interconnection circuits", Solar Cell (1988) DOI: 10.1016/0379-6787(88)90059-2
-
-.. code-block:: text
-
-  Hopwood, M. W., Gunda, T., Seigneur, H., & Walters, J. "Neural network-based classification 
-  of string-level IV curves from physically-induced failures of photovoltaic modules", IEEE Access (2020), 8, 161480-161487.

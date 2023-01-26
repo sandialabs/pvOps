@@ -4,7 +4,7 @@ iv package
 iv.extractor module
 -------------------
 
-.. automodule:: iv.extractor
+.. automodule:: pvops.iv.extractor
    :members:
    :undoc-members:
    :show-inheritance:
@@ -12,7 +12,7 @@ iv.extractor module
 iv.physics_utils module
 -----------------------
 
-.. automodule:: iv.physics_utils
+.. automodule:: pvops.iv.physics_utils
    :members:
    :undoc-members:
    :show-inheritance:
@@ -20,7 +20,7 @@ iv.physics_utils module
 iv.preprocess module
 --------------------
 
-.. automodule:: iv.preprocess
+.. automodule:: pvops.iv.preprocess
    :members:
    :undoc-members:
    :show-inheritance:
@@ -28,7 +28,7 @@ iv.preprocess module
 iv.simulator module
 -------------------
 
-.. automodule:: iv.simulator
+.. automodule:: pvops.iv.simulator
    :members:
    :undoc-members:
    :show-inheritance:
@@ -36,7 +36,15 @@ iv.simulator module
 iv.utils module
 ---------------
 
-.. automodule:: iv.utils
+.. automodule:: pvops.iv.utils
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+iv.timeseries_simulator module
+-----------------------------------
+
+.. automodule:: pvops.iv.timeseries_simulator
    :members:
    :undoc-members:
    :show-inheritance:
@@ -44,7 +52,7 @@ iv.utils module
 iv.models.nn module
 -------------------
 
-.. automodule:: iv.models.nn
+.. automodule:: pvops.iv.models.nn
    :members:
    :undoc-members:
    :show-inheritance:

@@ -6,7 +6,10 @@ import datefinder
 import traceback
 from datetime import datetime, timedelta
 
-nltk.download('punkt')
+try:
+    nltk.data.find('tokenizers/punkt')
+except LookupError:
+    nltk.download('punkt')
 
 def preprocessor(
     om_df, lst_stopwords, col_dict, print_info=False, extract_dates_only=False

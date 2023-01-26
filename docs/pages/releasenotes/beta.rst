@@ -1,4 +1,4 @@
-beta 
+Beta 
 -----------------------
 
 New features and bug fixes are predominant in the beta versions.

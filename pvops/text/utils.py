@@ -63,7 +63,7 @@ def remap_attributes(om_df, remapping_df, remapping_col_dict,
         temp_remapping_df = pd.DataFrame()
         temp_remapping_df[REMAPPING_COL_FROM] = missing_mappings
         temp_remapping_df[REMAPPING_COL_TO] = missing_mappings
-        remapping_df = remapping_df.append(temp_remapping_df)
+        remapping_df = pd.concat([remapping_df, temp_remapping_df]) 
 
     if print_info:
         print("All mappings:\n", remapping_df)

@@ -3,7 +3,8 @@ import copy
 
 
 def get_CEC_params(name, mod_spec):
-    '''Query module-level parameters from CEC database and derive cell-level parameters
+    '''Query module-level parameters from CEC database and 
+    derive cell-level parameters.
 
     Utilizing methods from pvsystem.retrieve_sam('CECMod')
 

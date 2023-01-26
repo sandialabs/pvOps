@@ -4,7 +4,7 @@ text package
 text.classify module
 ------------------------------------
 
-.. automodule:: text.classify
+.. automodule:: pvops.text.classify
    :members:
    :undoc-members:
    :show-inheritance:
@@ -12,7 +12,7 @@ text.classify module
 text.defaults module
 ------------------------------------
 
-.. automodule:: text.defaults
+.. automodule:: pvops.text.defaults
    :members:
    :undoc-members:
    :show-inheritance:
@@ -21,7 +21,7 @@ text.defaults module
 text.nlp_utils module
 ------------------------------------
 
-.. automodule:: text.nlp_utils
+.. automodule:: pvops.text.nlp_utils
    :members:
    :undoc-members:
    :show-inheritance:
@@ -29,7 +29,7 @@ text.nlp_utils module
 text.preprocess module
 ------------------------------------
 
-.. automodule:: text.preprocess
+.. automodule:: pvops.text.preprocess
    :members:
    :undoc-members:
    :show-inheritance:
@@ -37,7 +37,7 @@ text.preprocess module
 text.utils module
 ------------------------------------
 
-.. automodule:: text.utils
+.. automodule:: pvops.text.utils
    :members:
    :undoc-members:
    :show-inheritance:
@@ -45,7 +45,7 @@ text.utils module
 text.visualize module
 ------------------------------------
 
-.. automodule:: text.visualize
+.. automodule:: pvops.text.visualize
    :members:
    :undoc-members:
    :show-inheritance:
