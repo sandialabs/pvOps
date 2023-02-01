@@ -1,0 +1,9 @@
+ipykernel
+nbsphinx
+nbsphinx-link
+sphinx-copybutton
+sphinx_rtd_theme
+sphinxcontrib.bibtex
+nbformat
+nbconvert
+coverage
