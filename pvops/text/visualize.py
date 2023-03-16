@@ -149,7 +149,7 @@ def visualize_attribute_connectivity(
     for edge in list(G.edges()):
         edge_color_map.append(color_dict[edge[0]])
 
-    # limits = plt.axis("off")
+    # limits = plt.axis("off") 
     nx.draw_networkx(G, width=weights, node_color=color_map, edge_color=edge_color_map, pos=pos, font_weight='bold', **graph_aargs)
 
     return fig, edges, G
