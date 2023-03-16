@@ -108,9 +108,10 @@ def visualize_attribute_connectivity(
             G.add_edge(u, v, w=w)
 
     fig = plt.figure(figsize=figsize)
+
     fig.suptitle(
         f"Connectivity between {ATTRIBUTE2_COL} and {ATTRIBUTE1_COL}",
-        fontsize=50,
+        # fontsize=50,
         y=.95,
         fontweight="bold",
     )
@@ -128,15 +129,17 @@ def visualize_attribute_connectivity(
     weights = list(1 + (edge_width_scalar * weights /
                    weights.max()))  # scale 1-11
 
-    S = bipartite.projected_graph(G, list(set(df[ATTRIBUTE2_COL].tolist())), multigraph=True)
-    nOrder = [item for sublist in [list(x) for x in nx.community.greedy_modularity_communities(S)] for item in sublist]
+    # S = bipartite.projected_graph(G, list(set(df[ATTRIBUTE2_COL].tolist())), multigraph=True)
+    nOrder = list(df[ATTRIBUTE2_COL].unique())
     pos = nx.drawing.layout.bipartite_layout(G, nOrder, align='horizontal')
 
     cmap = matplotlib.cm.get_cmap('viridis')
     color_dict = {}
-
-    for i in np.arange(0, (float(len(np.unique(df[ATTRIBUTE2_COL].tolist())))), 1.0):
-        color_dict[list(pos.keys())[int(-1 * i - 1)]] = cmap(i / (float(len(np.unique(df[ATTRIBUTE1_COL].tolist()))) - 1.0))
+    i = 0
+    for attr1 in list(df[ATTRIBUTE1_COL].unique()):
+        print(attr1)
+        color_dict[attr1] = cmap(i / (len(df[ATTRIBUTE1_COL].unique()) - 1))
+        i+=1
 
     color_map = []
     for node in G:
@@ -150,7 +153,14 @@ def visualize_attribute_connectivity(
         edge_color_map.append(color_dict[edge[0]])
 
     # limits = plt.axis("off") 
-    nx.draw_networkx(G, width=weights, node_color=color_map, edge_color=edge_color_map, pos=pos, font_weight='bold', **graph_aargs)
+    nx.draw_networkx(
+        G, 
+        width=weights, 
+        node_color=color_map, 
+        edge_color=edge_color_map, 
+        pos=pos, 
+        # font_weight='bold', 
+        **graph_aargs)
 
     return fig, edges, G
 
