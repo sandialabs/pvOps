@@ -75,8 +75,8 @@ def visualize_attribute_connectivity(
     ATTRIBUTE1_COL = om_col_dict["attribute1_col"]
     ATTRIBUTE2_COL = om_col_dict["attribute2_col"]
 
-    df = df[df[ATTRIBUTE1_COL].notna()==True].reset_index()
-    df = df[df[ATTRIBUTE2_COL].notna()==True].reset_index()
+    df = df[df[ATTRIBUTE1_COL].notna() == True].reset_index()
+    df = df[df[ATTRIBUTE2_COL].notna() == True].reset_index()
 
     nx_data = []
     for a in np.unique(df[ATTRIBUTE1_COL].tolist()):
@@ -85,28 +85,27 @@ def visualize_attribute_connectivity(
             w = len(df_iter[df_iter[ATTRIBUTE2_COL] == i])
             nx_data.append([a, i, w])
 
-    unique_df = pd.DataFrame(
-        nx_data, columns=[ATTRIBUTE1_COL, ATTRIBUTE2_COL, "w"])
+    # unique_df = pd.DataFrame(
+    #     nx_data, columns=[ATTRIBUTE1_COL, ATTRIBUTE2_COL, "w"])
 
     # G = nx.from_pandas_edgelist(unique_df, ATTRIBUTE1_COL, ATTRIBUTE2_COL, "w")
     M = nx.MultiGraph()
-    M.add_nodes_from(list(set(df[ATTRIBUTE1_COL].tolist())),bipartite=0)
-    M.add_nodes_from(list(set(df[ATTRIBUTE2_COL].tolist())),bipartite=1)
-    edgeList = [(df[ATTRIBUTE1_COL][i],df[ATTRIBUTE2_COL][i]) for i in range(len(df))]
+    M.add_nodes_from(list(set(df[ATTRIBUTE1_COL].tolist())), bipartite=0)
+    M.add_nodes_from(list(set(df[ATTRIBUTE2_COL].tolist())), bipartite=1)
+    edgeList = [(df[ATTRIBUTE1_COL][i], df[ATTRIBUTE2_COL][i]) for i in range(len(df))]
 
     M.add_edges_from(edgeList)
 
     G = nx.Graph()
-    G.add_nodes_from(df[ATTRIBUTE1_COL],bipartite=0)
-    G.add_nodes_from(df[ATTRIBUTE2_COL],bipartite=1)
+    G.add_nodes_from(df[ATTRIBUTE1_COL], bipartite=0)
+    G.add_nodes_from(df[ATTRIBUTE2_COL], bipartite=1)
 
-    for u,v,data in M.edges(data=True):
+    for u, v, data in M.edges(data=True):
         w = data['w'] if 'w' in data else 1.0
-        if G.has_edge(u,v):
+        if G.has_edge(u, v):
             G[u][v]['w'] += w
         else:
             G.add_edge(u, v, w=w)
-
 
     fig = plt.figure(figsize=figsize)
     fig.suptitle(
@@ -129,16 +128,15 @@ def visualize_attribute_connectivity(
     weights = list(1 + (edge_width_scalar * weights /
                    weights.max()))  # scale 1-11
 
-    S = bipartite.projected_graph(G, list(set(df[ATTRIBUTE2_COL].tolist())),multigraph=True)
+    S = bipartite.projected_graph(G, list(set(df[ATTRIBUTE2_COL].tolist())), multigraph=True)
     nOrder = [item for sublist in [list(x) for x in nx.community.greedy_modularity_communities(S)] for item in sublist]
-    pos = nx.drawing.layout.bipartite_layout(G,nOrder,align='horizontal')
+    pos = nx.drawing.layout.bipartite_layout(G, nOrder, align='horizontal')
 
     cmap = matplotlib.cm.get_cmap('viridis')
     color_dict = {}
 
-    for i in np.arange(0,(float(len(np.unique(df[ATTRIBUTE2_COL].tolist())))),1.0):
-        color_dict[list(pos.keys())[int(-1*i-1)]]=cmap(i/(float(len(np.unique(df[ATTRIBUTE1_COL].tolist())))-1.0))
-
+    for i in np.arange(0, (float(len(np.unique(df[ATTRIBUTE2_COL].tolist())))), 1.0):
+        color_dict[list(pos.keys())[int(-1 * i - 1)]] = cmap(i / (float(len(np.unique(df[ATTRIBUTE1_COL].tolist()))) - 1.0))
 
     color_map = []
     for node in G:
@@ -151,8 +149,7 @@ def visualize_attribute_connectivity(
     for edge in list(G.edges()):
         edge_color_map.append(color_dict[edge[0]])
 
-
-    limits = plt.axis("off")
+    # limits = plt.axis("off")
     nx.draw_networkx(G, width=weights, node_color=color_map, edge_color=edge_color_map, pos=pos, font_weight='bold', **graph_aargs)
 
     return fig, edges, G
