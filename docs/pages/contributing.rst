@@ -15,9 +15,6 @@ Issues and bug reporting
 
 To report issues or bugs please create a new issue on 
 the `pvops issues page <https://github.com/sandialabs/pvops/issues>`_.
-
-Following these guidelines will help maintainers understand your issue, 
-reproduce the behavior, and develop a fix in an expedient fashion. 
 Before submitting your bug report, please perform a cursory search 
 to see if the problem has been already reported. If it has been reported, 
 and the issue is still open, add a comment to the existing issue instead of opening a new issue.
