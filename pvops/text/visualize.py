@@ -139,7 +139,7 @@ def visualize_attribute_connectivity(
     for attr1 in list(df[ATTRIBUTE1_COL].unique()):
         print(attr1)
         color_dict[attr1] = cmap(i / (len(df[ATTRIBUTE1_COL].unique()) - 1))
-        i+=1
+        i += 1
 
     color_map = []
     for node in G:
