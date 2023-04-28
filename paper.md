@@ -52,7 +52,7 @@ The following table summarizes the four modules within `pvOps` by presenting: th
 
 Module | Type of data | Example data features | Highlights of functions
 ------- | ------ | --------- | -----------
-text | O&M records | - timestamps: string or datetime <br><br> - issue description: string (unstructured) <br><br> - classification: string (structured) | - fill data gaps in dates and categorical records <br><br> - visualize word clusters and patterns over time 
+text | O&M records | <ul> <li> timestamps: string or datetime </li> <li> issue description: string (unstructured) </li> <li> classification: string (structured) </li> </ul> | - fill data gaps in dates and categorical records <br><br> - visualize word clusters and patterns over time 
 timeseries | Production data | - site: integer or string <br><br> - timestamp: string or datetime <br><br> - power production: numeric <br><br> - irradiance: numeric | - estimate expected energy with multiple models <br><br> - evaluate inverter clipping 
 text2time | O&M records and <br><br> production data | see entries for `text` and <br><br> `timeseries` modules above | - analyze overlaps between O&M and production (timeseries) records <br><br> - visualize overlaps between O&M records and production data
 iv | IV records | - current: 1D array <br><br> - voltage: 1D array <br><br> - irradiance: numeric <br><br> - temperature: numeric  | - simulate IV curves with physical faults <br><br> - extract diode parameters from IV curves <br><br> - classify faults using IV curves
