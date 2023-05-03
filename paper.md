@@ -39,6 +39,13 @@ bibliography: paper.bib
 
 # Summary
 
+| Tables        | Are           | Cool  |
+| ------------- |:-------------:| -----:|
+| col 3 is      | right-aligned | $1600 |
+| col 2 is      | centered      |   $12 |
+| zebra stripes | are neat      |    $1 |
+| <ul><li>item1</li><li>item2</li></ul>| See the list | from the first column|
+
 The purpose of `pvOps` is to support empirical evaluations of data collected in the field related to the operations and maintenance (O&M) of photovoltaic (PV) power plants. `pvOps` presently contains modules that address the diversity of field data, including text-based maintenance logs, current-voltage (IV) curves, and timeseries of production information. The package functions leverage machine learning, visualization, and other techniques to enable cleaning, processing, and fusion of these datasets. These capabilities are intended to facilitate easier evaluation of field patterns and extraction of relevant insights to support reliability-related decision-making for PV sites. The open-source code, examples, and instructions for installing the package through PyPI can be accessed through the [GitHub repository]. 
 
 # Statement of Need
