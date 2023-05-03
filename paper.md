@@ -46,6 +46,43 @@ bibliography: paper.bib
 | zebra stripes | are neat      |    $1 |
 | <ul><li>item1</li><li>item2</li></ul>| See the list | from the first column|
 
+attempt 2
+
+<table>
+  <tbody>
+    <tr>
+      <th>Tables</th>
+      <th align="center">Are</th>
+      <th align="right">Cool</th>
+    </tr>
+    <tr>
+      <td>col 3 is</td>
+      <td align="center">right-aligned</td>
+      <td align="right">$1600</td>
+    </tr>
+    <tr>
+      <td>col 2 is</td>
+      <td align="center">centered</td>
+      <td align="right">$12</td>
+    </tr>
+    <tr>
+      <td>zebra stripes</td>
+      <td align="center">are neat</td>
+      <td align="right">$1</td>
+    </tr>
+    <tr>
+      <td>
+        <ul>
+          <li>item1</li>
+          <li>item2</li>
+        </ul>
+      </td>
+      <td align="center">See the list</td>
+      <td align="right">from the first column</td>
+    </tr>
+  </tbody>
+</table>
+
 The purpose of `pvOps` is to support empirical evaluations of data collected in the field related to the operations and maintenance (O&M) of photovoltaic (PV) power plants. `pvOps` presently contains modules that address the diversity of field data, including text-based maintenance logs, current-voltage (IV) curves, and timeseries of production information. The package functions leverage machine learning, visualization, and other techniques to enable cleaning, processing, and fusion of these datasets. These capabilities are intended to facilitate easier evaluation of field patterns and extraction of relevant insights to support reliability-related decision-making for PV sites. The open-source code, examples, and instructions for installing the package through PyPI can be accessed through the [GitHub repository]. 
 
 # Statement of Need
