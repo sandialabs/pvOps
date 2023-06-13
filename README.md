@@ -4,6 +4,7 @@
 [![License](https://img.shields.io/pypi/l/pvOps?color=green)](https://github.com/sandialabs/pvOps/blob/master/LICENSE)
 [![ActionStatus](https://github.com/sandialabs/pvOps/workflows/lint%20and%20test/badge.svg)](https://github.com/sandialabs/pvOps/actions)
 [![DOI](https://zenodo.org/badge/289032705.svg)](https://zenodo.org/badge/latestdoi/289032705)
+[![status](https://joss.theoj.org/papers/6c3554c98b1771125613cff94241847c/status.svg)](https://joss.theoj.org/papers/6c3554c98b1771125613cff94241847c)
 
 pvops contains a series of functions to facilitate fusion of text-based data with time series production data collected at photovoltaic sites. The package also contains example datasets and tutorials to help demonstrate how the functions can be used.
 
