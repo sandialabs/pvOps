@@ -64,8 +64,11 @@ class Example:
         # entries with some keyword over interest, over all entries
         label_count = self.df[NEW_LABEL_COLUMN].count() / len(self.df)
 
+        # replace 'Other' values with 'Unknown'
+        self.df[LABEL_COLUMN] = self.df[LABEL_COLUMN].replace('other', 'unknown')
         # replace NaN values to use accuracy score
-        self.df[[LABEL_COLUMN, NEW_LABEL_COLUMN]] = self.df[[LABEL_COLUMN, NEW_LABEL_COLUMN]].fillna('Unknown')
+        self.df[[LABEL_COLUMN, NEW_LABEL_COLUMN]] = self.df[[LABEL_COLUMN, NEW_LABEL_COLUMN]].fillna('unknown')
+
         acc_score = accuracy_score(y_true=self.df[LABEL_COLUMN], y_pred=self.df[NEW_LABEL_COLUMN])
     
         msg = f'{label_count:.2%} of entries had a keyword of interest, with {acc_score:.2%} accuracy.'
