@@ -1,5 +1,3 @@
-import pandas as pd
-from nltk.tokenize import word_tokenize
 
 # TODO: compare input, output of classify module
 
@@ -8,9 +6,6 @@ from nltk.tokenize import word_tokenize
 2. run through regex function
 3. get expected output
 """
-LABEL_COLUMN = 'equipment_label'
-REGEX_LABEL_COLUMN = 'regex_equipment_label'
-NOTES_COLUMN = 'notes'
 
 # first pass of equipment dictionary is based on
 # https://www.osti.gov/servlets/purl/1872704
@@ -30,16 +25,9 @@ EQUIPMENT_DICT = {'combiner': ['combiner', 'comb', 'cb'],
                   'wiring': ['wiring', 'wire', 'wires']
                   }
 
-def get_sample_data():
-    filename = '~/data/charity/doe_data/sm_logs_notes_cleaned.csv'
-    cols = [NOTES_COLUMN, LABEL_COLUMN] # TODO: add more columns of interest later
-    df = pd.read_csv(filename)
-    # drop any logs without notes or resolution notes
-    df = df[~df[NOTES_COLUMN].isna()]
-    return df[cols]
+# TODO: allow .csv input also
 
-
-def get_all_keywords_of_interest(list_of_txt, custom_dict=None):
+def get_all_keywords_of_interest(list_of_txt, reference_dict=None):
     """
     if keywords of interest are in the list of text, return the keyword category
     for example, if 'inverter' are in the list of text, return ['inverter']
@@ -48,6 +36,7 @@ def get_all_keywords_of_interest(list_of_txt, custom_dict=None):
     ----------
     list_of_txt: list
         list of strings
+    reference_dict: dict
     
     Returns
     -------
@@ -57,39 +46,23 @@ def get_all_keywords_of_interest(list_of_txt, custom_dict=None):
     """
     text_to_search = set(list_of_txt)
     
-    if custom_dict is not None:
-        EQUIPMENT_DICT.update(custom_dict)
+    if reference_dict is None:
+        reference_dict = EQUIPMENT_DICT
 
-    equipment_keywords = set(EQUIPMENT_DICT.keys())
+    equipment_keywords = set(reference_dict.keys())
     included_equipment = list(text_to_search.intersection(equipment_keywords))
 
     return included_equipment
 
-class Example:
-    def __init__(self, df, REGEX_LABEL_COLUMN):
-        """
-        where df is expected input
-        """
-        self.REGEX_LABEL_COLUMN = REGEX_LABEL_COLUMN
-        self.df = df
+def add_equipment_labels(self):
+    """
+    manually add labels to mor text logs
+    dataframe with additional 'equipment_label' column
+    dependent on entries in EQUIPMENT_DICT
+    """
+    self.df[REGEX_LABEL_COLUMN] = self.df[NOTES_COLUMN].apply(get_all_keywords_of_interest)
 
-        # tokenize notes to words
-        self.df[NOTES_COLUMN] = self.df[NOTES_COLUMN].apply(word_tokenize)
+    # each multi-category now in its own row
+    # some logs have multiple equipment issues
+    self.df = self.df.explode(REGEX_LABEL_COLUMN)
 
-    def add_equipment_labels(self):
-        """
-        manually add labels to mor text logs
-        dataframe with additional 'equipment_label' column
-        dependent on entries in EQUIPMENT_DICT
-        """
-        self.df[REGEX_LABEL_COLUMN] = self.df[NOTES_COLUMN].apply(get_all_keywords_of_interest)
-
-        # each multi-category now in its own row
-        # some logs have multiple equipment issues
-        self.df = self.df.explode(REGEX_LABEL_COLUMN)
-
-if __name__ == "__main__":
-    # python -m pvops.text.classify_regex
-    df = get_sample_data()
-    e = Example(df=df, REGEX_LABEL_COLUMN=REGEX_LABEL_COLUMN)
-    e.add_equipment_labels()
