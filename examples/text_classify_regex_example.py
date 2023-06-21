@@ -66,4 +66,3 @@ if __name__ == "__main__":
     df = get_sample_data(filename='~/data/charity/doe_data/sm_logs_notes_cleaned.csv')
     e = Example(df)
     e.add_equipment_labels()
-    import pdb; pdb.set_trace()
