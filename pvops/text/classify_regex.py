@@ -1,9 +1,10 @@
-
 """
 Temporary placeholder to hold classify by search functions
 """
 
-def get_keywords_of_interest(list_of_txt, reference_dict=None):
+from examples.example_data.reference_dict import EQUIPMENT_DICT
+
+def get_keywords_of_interest(list_of_txt, reference_dict=EQUIPMENT_DICT):
     """Find keywords of interest in list of strings from reference dict.
 
     If keywords of interest given in a reference dict are in the list of
@@ -32,10 +33,6 @@ def get_keywords_of_interest(list_of_txt, reference_dict=None):
     """
     text_to_search = set(list_of_txt)
     
-    if reference_dict is None:
-        # use default equipment lookup if no reference dict is given
-        reference_dict = EQUIPMENT_DICT
-
     equipment_keywords = set(reference_dict.keys())
     included_equipment = list(text_to_search.intersection(equipment_keywords))
 
