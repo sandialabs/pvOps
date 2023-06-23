@@ -1,13 +1,11 @@
 from nltk.tokenize import word_tokenize
 import pandas as pd
-from sklearn.metrics import accuracy_score, ConfusionMatrixDisplay
-import matplotlib.pyplot as plt
+from sklearn.metrics import accuracy_score
 
 from pvops.text import utils
-from pvops.text.classify import add_keyword_labels
+from pvops.text.classify import get_labels_from_keywords
 from examples.example_data.reference_dict import EQUIPMENT_DICT
 
-# TODO: turn this into a column dictionary
 LABEL_COLUMN = 'equipment_label'
 NEW_LABEL_COLUMN = 'new_equipment_label'
 NOTES_COLUMN = 'notes'
@@ -59,9 +57,9 @@ class Example:
     def add_equipment_labels(self):
         """Add new equipment labels.
         """
-        self.om_df = add_keyword_labels(self.om_df,
-                                        col_dict=self.col_dict,
-                                        reference_dict=EQUIPMENT_DICT)
+        self.om_df = get_labels_from_keywords(self.om_df,
+                                              col_dict=self.col_dict,
+                                              reference_dict=EQUIPMENT_DICT)
 
     def get_metrics(self):
         """Get accuracy measures and count metrics.
@@ -78,14 +76,6 @@ class Example:
 
         msg = f'{label_count:.2%} of entries had a keyword of interest, with {acc_score:.2%} accuracy.'
         print(msg)
-
-        # TODO: clean up visualization function here
-        labels = list(set(self.om_df[LABEL_COLUMN]).union(set(self.om_df[NEW_LABEL_COLUMN])))
-        cm_display = ConfusionMatrixDisplay.from_predictions(y_true=self.om_df[LABEL_COLUMN], y_pred=self.om_df[NEW_LABEL_COLUMN], display_labels=labels, xticks_rotation='vertical', normalize='true', values_format='.0%')
-        fig, ax = plt.subplots(figsize=(10, 10))
-        cm_display.plot(ax=ax)
-
-        cm_display.figure_.savefig('examples/conf_mat.png', dpi=600)
 
 
 if __name__ == "__main__":

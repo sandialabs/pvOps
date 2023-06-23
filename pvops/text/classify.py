@@ -190,7 +190,7 @@ def classification_deployer(
 
     return pd.concat(rows, axis=1).T, best_gs_instance.best_estimator_
 
-def add_keyword_labels(om_df, col_dict, reference_dict=None):
+def get_labels_from_keywords(om_df, col_dict, reference_dict=None):
     """Find keywords of interest in specified column of dataframe, return as new column value.
 
     If keywords of interest given in a reference dict are in the specified column of the dataframe,
