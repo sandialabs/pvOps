@@ -452,7 +452,6 @@ def text_remove_numbers_stopwords(document, lst_stopwords):
 
     return document
 
-# TODO: this function is in preprocessing
 def get_keywords_of_interest(list_of_txt, reference_dict=EQUIPMENT_DICT):
     """Find keywords of interest in list of strings from reference dict.
 
