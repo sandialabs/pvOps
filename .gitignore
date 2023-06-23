@@ -13,3 +13,5 @@ pvops/text2time/.vscode
 .vscode/*
 .vscode/settings.json
 .coverage
+.eggs
+*.egg-info
