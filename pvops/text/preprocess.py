@@ -480,7 +480,7 @@ def get_keywords_of_interest(list_of_txt, reference_dict=EQUIPMENT_DICT):
         List of keywords from reference_dict found in list_of_txt, can be more than one value.
     """
     text_to_search = set(list_of_txt)
-    
+
     equipment_keywords = set(reference_dict.keys())
     included_equipment = list(text_to_search.intersection(equipment_keywords))
 
