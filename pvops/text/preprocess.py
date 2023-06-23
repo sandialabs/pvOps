@@ -6,6 +6,8 @@ import datefinder
 import traceback
 from datetime import datetime, timedelta
 
+from examples.example_data.reference_dict import EQUIPMENT_DICT
+
 try:
     nltk.data.find('tokenizers/punkt')
 except LookupError:
@@ -449,3 +451,38 @@ def text_remove_numbers_stopwords(document, lst_stopwords):
     document = " ".join(document)
 
     return document
+
+# TODO: this function is in preprocessing
+def get_keywords_of_interest(list_of_txt, reference_dict=EQUIPMENT_DICT):
+    """Find keywords of interest in list of strings from reference dict.
+
+    If keywords of interest given in a reference dict are in the list of
+    strings, return the keyword category, or categories. For example,
+    if the string 'inverter' is in the list of text, return ['inverter'].
+
+    Parameters
+    ----------
+    list_of_txt : list of str
+        Tokenized text, functionally a list of string values.
+    reference_dict : dict with {'keyword': [list of synonyms]} or None
+        Reference dictionary to search for keywords of interest,
+        in the expected format
+        {'keyword_a':
+            ['keyword_a', 'keyword_a_synonym_0', 'keyword_a_synonym_1', keyword_a_synonym_2', ...],
+         'keyword_b':
+            ['keyword_b', 'keyword_b_synonym_0', 'keyword_b_synonym_1', keyword_b_synonym_2', ...],
+         ...}
+        If None, use default reference dictionary.
+        Note: This function can currently only handle single words, no n-gram functionality.
+
+    Returns
+    -------
+    included_equipment: list of str
+        List of keywords from reference_dict found in list_of_txt, can be more than one value.
+    """
+    text_to_search = set(list_of_txt)
+    
+    equipment_keywords = set(reference_dict.keys())
+    included_equipment = list(text_to_search.intersection(equipment_keywords))
+
+    return included_equipment
