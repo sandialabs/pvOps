@@ -190,8 +190,7 @@ def classification_deployer(
 
     return pd.concat(rows, axis=1).T, best_gs_instance.best_estimator_
 
-# TODO: run linter, see command
-def add_keyword_labels(df, col_dict, reference_dict=None):
+def add_keyword_labels(om_df, col_dict, reference_dict=None):
     """Find keywords of interest in specified column of dataframe, return as new column value.
 
     If keywords of interest given in a reference dict are in the specified column of the dataframe,
@@ -200,7 +199,7 @@ def add_keyword_labels(df, col_dict, reference_dict=None):
 
     Parameters
     ----------
-    df : pd.DataFrame
+    om_df : pd.DataFrame
         Dataframe to search for keywords of interest, must include text_col.
     col_dict : dict of {str : str}
         A dictionary that contains the column names relevant for the get_dates fn
@@ -220,13 +219,13 @@ def add_keyword_labels(df, col_dict, reference_dict=None):
 
     Returns
     -------
-    df: pd.DataFrame
+    om_df: pd.DataFrame
         Input df with new_col added, where each found keyword is its own row, may result in
         duplicate rows if more than one keywords of interest was found in text_col.
     """
-    df[col_dict['regex_label']] = df[col_dict['data']].apply(get_keywords_of_interest, reference_dict)
+    om_df[col_dict['regex_label']] = om_df[col_dict['data']].apply(get_keywords_of_interest, reference_dict)
 
     # each multi-category now in its own row, some logs have multiple equipment issues
-    df = df.explode(col_dict['regex_label'])
+    om_df = om_df.explode(col_dict['regex_label'])
 
-    return df
+    return om_df
