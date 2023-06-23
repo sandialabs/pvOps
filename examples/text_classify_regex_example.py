@@ -7,9 +7,13 @@ from pvops.text import utils
 from pvops.text.classify import add_keyword_labels
 from examples.example_data.reference_dict import EQUIPMENT_DICT
 
+# TODO: turn this into a column dictionary
 LABEL_COLUMN = 'equipment_label'
 NEW_LABEL_COLUMN = 'new_equipment_label'
 NOTES_COLUMN = 'notes'
+
+COL_DICT = {'data': NOTES_COLUMN,
+            'regex_label': NEW_LABEL_COLUMN}
 
 def get_sample_data(filename):
     """Function to read .csv file of data.
@@ -23,7 +27,7 @@ def get_sample_data(filename):
     df: pd.DataFrame
     """
     df = pd.read_csv(filename)
-    df = df[~df[NOTES_COLUMN].isna()] # drop any logs without notes
+    df = df[~df[NOTES_COLUMN].isna()]  # drop any logs without notes
 
     # remap assets
     REMAPPING_COL_FROM = 'in'
@@ -39,54 +43,55 @@ def get_sample_data(filename):
     return df[[NOTES_COLUMN, LABEL_COLUMN]]
 
 class Example:
-    def __init__(self, df):
+    def __init__(self, om_df, col_dict):
         """
         Parameters
         ----------
-        df : pd.DataFrame
+        om_df : pd.DataFrame
             Must have columns LABEL_COLUMN, and NOTES_COLUMN
         """
-        self.df = df
+        self.om_df = om_df
+        self.col_dict = col_dict
 
         # tokenize notes to words
-        self.df[NOTES_COLUMN] = self.df[NOTES_COLUMN].apply(word_tokenize)
+        self.om_df[NOTES_COLUMN] = self.om_df[NOTES_COLUMN].apply(word_tokenize)
 
     def add_equipment_labels(self):
         """Add new equipment labels.
         """
-        self.df = add_keyword_labels(self.df,
-                                     text_col=NOTES_COLUMN,
-                                     new_col=NEW_LABEL_COLUMN,
-                                     reference_dict=EQUIPMENT_DICT)
-    
+        self.om_df = add_keyword_labels(self.om_df,
+                                        col_dict=self.col_dict,
+                                        reference_dict=EQUIPMENT_DICT)
+
     def get_metrics(self):
         """Get accuracy measures and count metrics.
         """
         # entries with some keyword over interest, over all entries
-        label_count = self.df[NEW_LABEL_COLUMN].count() / len(self.df)
+        label_count = self.om_df[NEW_LABEL_COLUMN].count() / len(self.om_df)
 
         # replace 'Other' values with 'Unknown'
-        self.df[LABEL_COLUMN] = self.df[LABEL_COLUMN].replace('other', 'unknown')
+        self.om_df[LABEL_COLUMN] = self.om_df[LABEL_COLUMN].replace('other', 'unknown')
         # replace NaN values to use accuracy score
-        self.df[[LABEL_COLUMN, NEW_LABEL_COLUMN]] = self.df[[LABEL_COLUMN, NEW_LABEL_COLUMN]].fillna('unknown')
+        self.om_df[[LABEL_COLUMN, NEW_LABEL_COLUMN]] = self.om_df[[LABEL_COLUMN, NEW_LABEL_COLUMN]].fillna('unknown')
 
-        acc_score = accuracy_score(y_true=self.df[LABEL_COLUMN], y_pred=self.df[NEW_LABEL_COLUMN])
-    
+        acc_score = accuracy_score(y_true=self.om_df[LABEL_COLUMN], y_pred=self.om_df[NEW_LABEL_COLUMN])
+
         msg = f'{label_count:.2%} of entries had a keyword of interest, with {acc_score:.2%} accuracy.'
         print(msg)
 
         # TODO: clean up visualization function here
-        labels = list(set(self.df[LABEL_COLUMN]).union(set(self.df[NEW_LABEL_COLUMN])))
-        cm_display = ConfusionMatrixDisplay.from_predictions(y_true=self.df[LABEL_COLUMN], y_pred=self.df[NEW_LABEL_COLUMN], display_labels=labels, xticks_rotation='vertical', normalize='true', values_format='.0%')
-        fig, ax = plt.subplots(figsize=(10,10))
+        labels = list(set(self.om_df[LABEL_COLUMN]).union(set(self.om_df[NEW_LABEL_COLUMN])))
+        cm_display = ConfusionMatrixDisplay.from_predictions(y_true=self.om_df[LABEL_COLUMN], y_pred=self.om_df[NEW_LABEL_COLUMN], display_labels=labels, xticks_rotation='vertical', normalize='true', values_format='.0%')
+        fig, ax = plt.subplots(figsize=(10, 10))
         cm_display.plot(ax=ax)
 
         cm_display.figure_.savefig('examples/conf_mat.png', dpi=600)
 
+
 if __name__ == "__main__":
     # python -m examples.text_classify_regex_example
     # TODO: update this with existing pvops data
-    df = get_sample_data(filename='~/data/charity/doe_data/sm_logs_notes_cleaned.csv')
-    e = Example(df)
+    om_df = get_sample_data(filename='~/data/charity/doe_data/sm_logs_notes_cleaned.csv')
+    e = Example(om_df, col_dict=COL_DICT)
     e.add_equipment_labels()
     e.get_metrics()
