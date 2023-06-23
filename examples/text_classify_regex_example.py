@@ -10,9 +10,6 @@ LABEL_COLUMN = 'equipment_label'
 NEW_LABEL_COLUMN = 'new_equipment_label'
 NOTES_COLUMN = 'notes'
 
-COL_DICT = {'data': NOTES_COLUMN,
-            'regex_label': NEW_LABEL_COLUMN}
-
 def get_sample_data(filename):
     """Function to read .csv file of data.
 
@@ -82,6 +79,7 @@ if __name__ == "__main__":
     # python -m examples.text_classify_regex_example
     # TODO: update this with existing pvops data
     om_df = get_sample_data(filename='~/data/charity/doe_data/sm_logs_notes_cleaned.csv')
-    e = Example(om_df, col_dict=COL_DICT)
+    e = Example(om_df, col_dict={'data': NOTES_COLUMN,
+                                 'regex_label': NEW_LABEL_COLUMN})
     e.add_equipment_labels()
     e.get_metrics()
