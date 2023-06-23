@@ -190,7 +190,8 @@ def classification_deployer(
 
     return pd.concat(rows, axis=1).T, best_gs_instance.best_estimator_
 
-def add_keyword_labels(df, text_col, new_col, reference_dict=None):
+# TODO: run linter, see command
+def add_keyword_labels(df, col_dict, reference_dict=None):
     """Find keywords of interest in specified column of dataframe, return as new column value.
 
     If keywords of interest given in a reference dict are in the specified column of the dataframe,
@@ -201,11 +202,12 @@ def add_keyword_labels(df, text_col, new_col, reference_dict=None):
     ----------
     df : pd.DataFrame
         Dataframe to search for keywords of interest, must include text_col.
-    text_col : str
-        Column of tokenized text values, to search for keywords.
-    new_col :str
-        Column name of new label column.
-    reference_dict : dict with {'keyword': [list of synonyms]} or None
+    col_dict : dict of {str : str}
+        A dictionary that contains the column names relevant for the get_dates fn
+
+        - data : string, should be assigned to associated column which stores the tokenized text logs
+        - regex_label : string, should will be assigned to new label column
+    reference_dict : dict of {'keyword': [list of synonyms]} or None
         Reference dictionary to search for keywords of interest,
         in the expected format
         {'keyword_a':
@@ -222,9 +224,9 @@ def add_keyword_labels(df, text_col, new_col, reference_dict=None):
         Input df with new_col added, where each found keyword is its own row, may result in
         duplicate rows if more than one keywords of interest was found in text_col.
     """
-    df[new_col] = df[text_col].apply(get_keywords_of_interest, reference_dict)
+    df[col_dict['regex_label']] = df[col_dict['data']].apply(get_keywords_of_interest, reference_dict)
 
     # each multi-category now in its own row, some logs have multiple equipment issues
-    df = df.explode(new_col)
+    df = df.explode(col_dict['regex_label'])
 
     return df
