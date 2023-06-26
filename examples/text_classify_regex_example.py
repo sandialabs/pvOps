@@ -39,7 +39,7 @@ class Example:
         self.om_df = get_attributes_from_keywords(self.om_df,
                                                   col_dict=self.col_dict,
                                                   reference_dict=EQUIPMENT_DICT)
-        
+
         # replace 'Other' values with 'Unknown'
         self.om_df[self.LABEL_COL] = self.om_df[self.LABEL_COL].replace('other', 'unknown')
         # replace NaN values to use accuracy score
