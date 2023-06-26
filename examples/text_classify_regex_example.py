@@ -1,42 +1,11 @@
 from nltk.tokenize import word_tokenize
-from os.path import join
 import pandas as pd
 from sklearn.metrics import accuracy_score
 
-from pvops.text import utils, preprocess
+from pvops.text import preprocess
 from pvops.text.classify import get_labels_from_keywords
 from examples.example_data.reference_dict import EQUIPMENT_DICT
 
-LABEL_COLUMN = 'equipment_label'
-NEW_LABEL_COLUMN = 'new_equipment_label'
-NOTES_COLUMN = 'notes'
-
-def get_sample_data(filename):
-    """Function to read .csv file of data.
-
-    Parameters
-    ----------
-    filename : str
-
-    Returns
-    -------
-    df: pd.DataFrame
-    """
-    df = pd.read_csv(filename)
-    df = df[~df[NOTES_COLUMN].isna()]  # drop any logs without notes
-
-    # remap assets
-    REMAPPING_COL_FROM = 'in'
-    REMAPPING_COL_TO = 'out_'
-    remapping_df = pd.read_csv('~/pvOps/examples/example_data/remappings_asset.csv')
-    remapping_col_dict = {
-        'attribute_col': LABEL_COLUMN,
-        'remapping_col_from': REMAPPING_COL_FROM,
-        'remapping_col_to': REMAPPING_COL_TO
-    }
-
-    df = utils.remap_attributes(df, remapping_df, remapping_col_dict, allow_missing_mappings=True)
-    return df[[NOTES_COLUMN, LABEL_COLUMN]]
 
 class Example:
     def __init__(self, om_df, col_dict):
@@ -44,13 +13,23 @@ class Example:
         Parameters
         ----------
         om_df : pd.DataFrame
-            Must have columns LABEL_COLUMN, and NOTES_COLUMN
+            Must have columns in col_dict
+        col_dict : dict of {str : str}
+            A dictionary that contains the column names associated with 
+            the 
+            input `om_df` and contains at least:
+
+            - **data** (*string*)
+            - **label** (*string*)
         """
         self.om_df = om_df
         self.col_dict = col_dict
+        self.DATA_COL = self.col_dict['data']
+        self.LABEL_COL = self.col_dict['label']
+        self.NEW_LABEL_COL = 'new_' + self.col_dict['label']
 
         # tokenize notes to words
-        self.om_df[NOTES_COLUMN] = self.om_df[NOTES_COLUMN].apply(word_tokenize)
+        self.om_df[self.DATA_COL] = self.om_df[self.DATA_COL].apply(word_tokenize)
 
     def add_equipment_labels(self):
         """Add new equipment labels.
@@ -63,14 +42,14 @@ class Example:
         """Get accuracy measures and count metrics.
         """
         # entries with some keyword over interest, over all entries
-        label_count = self.om_df[NEW_LABEL_COLUMN].count() / len(self.om_df)
+        label_count = self.om_df[self.NEW_LABEL_COL].count() / len(self.om_df)
 
         # replace 'Other' values with 'Unknown'
-        self.om_df[LABEL_COLUMN] = self.om_df[LABEL_COLUMN].replace('other', 'unknown')
+        self.om_df[self.LABEL_COL] = self.om_df[self.LABEL_COL].replace('other', 'unknown')
         # replace NaN values to use accuracy score
-        self.om_df[[LABEL_COLUMN, NEW_LABEL_COLUMN]] = self.om_df[[LABEL_COLUMN, NEW_LABEL_COLUMN]].fillna('unknown')
+        self.om_df[[self.LABEL_COL, self.NEW_LABEL_COL]] = self.om_df[[self.LABEL_COL, self.NEW_LABEL_COL]].fillna('unknown')
 
-        acc_score = accuracy_score(y_true=self.om_df[LABEL_COLUMN], y_pred=self.om_df[NEW_LABEL_COLUMN])
+        acc_score = accuracy_score(y_true=self.om_df[self.NEW_LABEL_COL], y_pred=self.om_df[self.NEW_LABEL_COL])
 
         msg = f'{label_count:.2%} of entries had a keyword of interest, with {acc_score:.2%} accuracy.'
         print(msg)
@@ -79,18 +58,17 @@ class Example:
 if __name__ == "__main__":
     # python -m examples.text_classify_regex_example
 
-    filepath = join("example_data", "example_ML_ticket_data.csv")
-    om_df = pd.read_csv(filepath)
+    om_df = pd.read_csv('examples/example_data/example_ML_ticket_data.csv')
     col_dict = {
         "data" : "CompletionDesc",
         "eventstart" : "Date_EventStart",
         "save_data_column" : "processed_data",
         "save_date_column" : "processed_date",
+        "label" : "Asset"
     }
     om_df = preprocess.preprocessor(om_df, lst_stopwords=[], col_dict=col_dict, print_info=False, extract_dates_only=False)
     om_df["Asset"] = om_df.apply(lambda row: row.Asset.lower(), axis=1)
 
-    e = Example(om_df, col_dict={'data': NOTES_COLUMN,
-                                 'regex_label': 'keyword_' + LABEL_COLUMN})
+    e = Example(om_df=om_df, col_dict=col_dict)
     e.add_equipment_labels()
     e.get_metrics()
