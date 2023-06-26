@@ -190,7 +190,7 @@ def classification_deployer(
 
     return pd.concat(rows, axis=1).T, best_gs_instance.best_estimator_
 
-def get_labels_from_keywords(om_df, col_dict, reference_dict=None):
+def get_attributes_from_keywords(om_df, col_dict, reference_dict=None):
     """Find keywords of interest in specified column of dataframe, return as new column value.
 
     If keywords of interest given in a reference dict are in the specified column of the dataframe,
@@ -202,10 +202,10 @@ def get_labels_from_keywords(om_df, col_dict, reference_dict=None):
     om_df : pd.DataFrame
         Dataframe to search for keywords of interest, must include text_col.
     col_dict : dict of {str : str}
-        A dictionary that contains the column names relevant for the get_dates fn
+        A dictionary that contains the column names needed:
 
         - data : string, should be assigned to associated column which stores the tokenized text logs
-        - label : string, will be assigned to label column and used to create new label column
+        - predicted_col : string, will be used to create keyword search label column
     reference_dict : dict of {'keyword': [list of synonyms]} or None
         Reference dictionary to search for keywords of interest,
         in the expected format
@@ -223,12 +223,11 @@ def get_labels_from_keywords(om_df, col_dict, reference_dict=None):
         Input df with new_col added, where each found keyword is its own row, may result in
         duplicate rows if more than one keywords of interest was found in text_col.
     """
-    new_col_name = 'new_' + col_dict['label']
-    om_df[new_col_name] = om_df[col_dict['data']].apply(get_keywords_of_interest, reference_dict)
+    om_df[col_dict['predicted_col']] = om_df[col_dict['data']].apply(get_keywords_of_interest, reference_dict)
 
     # each multi-category now in its own row, some logs have multiple equipment issues
-    multiple_keywords_df = om_df[om_df[new_col_name].str.len() > 1]
-    om_df = om_df.explode(new_col_name)
+    multiple_keywords_df = om_df[om_df[col_dict['predicted_col']].str.len() > 1]
+    om_df = om_df.explode(col_dict['predicted_col'])
 
     msg = f'{len(multiple_keywords_df)} entries had multiple keywords of interest. Reference: {multiple_keywords_df.index} in original dataframe.'
     print(msg)
