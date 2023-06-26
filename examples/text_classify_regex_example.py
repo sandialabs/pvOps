@@ -86,6 +86,9 @@ if __name__ == "__main__":
 
     # remap assets
     remapping_df = pd.read_csv('~/pvOps/examples/example_data/remappings_asset.csv')
+    remapping_df['out_'] = remapping_df['out_'].replace({'met station': 'met',
+                                                         'energy storage': 'battery',
+                                                         'energy meter': 'meter'})
     om_df = utils.remap_attributes(om_df, remapping_df, col_dict, allow_missing_mappings=True)
 
     # preprocessing steps
