@@ -2,8 +2,8 @@ from nltk.tokenize import word_tokenize
 import pandas as pd
 from sklearn.metrics import accuracy_score
 
-from pvops.text import preprocess
-from pvops.text.classify import get_labels_from_keywords
+from pvops.text import utils, preprocess
+from pvops.text.classify import get_attributes_from_keywords
 from pvops.text.visualize import visualize_classification_confusion_matrix
 from examples.example_data.reference_dict import EQUIPMENT_DICT
 
@@ -21,13 +21,14 @@ class Example:
             input `om_df` and contains at least:
 
             - **data** (*string*)
-            - **label** (*string*)
+            - **attribute_col** (*string*)
+            - **predicted_col** (*string*)
         """
         self.om_df = om_df
         self.col_dict = col_dict
         self.DATA_COL = self.col_dict['data']
-        self.LABEL_COL = self.col_dict['label']
-        self.NEW_LABEL_COL = 'new_' + self.col_dict['label']
+        self.LABEL_COL = self.col_dict['attribute_col']
+        self.NEW_LABEL_COL = self.col_dict['predicted_col']
 
         # tokenize notes to words
         self.om_df[self.DATA_COL] = self.om_df[self.DATA_COL].apply(word_tokenize)
@@ -35,19 +36,27 @@ class Example:
     def add_equipment_labels(self):
         """Add new equipment labels.
         """
-        self.om_df = get_labels_from_keywords(self.om_df,
-                                              col_dict=self.col_dict,
-                                              reference_dict=EQUIPMENT_DICT)
+        self.om_df = get_attributes_from_keywords(self.om_df,
+                                                  col_dict=self.col_dict,
+                                                  reference_dict=EQUIPMENT_DICT)
         
         # replace 'Other' values with 'Unknown'
         self.om_df[self.LABEL_COL] = self.om_df[self.LABEL_COL].replace('other', 'unknown')
         # replace NaN values to use accuracy score
         self.om_df[[self.LABEL_COL, self.NEW_LABEL_COL]] = self.om_df[[self.LABEL_COL, self.NEW_LABEL_COL]].fillna('unknown')
 
-    def plot_confusion_matrix(self):
-        output_filepath = 'examples/example_conf_mat.png'
-        fig = visualize_classification_confusion_matrix(self.om_df, self.col_dict)
-        fig.figure_.savefig(output_filepath, dpi=600)
+    def plot_confusion_matrix(self, output_filepath, title):
+        """Plot confusion matrix for actual and predicted labels
+
+        Parameters
+        ----------
+        output_filepath : str
+            path to write plot image to
+        title : str
+            Optional, title of plot
+        """
+        fig = visualize_classification_confusion_matrix(self.om_df, self.col_dict, title)
+        fig.figure_.savefig(output_filepath, dpi=600, pad_inches=2)
 
     def get_metrics(self):
         """Get accuracy measures and count metrics.
@@ -70,12 +79,21 @@ if __name__ == "__main__":
         "eventstart" : "Date_EventStart",
         "save_data_column" : "processed_data",
         "save_date_column" : "processed_date",
-        "label" : "Asset"
+        "attribute_col" : "Asset",
+        "predicted_col" : "Keyword_Asset",
+        "remapping_col_from": "in",
+        "remapping_col_to": "out_"
     }
+
+    # remap assets
+    remapping_df = pd.read_csv('~/pvOps/examples/example_data/remappings_asset.csv')
+    om_df = utils.remap_attributes(om_df, remapping_df, col_dict, allow_missing_mappings=True)
+
+    # preprocessing steps
     om_df = preprocess.preprocessor(om_df, lst_stopwords=[], col_dict=col_dict, print_info=False, extract_dates_only=False)
-    om_df["Asset"] = om_df.apply(lambda row: row.Asset.lower(), axis=1)
+    om_df[col_dict['attribute_col']] = om_df.apply(lambda row: row[col_dict['attribute_col']].lower(), axis=1)
 
     e = Example(om_df=om_df, col_dict=col_dict)
     e.add_equipment_labels()
-    e.plot_confusion_matrix()
+    e.plot_confusion_matrix(output_filepath='examples/example_conf_mat.png', title='Confusion Matrix of Actual and Predicted Asset Labels')
     e.get_metrics()
