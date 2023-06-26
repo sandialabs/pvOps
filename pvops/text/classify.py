@@ -205,7 +205,7 @@ def get_labels_from_keywords(om_df, col_dict, reference_dict=None):
         A dictionary that contains the column names relevant for the get_dates fn
 
         - data : string, should be assigned to associated column which stores the tokenized text logs
-        - regex_label : string, should will be assigned to new label column
+        - label : string, will be assigned to label column and used to create new label column
     reference_dict : dict of {'keyword': [list of synonyms]} or None
         Reference dictionary to search for keywords of interest,
         in the expected format
@@ -223,9 +223,14 @@ def get_labels_from_keywords(om_df, col_dict, reference_dict=None):
         Input df with new_col added, where each found keyword is its own row, may result in
         duplicate rows if more than one keywords of interest was found in text_col.
     """
-    om_df[col_dict['regex_label']] = om_df[col_dict['data']].apply(get_keywords_of_interest, reference_dict)
+    new_col_name = 'new_' + col_dict['label']
+    om_df[new_col_name] = om_df[col_dict['data']].apply(get_keywords_of_interest, reference_dict)
 
     # each multi-category now in its own row, some logs have multiple equipment issues
-    om_df = om_df.explode(col_dict['regex_label'])
+    multiple_keywords_df = om_df[om_df[new_col_name].str.len() > 1]
+    om_df = om_df.explode(new_col_name)
+
+    msg = f'{len(multiple_keywords_df)} entries had multiple keywords of interest. Reference: {multiple_keywords_df.index} in original dataframe.'
+    print(msg)
 
     return om_df
