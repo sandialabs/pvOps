@@ -28,7 +28,7 @@ class Example:
         self.col_dict = col_dict
         self.DATA_COL = self.col_dict['data']
         self.LABEL_COL = self.col_dict['attribute_col']
-        self.NEW_LABEL_COL = self.col_dict['predicted_col']
+        self.PREDICT_COL = self.col_dict['predicted_col']
 
         # tokenize notes to words
         self.om_df[self.DATA_COL] = self.om_df[self.DATA_COL].apply(word_tokenize)
@@ -39,11 +39,6 @@ class Example:
         self.om_df = get_attributes_from_keywords(self.om_df,
                                                   col_dict=self.col_dict,
                                                   reference_dict=EQUIPMENT_DICT)
-
-        # replace 'Other' values with 'Unknown'
-        self.om_df[self.LABEL_COL] = self.om_df[self.LABEL_COL].replace('other', 'unknown')
-        # replace NaN values to use accuracy score
-        self.om_df[[self.LABEL_COL, self.NEW_LABEL_COL]] = self.om_df[[self.LABEL_COL, self.NEW_LABEL_COL]].fillna('unknown')
 
     def plot_confusion_matrix(self, output_filepath, title):
         """Plot confusion matrix for actual and predicted labels
@@ -62,9 +57,13 @@ class Example:
         """Get accuracy measures and count metrics.
         """
         # entries with some keyword over interest, over all entries
-        label_count = self.om_df[self.NEW_LABEL_COL].count() / len(self.om_df)
+        label_count = self.om_df[self.PREDICT_COL].count() / len(self.om_df)
 
-        acc_score = accuracy_score(y_true=self.om_df[self.NEW_LABEL_COL], y_pred=self.om_df[self.NEW_LABEL_COL])
+        # replace 'Other' values with 'Unknown'
+        self.om_df[self.LABEL_COL] = self.om_df[self.LABEL_COL].replace('other', 'unknown')
+        # replace NaN values to use accuracy score
+        self.om_df[[self.LABEL_COL, self.PREDICT_COL]] = self.om_df[[self.LABEL_COL, self.PREDICT_COL]].fillna('unknown')
+        acc_score = accuracy_score(y_true=self.om_df[self.LABEL_COL], y_pred=self.om_df[self.PREDICT_COL])
 
         msg = f'{label_count:.2%} of entries had a keyword of interest, with {acc_score:.2%} accuracy.'
         print(msg)
@@ -95,5 +94,5 @@ if __name__ == "__main__":
 
     e = Example(om_df=om_df, col_dict=col_dict)
     e.add_equipment_labels()
-    e.plot_confusion_matrix(output_filepath='examples/example_conf_mat.png', title='Confusion Matrix of Actual and Predicted Asset Labels')
     e.get_metrics()
+    e.plot_confusion_matrix(output_filepath='examples/example_conf_mat.png', title='Confusion Matrix of Actual and Predicted Asset Labels')
