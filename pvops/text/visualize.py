@@ -381,3 +381,22 @@ def visualize_word_frequency_plot(
     fig = plt.figure(figsize=(12, 6))
     fd.plot(30, cumulative=False, title=title, figure=fig, **graph_aargs)
     return fd
+
+from sklearn.metrics import ConfusionMatrixDisplay
+
+def visualize_classification_confusion_matrix(om_df, data_cols, output_filepath):
+    y_true = om_df[data_cols['label']]
+    y_pred = om_df['new_' + data_cols['label']]
+
+    # labels = list(set(self.df[LABEL_COLUMN]).union(set(self.df[NEW_LABEL_COLUMN])))
+    cm_display = ConfusionMatrixDisplay.from_predictions(y_true=y_true,
+                                                         y_pred=y_pred,
+                                                        #  display_labels=labels,
+                                                        #  xticks_rotation='vertical',
+                                                         normalize='true',
+                                                        #  values_format='.0%',
+                                                         )
+    fig, ax = plt.subplots(figsize=(10,10))
+    cm_display.plot(ax=ax)
+    cm_display.figure_.savefig(output_filepath, dpi=600)
+
