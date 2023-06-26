@@ -2,6 +2,7 @@
 import matplotlib
 import matplotlib.pyplot as plt
 import networkx as nx
+from sklearn.metrics import ConfusionMatrixDisplay
 
 # data structures
 import numpy as np
@@ -382,21 +383,40 @@ def visualize_word_frequency_plot(
     fd.plot(30, cumulative=False, title=title, figure=fig, **graph_aargs)
     return fd
 
-from sklearn.metrics import ConfusionMatrixDisplay
 
-def visualize_classification_confusion_matrix(om_df, data_cols, output_filepath):
-    y_true = om_df[data_cols['label']]
-    y_pred = om_df['new_' + data_cols['label']]
+def visualize_classification_confusion_matrix(om_df, data_cols, title=''):
+    """Visualize confusion matrix comparing known categorical values, and predicted categorical values.
 
-    # labels = list(set(self.df[LABEL_COLUMN]).union(set(self.df[NEW_LABEL_COLUMN])))
-    cm_display = ConfusionMatrixDisplay.from_predictions(y_true=y_true,
-                                                         y_pred=y_pred,
-                                                        #  display_labels=labels,
-                                                        #  xticks_rotation='vertical',
+    Parameters
+    ----------
+    om_df : DataFrame
+        A pandas dataframe containing O&M data, which contains columns specified in om_col_dict
+    data_cols : list
+        List of column names (str) which have text data.
+    title : str
+        Optional, title of plot
+
+    Returns
+    -------
+    Matplotlib figure instance
+    """
+    act_col = data_cols['attribute_col']
+    pred_col = data_cols['predicted_col']
+
+    # drop any predicted labels with no actual labels in the data, for a cleaner visual
+    no_real_values = [cat for cat in om_df[pred_col].unique() if cat not in om_df[act_col].unique()]
+    no_real_values_mask = om_df[pred_col].isin(no_real_values)
+    om_df = om_df[~no_real_values_mask]
+    caption_txt = f'NOTE: Predicted values{no_real_values} had no actual values in the dataset.'
+
+    plt.rcParams.update({'font.size': 8})
+    cm_display = ConfusionMatrixDisplay.from_predictions(y_true=om_df[act_col],
+                                                         y_pred=om_df[pred_col],
                                                          normalize='true',
-                                                        #  values_format='.0%',
                                                          )
-    fig, ax = plt.subplots(figsize=(10,10))
-    cm_display.plot(ax=ax)
-    cm_display.figure_.savefig(output_filepath, dpi=600)
-
+    fig = cm_display.plot()
+    plt.xticks(rotation=90)
+    plt.tight_layout()
+    plt.figtext(0.00, 0.01, caption_txt, wrap=True, fontsize=7)
+    plt.title(title)
+    return fig

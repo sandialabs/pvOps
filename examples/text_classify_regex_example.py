@@ -46,7 +46,8 @@ class Example:
 
     def plot_confusion_matrix(self):
         output_filepath = 'examples/example_conf_mat.png'
-        visualize_classification_confusion_matrix(self.om_df, self.col_dict, output_filepath)
+        fig = visualize_classification_confusion_matrix(self.om_df, self.col_dict)
+        fig.figure_.savefig(output_filepath, dpi=600)
 
     def get_metrics(self):
         """Get accuracy measures and count metrics.
