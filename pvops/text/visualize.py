@@ -384,15 +384,20 @@ def visualize_word_frequency_plot(
     return fd
 
 
-def visualize_classification_confusion_matrix(om_df, data_cols, title=''):
+def visualize_classification_confusion_matrix(om_df, col_dict, title=''):
     """Visualize confusion matrix comparing known categorical values, and predicted categorical values.
 
     Parameters
     ----------
     om_df : DataFrame
         A pandas dataframe containing O&M data, which contains columns specified in om_col_dict
-    data_cols : list
-        List of column names (str) which have text data.
+    col_dict : dict of {str : str}
+        A dictionary that contains the column names needed:
+
+        - data : string, should be assigned to associated column which stores the tokenized text logs
+        - attribute_col : string, will be assigned to attribute column and used to create new attribute_col
+        - predicted_col : string, will be used to create keyword search label column
+
     title : str
         Optional, title of plot
 
@@ -400,8 +405,8 @@ def visualize_classification_confusion_matrix(om_df, data_cols, title=''):
     -------
     Matplotlib figure instance
     """
-    act_col = data_cols['attribute_col']
-    pred_col = data_cols['predicted_col']
+    act_col = col_dict['attribute_col']
+    pred_col = col_dict['predicted_col']
 
     # drop any predicted labels with no actual labels in the data, for a cleaner visual
     no_real_values = [cat for cat in om_df[pred_col].unique() if cat not in om_df[act_col].unique()]
