@@ -1,8 +1,9 @@
 from nltk.tokenize import word_tokenize
+from os.path import join
 import pandas as pd
 from sklearn.metrics import accuracy_score
 
-from pvops.text import utils
+from pvops.text import utils, preprocess
 from pvops.text.classify import get_labels_from_keywords
 from examples.example_data.reference_dict import EQUIPMENT_DICT
 
@@ -77,9 +78,19 @@ class Example:
 
 if __name__ == "__main__":
     # python -m examples.text_classify_regex_example
-    # TODO: update this with existing pvops data
-    om_df = get_sample_data(filename='~/data/charity/doe_data/sm_logs_notes_cleaned.csv')
+
+    filepath = join("example_data", "example_ML_ticket_data.csv")
+    om_df = pd.read_csv(filepath)
+    col_dict = {
+        "data" : "CompletionDesc",
+        "eventstart" : "Date_EventStart",
+        "save_data_column" : "processed_data",
+        "save_date_column" : "processed_date",
+    }
+    om_df = preprocess.preprocessor(om_df, lst_stopwords=[], col_dict=col_dict, print_info=False, extract_dates_only=False)
+    om_df["Asset"] = om_df.apply(lambda row: row.Asset.lower(), axis=1)
+
     e = Example(om_df, col_dict={'data': NOTES_COLUMN,
-                                 'regex_label': NEW_LABEL_COLUMN})
+                                 'regex_label': 'keyword_' + LABEL_COLUMN})
     e.add_equipment_labels()
     e.get_metrics()
