@@ -16,13 +16,13 @@ EQUIPMENT_DICT = {'combiner': ['combiner', 'comb', 'cb'],
                   'wiring': ['wiring', 'wire', 'wires']
                   }
 
-PV_TERMS_DICT = {'communication': ['comm',],
-                 'energy': ['energy', 'kwh', 'mwh',],
-                 'grid': ['grid', 'curtailment', 'curtail', 'poi',],
-                 'outage': ['outage', 'offline',],
-                 'solar': ['solar', 'pv', 'photovoltaic',],
-                 'system': ['system', 'site', 'farm', 'project',],
-                 'make_model': ['sma',], # TODO: use the equipment database for this
-                 'corrective_maintence': ['cm',],
-                 'preventative_maintence': ['pm',]
-                 }
+PV_TERMS_DICT = {'communication': ['comm', ],
+                 'energy': ['energy', 'kwh', 'mwh', ],
+                 'grid': ['grid', 'curtailment', 'curtail', 'poi', ],
+                 'outage': ['outage', 'offline', ],
+                 'solar': ['solar', 'pv', 'photovoltaic', ],
+                 'system': ['system', 'site', 'farm', 'project', ],
+                 'make_model': ['sma', ], 
+                 'corrective_maintence': ['cm', ],
+                 'preventative_maintence': ['pm', ]
+                 } 

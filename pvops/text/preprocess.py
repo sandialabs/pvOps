@@ -462,7 +462,7 @@ def text_replace_key_terms(document, pv_reference_dict=None):
     ----------
     document : str
         String representation of a document
-    pv_reference_dict : dict
+    pv_reference_dict : dict or None
         {most_common_term: list of other terms for the most_common_term}
 
     Returns
@@ -472,7 +472,7 @@ def text_replace_key_terms(document, pv_reference_dict=None):
     """
     if pv_reference_dict is None:
         # for equipment, only keep dict entries where there are more than one way to reference a term
-        equipment_dict = {k:EQUIPMENT_DICT[k] for k in EQUIPMENT_DICT if len(EQUIPMENT_DICT[k]) > 1}
+        equipment_dict = {k: EQUIPMENT_DICT[k] for k in EQUIPMENT_DICT if len(EQUIPMENT_DICT[k]) > 1}
         pv_reference_dict = {**equipment_dict, **PV_TERMS_DICT}
 
     # remove all spaces
