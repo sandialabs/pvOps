@@ -80,3 +80,27 @@ def remap_attributes(om_df, remapping_df, remapping_col_dict,
               "{sum(df[ATTRIBUTE_COL].isna())}")
 
     return df
+
+def replace_word_with_pv_term(word, pv_reference_dict):
+    """Given a word, find a more commonly used pv term
+
+    Parameters
+    ----------    
+    word : str
+        word of interest
+    pv_reference_dict : dict
+        {most_common_term: list of other terms for the most_common_term}
+    
+    Returns
+    -------
+    pv_term or word : str
+        pv_term if in pv_reference_dict, or original word if not
+    
+    """
+
+    pv_term = [pv_term for pv_term in pv_reference_dict if word in pv_reference_dict[pv_term]]
+    if pv_term:
+        return pv_term[0]
+    else:
+        return word
+

@@ -6,7 +6,9 @@ import datefinder
 import traceback
 from datetime import datetime, timedelta
 
-from examples.example_data.reference_dict import EQUIPMENT_DICT
+from examples.example_data.reference_dict import EQUIPMENT_DICT, PV_TERMS_DICT
+from pvops.text.utils import replace_word_with_pv_term
+
 
 try:
     nltk.data.find('tokenizers/punkt')
@@ -14,7 +16,7 @@ except LookupError:
     nltk.download('punkt')
 
 def preprocessor(
-    om_df, lst_stopwords, col_dict, print_info=False, extract_dates_only=False
+    om_df, lst_stopwords, col_dict, pv_reference_dict=None, print_info=False, extract_dates_only=False
 ):
     """Preprocessing function which processes the raw text data into processed text data and extracts dates
 
@@ -93,8 +95,9 @@ def preprocessor(
 
         if not extract_dates_only:
             try:
-                out = text_remove_numbers_stopwords(document, lst_stopwords)
-                clean_corpus.append(out)
+                out_stop = text_remove_numbers_stopwords(document, lst_stopwords)
+                out_replace = text_replace_key_terms(out_stop, pv_reference_dict)
+                clean_corpus.append(out_replace)
             except:
                 print(traceback.format_exc())
                 clean_corpus.append("")
@@ -452,7 +455,34 @@ def text_remove_numbers_stopwords(document, lst_stopwords):
 
     return document
 
-def get_keywords_of_interest(list_of_txt, reference_dict=EQUIPMENT_DICT):
+def text_replace_key_terms(document, pv_reference_dict=None):
+    """Conduct final processing steps after date extraction
+
+    Parameters
+    ----------
+    document : str
+        String representation of a document
+    pv_reference_dict : dict
+        {most_common_term: list of other terms for the most_common_term}
+
+    Returns
+    -------
+    string
+        string of processed document
+    """
+    if pv_reference_dict is None:
+        # for equipment, only keep dict entries where there are more than one way to reference a term
+        equipment_dict = {k:EQUIPMENT_DICT[k] for k in EQUIPMENT_DICT if len(EQUIPMENT_DICT[k]) > 1}
+        pv_reference_dict = {**equipment_dict, **PV_TERMS_DICT}
+
+    # remove all spaces
+    document_tok = nltk.word_tokenize(document)
+    document = [replace_word_with_pv_term(word, pv_reference_dict) for word in document_tok]
+    document = " ".join(document)
+
+    return document
+
+def get_keywords_of_interest(document_tok, reference_dict=EQUIPMENT_DICT):
     """Find keywords of interest in list of strings from reference dict.
 
     If keywords of interest given in a reference dict are in the list of
@@ -461,7 +491,7 @@ def get_keywords_of_interest(list_of_txt, reference_dict=EQUIPMENT_DICT):
 
     Parameters
     ----------
-    list_of_txt : list of str
+    document_tok : list of str
         Tokenized text, functionally a list of string values.
     reference_dict : dict with {'keyword': [list of synonyms]} or None
         Reference dictionary to search for keywords of interest,
@@ -479,7 +509,7 @@ def get_keywords_of_interest(list_of_txt, reference_dict=EQUIPMENT_DICT):
     included_equipment: list of str
         List of keywords from reference_dict found in list_of_txt, can be more than one value.
     """
-    text_to_search = set(list_of_txt)
+    text_to_search = set(document_tok)
 
     equipment_keywords = set(reference_dict.keys())
     included_equipment = list(text_to_search.intersection(equipment_keywords))

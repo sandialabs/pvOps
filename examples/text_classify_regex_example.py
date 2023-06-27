@@ -5,7 +5,7 @@ from sklearn.metrics import accuracy_score
 from pvops.text import utils, preprocess
 from pvops.text.classify import get_attributes_from_keywords
 from pvops.text.visualize import visualize_classification_confusion_matrix
-from examples.example_data.reference_dict import EQUIPMENT_DICT
+from examples.example_data.reference_dict import EQUIPMENT_DICT, PV_TERMS_DICT
 
 
 class Example:
@@ -92,7 +92,9 @@ if __name__ == "__main__":
     om_df = utils.remap_attributes(om_df, remapping_df, col_dict, allow_missing_mappings=True)
 
     # preprocessing steps
-    om_df = preprocess.preprocessor(om_df, lst_stopwords=[], col_dict=col_dict, print_info=False, extract_dates_only=False)
+    equipment_dict = {k:EQUIPMENT_DICT[k] for k in EQUIPMENT_DICT if len(EQUIPMENT_DICT[k]) > 1}
+    pv_reference_dict = {**equipment_dict, **PV_TERMS_DICT}
+    om_df = preprocess.preprocessor(om_df, lst_stopwords=[], col_dict=col_dict, pv_reference_dict=pv_reference_dict, print_info=False, extract_dates_only=False)
     om_df[col_dict['attribute_col']] = om_df.apply(lambda row: row[col_dict['attribute_col']].lower(), axis=1)
 
     e = Example(om_df=om_df, col_dict=col_dict)
