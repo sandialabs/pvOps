@@ -1,5 +1,4 @@
 import pandas as pd
-import numpy as np
 
 
 def remap_attributes(om_df, remapping_df, remapping_col_dict,
@@ -81,24 +80,55 @@ def remap_attributes(om_df, remapping_df, remapping_col_dict,
 
     return df
 
-def replace_word_with_pv_term(word, pv_reference_dict):
-    """Given a word, find a more commonly used pv term
+def remap_words_in_text(om_df, remapping_df, remapping_col_dict):
+    """A utility function which remaps a text column of om_df using columns
+       within remapping_df.
 
     Parameters
     ----------
-    word : str
-        word of interest
-    pv_reference_dict : dict
-        {most_common_term: list of other terms for the most_common_term}
+    om_df : DataFrame
+        A pandas dataframe containing O&M note data
+    remapping_df : DataFrame
+        Holds columns that define the remappings
+    remapping_col_dict : dict of {str : str}
+        A dictionary that contains the column names that describes how
+        remapping is going to be done
+
+        - data : string, should be assigned to associated
+          column name in om_df which will have its text tokenized and remapped
+        - remapping_col_from : string, should be assigned
+          to associated column name in remapping_df that matches
+          original attribute of interest in om_df
+        - remapping_col_to : string, should be assigned to
+          associated column name in remapping_df that contains the
+          final mapped entries
 
     Returns
     -------
-    pv_term or word : str
-        pv_term if in pv_reference_dict, or original word if not    
+    DataFrame
+        dataframe with remapped columns populated
     """
-    pv_term = [pv_term for pv_term in pv_reference_dict if word in pv_reference_dict[pv_term]]
-    if pv_term:
-        return pv_term[0]
-    else:
-        return word
+    df = om_df.copy()
+    TEXT_COL = remapping_col_dict["data"]
+    REMAPPING_COL_FROM = remapping_col_dict["remapping_col_from"]
+    REMAPPING_COL_TO = remapping_col_dict["remapping_col_to"]
 
+    if remapping_df is None:
+        equipment_df = pd.read_csv('~/pvOps/examples/example_data/mappings_equipment.csv')
+        pv_terms_df = pd.read_csv('~/pvOps/examples/example_data/mapping_pv_terms.csv')
+        # drop any values where in is equal to out_
+        remapping_df = pd.concat([equipment_df, pv_terms_df])
+        remapping_df = remapping_df[remapping_df[REMAPPING_COL_FROM] != remapping_df[REMAPPING_COL_TO]]
+
+    # case-sensitive
+    remapping_df[REMAPPING_COL_FROM] = remapping_df[REMAPPING_COL_FROM].str.lower()
+    remapping_df[REMAPPING_COL_TO] = remapping_df[REMAPPING_COL_TO].str.lower()
+    df[TEXT_COL] = df[TEXT_COL].str.lower()
+
+    renamer = dict(
+        zip(remapping_df[REMAPPING_COL_FROM], remapping_df[REMAPPING_COL_TO])
+    )
+
+    df[TEXT_COL] = df[TEXT_COL].replace(renamer, regex=True)
+
+    return df
