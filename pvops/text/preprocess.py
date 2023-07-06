@@ -489,7 +489,7 @@ def get_keywords_of_interest(document_tok, reference_df, reference_col_dict):
     reference_dict = dict(
         zip(reference_df[REFERENCE_COL_FROM], reference_df[REFERENCE_COL_TO])
     )
-    
+
     # keywords of interest
     overlap_keywords = reference_dict.keys() & document_tok
     included_keywords = list({reference_dict[x] for x in overlap_keywords})
