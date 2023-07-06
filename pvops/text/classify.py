@@ -190,7 +190,7 @@ def classification_deployer(
 
     return pd.concat(rows, axis=1).T, best_gs_instance.best_estimator_
 
-def get_attributes_from_keywords(om_df, col_dict, reference_dict=None):
+def get_attributes_from_keywords(om_df, col_dict, reference_df):
     """Find keywords of interest in specified column of dataframe, return as new column value.
 
     If keywords of interest given in a reference dict are in the specified column of the dataframe,
@@ -223,7 +223,7 @@ def get_attributes_from_keywords(om_df, col_dict, reference_dict=None):
         Input df with new_col added, where each found keyword is its own row, may result in
         duplicate rows if more than one keywords of interest was found in text_col.
     """
-    om_df[col_dict['predicted_col']] = om_df[col_dict['data']].apply(get_keywords_of_interest, reference_dict)
+    om_df[col_dict['predicted_col']] = om_df[col_dict['data']].apply(get_keywords_of_interest, reference_df=reference_df)
 
     # each multi-category now in its own row, some logs have multiple equipment issues
     multiple_keywords_df = om_df[om_df[col_dict['predicted_col']].str.len() > 1]
