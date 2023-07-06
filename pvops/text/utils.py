@@ -1,5 +1,5 @@
 import pandas as pd
-
+import numpy as np
 
 def remap_attributes(om_df, remapping_df, remapping_col_dict,
                      allow_missing_mappings=False, print_info=False):
@@ -113,12 +113,8 @@ def remap_words_in_text(om_df, remapping_df, remapping_col_dict):
     REMAPPING_COL_FROM = remapping_col_dict["remapping_col_from"]
     REMAPPING_COL_TO = remapping_col_dict["remapping_col_to"]
 
-    if remapping_df is None:
-        equipment_df = pd.read_csv('~/pvOps/examples/example_data/mappings_equipment.csv')
-        pv_terms_df = pd.read_csv('~/pvOps/examples/example_data/mapping_pv_terms.csv')
-        # drop any values where in is equal to out_
-        remapping_df = pd.concat([equipment_df, pv_terms_df])
-        remapping_df = remapping_df[remapping_df[REMAPPING_COL_FROM] != remapping_df[REMAPPING_COL_TO]]
+    # drop any values where input value is equal to output value
+    remapping_df = remapping_df[remapping_df[REMAPPING_COL_FROM] != remapping_df[REMAPPING_COL_TO]]
 
     # case-sensitive
     remapping_df[REMAPPING_COL_FROM] = remapping_df[REMAPPING_COL_FROM].str.lower()

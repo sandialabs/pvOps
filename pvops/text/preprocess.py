@@ -92,8 +92,8 @@ def preprocessor(
 
         if not extract_dates_only:
             try:
-                out_ = text_remove_numbers_stopwords(document, lst_stopwords)
-                clean_corpus.append(out_)
+                out = text_remove_numbers_stopwords(document, lst_stopwords)
+                clean_corpus.append(out)
             except:
                 print(traceback.format_exc())
                 clean_corpus.append("")
@@ -452,7 +452,7 @@ def text_remove_numbers_stopwords(document, lst_stopwords):
     return document
 
 
-def get_keywords_of_interest(document_tok, reference_df):
+def get_keywords_of_interest(document_tok, reference_df, reference_col_dict):
     """Find keywords of interest in list of strings from reference dict.
 
     If keywords of interest given in a reference dict are in the list of
@@ -463,26 +463,31 @@ def get_keywords_of_interest(document_tok, reference_df):
     ----------
     document_tok : list of str
         Tokenized text, functionally a list of string values.
-    reference_dict : dict with {'keyword': [list of synonyms]} or None
-        Reference dictionary to search for keywords of interest,
-        in the expected format
-        {'keyword_a':
-            ['keyword_a', 'keyword_a_synonym_0', 'keyword_a_synonym_1', keyword_a_synonym_2', ...],
-         'keyword_b':
-            ['keyword_b', 'keyword_b_synonym_0', 'keyword_b_synonym_1', keyword_b_synonym_2', ...],
-         ...}
-        If None, use default reference dictionary.
+    reference_df : DataFrame
+        Holds columns that define the reference dictionary to search for keywords of interest,
         Note: This function can currently only handle single words, no n-gram functionality.
+    reference_col_dict : dict of {str : str}
+        A dictionary that contains the column names that describes how
+        referencing is going to be done
+
+        - reference_col_from : string, should be assigned to
+          associated column name in reference_df that are possible input reference values
+          Example: pd.Series(['inverter', 'invert', 'inv'])
+        - reference_col_to : string, should be assigned to
+          associated column name in reference_df that are the output reference values
+          of interest
+          Example: pd.Series(['inverter', 'inverter', 'inverter'])
 
     Returns
     -------
     included_equipment: list of str
         List of keywords from reference_dict found in list_of_txt, can be more than one value.
     """
-    REMAPPING_COL_FROM = 'in'
-    REMAPPING_COL_TO = 'out_'
+    REFERENCE_COL_FROM = reference_col_dict["reference_col_from"]
+    REFERENCE_COL_TO = reference_col_dict["reference_col_to"]
+
     reference_dict = dict(
-        zip(reference_df[REMAPPING_COL_FROM], reference_df[REMAPPING_COL_TO])
+        zip(reference_df[REFERENCE_COL_FROM], reference_df[REFERENCE_COL_TO])
     )
     
     # keywords of interest
