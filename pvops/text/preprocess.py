@@ -6,7 +6,6 @@ import datefinder
 import traceback
 from datetime import datetime, timedelta
 
-
 try:
     nltk.data.find('tokenizers/punkt')
 except LookupError:
