@@ -8,6 +8,7 @@ import numpy as np
 import pandas as pd
 import copy
 
+from pvops.text.preprocess import get_keywords_of_interest
 
 def classification_deployer(
     X,
@@ -187,3 +188,53 @@ def classification_deployer(
             best_gs_instance = gs_clf
 
     return pd.concat(rows, axis=1).T, best_gs_instance.best_estimator_
+
+def get_attributes_from_keywords(om_df, col_dict, reference_df, reference_col_dict):
+    """Find keywords of interest in specified column of dataframe, return as new column value.
+
+    If keywords of interest given in a reference dataframe are in the specified column of the
+    dataframe, return the keyword category, or categories.
+    For example, if the string 'inverter' is in the list of text, return ['inverter'].
+
+    Parameters
+    ----------
+    om_df : pd.DataFrame
+        Dataframe to search for keywords of interest, must include text_col.
+    col_dict : dict of {str : str}
+        A dictionary that contains the column names needed:
+
+        - data : string, should be assigned to associated column which stores the tokenized text logs
+        - predicted_col : string, will be used to create keyword search label column
+    reference_df : DataFrame
+        Holds columns that define the reference dictionary to search for keywords of interest,
+        Note: This function can currently only handle single words, no n-gram functionality.
+    reference_col_dict : dict of {str : str}
+        A dictionary that contains the column names that describes how
+        referencing is going to be done
+
+        - reference_col_from : string, should be assigned to
+          associated column name in reference_df that are possible input reference values
+          Example: pd.Series(['inverter', 'invert', 'inv'])
+        - reference_col_to : string, should be assigned to
+          associated column name in reference_df that are the output reference values
+          of interest
+          Example: pd.Series(['inverter', 'inverter', 'inverter'])
+
+    Returns
+    -------
+    om_df: pd.DataFrame
+        Input df with new_col added, where each found keyword is its own row, may result in
+        duplicate rows if more than one keywords of interest was found in text_col.
+    """
+    om_df[col_dict['predicted_col']] = om_df[col_dict['data']].apply(get_keywords_of_interest,
+                                                                     reference_df=reference_df,
+                                                                     reference_col_dict=reference_col_dict)
+
+    # each multi-category now in its own row, some logs have multiple equipment issues
+    multiple_keywords_df = om_df[om_df[col_dict['predicted_col']].str.len() > 1]
+    om_df = om_df.explode(col_dict['predicted_col'])
+
+    msg = f'{len(multiple_keywords_df)} entries had multiple keywords of interest. Reference: {multiple_keywords_df.index} in original dataframe.'
+    print(msg)
+
+    return om_df
