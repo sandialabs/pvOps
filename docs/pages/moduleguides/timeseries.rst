@@ -16,6 +16,9 @@ Additionally, the ability to generate expected energy via IEC
 standards is implemented in the :py:mod:`~pvops.timeseries.models.iec`
 module.
 
+An example of usage can be found in 
+`tutorial_timeseries_module.ipynb <https://github.com/sandialabs/pvOps/blob/master/examples/tutorial_timeseries_module.ipynb>`.
+
 Preprocess
 ^^^^^^^^^^^^^^^^^^^^^
 * :py:func:`pvops.timeseries.preprocess.prod_inverter_clipping_filter` 
