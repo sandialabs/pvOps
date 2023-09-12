@@ -1,7 +1,7 @@
 Installation
 =============
 
-pvops is tested on Python version 3.7 and 3.8 and depends on a variety of
+pvops is tested on Python versions 3.8, 3.9, and 3.10 and depends on a variety of
 packages. See :ref:`reqs` for more information.
 
 The latest release of pvops is accessible via PYPI using the following
@@ -18,7 +18,7 @@ Alternatively, the package can be installed using github::
 NLTK data
 ----------
 
-Functions in the text package relies on the "punkt" dataset for the nltk package.
+Functions in the text package rely on the "punkt" dataset from the nltk package.
 After proper installation of pvops, run the commands::
     
     >>> import nltk
