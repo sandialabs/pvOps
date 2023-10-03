@@ -11,7 +11,7 @@ authors:
     given-names: Hector
     orcid: https://orcid.org/1234
 title: "pvOps: Improving Operational Assessments through Data Fusion"
-version: 0.1.6
+version: 0.2.0
 doi: 10.5281/zenodo.4776181
 date-released: 2021-05-26
 keywords:
