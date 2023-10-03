@@ -44,6 +44,7 @@ production data, and current-voltage (IV) curves.
     :caption: Available resources:
     
     Overview <self>
+    pages/statement-of-need
     pages/installation
     pages/userguide
     pages/examples
