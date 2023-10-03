@@ -1,5 +1,4 @@
-#!/usr/bin/env python
-
+from pvops import __version__ as VERSION
 try:
     from setuptools import setup, find_packages
 except ImportError:
@@ -98,5 +97,6 @@ setup(
     maintainer_email=MAINTAINER_EMAIL,
     license=LICENSE,
     classifiers=CLASSIFIERS,
-    url=URL
+    url=URL,
+    version=VERSION
 )
