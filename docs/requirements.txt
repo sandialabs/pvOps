@@ -1,4 +1,4 @@
-# USED BY READTHEDOCS
+# USED BY READTHEDOCS WITH PYTHON 3.8
 coverage==7.2.3
 ipykernel==6.22.0
 nbconvert==7.3.1
