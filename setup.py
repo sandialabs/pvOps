@@ -52,7 +52,15 @@ INSTALL_REQUIRES = [
 ]
 
 DOCS_REQUIRE = [
-    'sphinx == 2.2.0'
+    'coverage',
+    'ipykernel',
+    'nbconvert',
+    'nbformat',
+    'nbsphinx',
+    'nbsphinx',
+    'sphinx',
+    'sphinxcontrib',
+    'sphinx',
 ]
 
 EXTRAS_REQUIRE = {
