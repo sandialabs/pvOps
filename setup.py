@@ -51,15 +51,15 @@ INSTALL_REQUIRES = [
 ]
 
 DOCS_REQUIRE = [
-    'coverage==7.2.3'
-    'ipykernel==6.22.0'
-    'nbconvert==7.3.1'
-    'nbformat==5.8.0'
-    'nbsphinx==0.9.1'
-    'nbsphinx-link==1.3.0'
-    'sphinx-copybutton==0.5.2'
-    'sphinxcontrib-bibtex==2.5.0'
-    'sphinx_rtd_theme==1.2.0'
+    # 'coverage==7.2.3'
+    # 'ipykernel==6.22.0'
+    # 'nbconvert==7.3.1'
+    # 'nbformat==5.8.0'
+    # 'nbsphinx==0.9.1'
+    # 'nbsphinx-link==1.3.0'
+    # 'sphinx-copybutton==0.5.2'
+    # 'sphinxcontrib-bibtex==2.5.0'
+    # 'sphinx_rtd_theme==1.2.0'
 ]
 
 EXTRAS_REQUIRE = {
