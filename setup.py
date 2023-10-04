@@ -86,7 +86,7 @@ PACKAGES = find_packages(exclude=["*.tests", "*.tests.*", "tests.*", "tests"])
 
 # get version from __init__.py
 file_dir = os.path.abspath(os.path.dirname(__file__))
-with open(os.path.join(file_dir, 'wntr', '__init__.py')) as f:
+with open(os.path.join(file_dir, 'pvops', '__init__.py')) as f:
     version_file = f.read()
     version_match = re.search(r"^__version__ = ['\"]([^'\"]*)['\"]",
                               version_file, re.M)
