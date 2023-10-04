@@ -1,4 +1,6 @@
-from pvops import __version__ as VERSION
+import os
+import re
+
 try:
     from setuptools import setup, find_packages
 except ImportError:
@@ -51,15 +53,15 @@ INSTALL_REQUIRES = [
 ]
 
 DOCS_REQUIRE = [
-    # 'coverage==7.2.3'
-    # 'ipykernel==6.22.0'
-    # 'nbconvert==7.3.1'
-    # 'nbformat==5.8.0'
-    # 'nbsphinx==0.9.1'
-    # 'nbsphinx-link==1.3.0'
-    # 'sphinx-copybutton==0.5.2'
-    # 'sphinxcontrib-bibtex==2.5.0'
-    # 'sphinx_rtd_theme==1.2.0'
+    'coverage==7.2.3'
+    'ipykernel==6.22.0'
+    'nbconvert==7.3.1'
+    'nbformat==5.8.0'
+    'nbsphinx==0.9.1'
+    'nbsphinx-link==1.3.0'
+    'sphinx-copybutton==0.5.2'
+    'sphinxcontrib-bibtex==2.5.0'
+    'sphinx_rtd_theme==1.2.0'
 ]
 
 EXTRAS_REQUIRE = {
@@ -81,6 +83,17 @@ CLASSIFIERS = [
 ]
 
 PACKAGES = find_packages(exclude=["*.tests", "*.tests.*", "tests.*", "tests"])
+
+# get version from __init__.py
+file_dir = os.path.abspath(os.path.dirname(__file__))
+with open(os.path.join(file_dir, 'wntr', '__init__.py')) as f:
+    version_file = f.read()
+    version_match = re.search(r"^__version__ = ['\"]([^'\"]*)['\"]",
+                              version_file, re.M)
+    if version_match:
+        VERSION = version_match.group(1)
+    else:
+        raise RuntimeError("Unable to find version string.")
 
 setup(
     name=DISTNAME,
