@@ -1,4 +1,4 @@
-IV package
+IV Guide
 ===============
 
 Module Overview

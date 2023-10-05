@@ -1,4 +1,4 @@
-text package
+text module
 ============
 
 text.classify module

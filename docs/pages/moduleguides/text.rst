@@ -18,7 +18,8 @@ to prepare data for natural language processing (text.nlp_utils submodule),
 and a visualization suite (text.visualize submodule).
 
 An example implementation of all capabilities can be found in 
-`text_class_example.py <https://github.com/sandialabs/pvOps/blob/master/examples/text_class_example.py>`_ for specifics, and `tutorial_textmodule.ipynb <https://github.com/sandialabs/pvOps/blob/master/examples/tutorial_textmodule.ipynb>`_ for basics.
+`text_class_example.py <https://github.com/sandialabs/pvOps/blob/master/examples/text_class_example.py>`_ 
+for specifics, and `tutorial_textmodule.ipynb <https://github.com/sandialabs/pvOps/blob/master/examples/tutorial_textmodule.ipynb>`_ for basics.
 
 Text pre-processing
 ^^^^^^^^^^^^^^^^^^^^^
