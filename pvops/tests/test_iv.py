@@ -7,7 +7,7 @@ import pvops.iv.preprocess
 import pvops.iv.simulator
 from pvops.iv.models import nn
 
-datadir = os.path.join('examples', 'example_data')
+datadir = os.path.join('tutorials', 'example_data')
 example_prodpath = os.path.join(
     datadir, 'example_prod_with_covariates.csv')
 

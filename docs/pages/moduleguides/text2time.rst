@@ -15,7 +15,7 @@ data fusion. Key features include:
 * calculation of losses from production anomalies for specific time periods.
 
 An example of usage can be found in 
-`tutorial_text2time_module.ipynb <https://github.com/sandialabs/pvOps/blob/master/examples/tutorial_text2time_module.ipynb>`_.
+`tutorial_text2time_module.ipynb <https://github.com/sandialabs/pvOps/blob/master/tutorials/tutorial_text2time_module.ipynb>`_.
 
 
 The text2time package can be broken down into three main components: 
