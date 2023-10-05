@@ -26,7 +26,8 @@ Source code: https://github.com/sandialabs/pvOps
 DISTNAME = 'pvops'
 MAINTAINER = "Thushara Gunda"
 MAINTAINER_EMAIL = 'tgunda@sandia.gov'
-LICENSE = 'Revised BSD'
+AUTHOR = 'pvOps Developers'
+LICENSE = 'BSD 3-Clause License'
 URL = 'https://github.com/sandialabs/pvops'
 
 TESTS_REQUIRE = [
@@ -106,6 +107,7 @@ setup(
     ext_modules=[],
     description=DESCRIPTION,
     long_description=LONG_DESCRIPTION,
+    author=AUTHOR,
     maintainer=MAINTAINER,
     maintainer_email=MAINTAINER_EMAIL,
     license=LICENSE,
