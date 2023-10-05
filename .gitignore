@@ -167,7 +167,7 @@ docs/_build/
 .pytest_cache/
 *.py[cod]
 examples/analysis/
-examples/.ipynb_checkpoints/
+*.ipynb_checkpoints/
 *~
 pvops/.vscode/*
 pvops/text2time/.vscode
