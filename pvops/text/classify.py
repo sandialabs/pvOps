@@ -25,7 +25,7 @@ def classification_deployer(
     The output of this function will be a data frame showing the performance of each classifier when utilizing a specific hyperparameter
     configuration.
 
-    To see an example of this method's application, see ``examples//text_class_example.py``
+    To see an example of this method's application, see ``tutorials//text_class_example.py``
 
     Parameters
     ----------

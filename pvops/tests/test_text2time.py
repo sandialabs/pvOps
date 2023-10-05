@@ -18,7 +18,7 @@ from pvops.text2time import preprocess, utils
 
 
 # Define csv paths
-datadir = os.path.join('examples', 'example_data')
+datadir = os.path.join('tutorials', 'example_data')
 test_datadir = os.path.join('pvops', 'tests')
 example_OMpath = os.path.join(datadir, 'example_om_data2.csv')
 example_prodpath = os.path.join(datadir, 'example_prod_data_cumE2.csv')

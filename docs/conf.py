@@ -12,17 +12,17 @@
 #
 import os
 import sys
+from pvops import __version__
 
 sys.path.insert(0, os.path.abspath("../"))
 
 # -- Project information -----------------------------------------------------
 
-project = "pvops"
-copyright = "2021, Thushara Gunda"
-author = "Thushara Gunda"
-
-# The full version, including alpha/beta/rc tags
-release = "0.1"
+project = u"pvops"
+copyright = u"2021 National Technology & Engineering Solutions of Sandia, LLC (NTESS)"
+author = u"pvOps Developers"
+version = __version__
+release = __version__
 
 
 # -- General configuration ---------------------------------------------------
@@ -30,6 +30,9 @@ release = "0.1"
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
+
+language = 'en'
+
 extensions = [
     "sphinx.ext.autodoc",
     # pull in documentation from docstrings in a semi-automatic way.

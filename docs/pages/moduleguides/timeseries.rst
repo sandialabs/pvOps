@@ -17,7 +17,7 @@ standards is implemented in the :py:mod:`~pvops.timeseries.models.iec`
 module.
 
 An example of usage can be found in 
-`tutorial_timeseries_module.ipynb <https://github.com/sandialabs/pvOps/blob/master/examples/tutorial_timeseries_module.ipynb>`.
+`tutorial_timeseries_module.ipynb <https://github.com/sandialabs/pvOps/blob/master/tutorials/tutorial_timeseries_module.ipynb>`.
 
 Preprocess
 ^^^^^^^^^^^^^^^^^^^^^

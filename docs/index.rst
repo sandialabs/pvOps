@@ -6,8 +6,8 @@
 Overview
 ============
 pvops is a python package for PV operators & researchers. 
-It consists a set of documented functions for supporting operations 
-research of photovoltaic energy systems.
+It consists of a set of documented functions for supporting operations 
+research of photovoltaic (PV) energy systems.
 The library leverages advances in machine learning, natural
 language processing and visualization 
 tools to extract and visualize actionable information from common 
@@ -55,10 +55,3 @@ production data, and current-voltage (IV) curves.
     pages/contributing
     pages/releasenotes
 
-
-Indices and tables
--------------------
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
