@@ -2,7 +2,7 @@ Installation
 =============
 
 pvops is tested on Python versions 3.8, 3.9, 3.10, and 3.11 and depends on a variety of
-packages. See :ref:`reqs` for more information.
+packages.
 
 The latest release of pvops is accessible via PYPI using the following
 command line prompt::
