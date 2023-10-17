@@ -1,0 +1,13 @@
+0.1.8 (Jan 14 2022)
+-----------------------
+
+Includes a data-derived expected energy model trained using machine learning methods. Associated example is also within the documentation.
+
+Functionality
+~~~~~~~~~~~~~
+
+* Added AIT model
+
+Other
+~~~~~~~~~~~~~
+* Add citation.cif

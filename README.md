@@ -16,11 +16,11 @@ pvops can be installed using `pip`. See more information at [readthedocs](https:
 Package Layout and Documentation
 ==============
 
-The package is delineated into the following directories. Refer to the `examples` directory for a full run-through of the available functionality.
+The package is delineated into the following directories. Refer to the `tutorials` directory for a full run-through of the available functionality.
 ```
 ├───docs                : Documentation directory
 |
-├───examples            : Functionality examples directory
+├───tutorials           : Contains tutorials of functionality
 │   └─── example_data   : └─── Example data
 |
 └───pvops               : Source function library
