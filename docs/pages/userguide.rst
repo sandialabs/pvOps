@@ -1,14 +1,24 @@
 User Guide
 ==========================
 
-Use these brief guides to get started with their respective module.
+.. toctree::
+    :maxdepth: 1
+    :caption: Getting Started
+ 
+    installation
+
 
 .. toctree::
     :maxdepth: 1
-    :caption: Guides
+    :caption: Module Guides
  
     moduleguides/text
     moduleguides/text2time
     moduleguides/timeseries
     moduleguides/iv
     
+.. toctree::
+    :maxdepth: 1
+    :caption: Abbreviations
+
+    abbreviations
