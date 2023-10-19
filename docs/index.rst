@@ -67,13 +67,12 @@ The functions within `pvOps` enable users to better parse available data to unde
     :caption: Available resources:
     
     Overview <self>
-    pages/installation
     pages/userguide
     pages/tutorials
     pages/modules
-    pages/references
-    pages/abbreviations
     pages/development
     pages/contributing
     pages/releasenotes
+    pages/references
+
 
