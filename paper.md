@@ -50,6 +50,13 @@ PV data collected in the field varies greatly in structure (i.e., timeseries and
 # Package Overview 
 The following table summarizes the four modules within `pvOps` by presenting: the type of data they analyze, example data features, and highlights of relevant functions. 
 
+\usepackage{graphicx} % Required for inserting images
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{array}
+\usepackage{ragged2e}
+\newcommand{\tabitem}{~~\llap{\textbullet}~~}
+
 \begin{table}[ht]
 \centering
 \begin{tabular}{|>{\RaggedRight}p{2cm}|>{\RaggedRight}p{2cm}|>{\RaggedRight}p{4cm}|>{\RaggedRight}p{4cm}|}
