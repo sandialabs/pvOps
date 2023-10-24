@@ -50,88 +50,12 @@ PV data collected in the field varies greatly in structure (i.e., timeseries and
 # Package Overview 
 The following table summarizes the four modules within `pvOps` by presenting: the type of data they analyze, example data features, and highlights of relevant functions. 
 
-\usepackage{graphicx} % Required for inserting images
-\usepackage{booktabs}
-\usepackage{enumitem}
-\usepackage{array}
-\usepackage{ragged2e}
-\newcommand{\tabitem}{~~\llap{\textbullet}~~}
-
-\begin{table}[ht]
-\centering
-\begin{tabular}{|>{\RaggedRight}p{2cm}|>{\RaggedRight}p{2cm}|>{\RaggedRight}p{4cm}|>{\RaggedRight}p{4cm}|}
-% \begin{tabular}{llll}
-\hline
-Module & Type of data & Example data features & Highlights of functions\\ \midrule\hline
-\center text & \center O\&M records &
-\begin{itemize}[left=0pt,nosep]
-  \item \textit{timestamp}: string or datetime
-  \item \textit{issue description}: string (unstructured)
-  \item \textit{classification}: string (structured)
-\end{itemize}
-&
-\begin{itemize}[left=0pt,nosep]
-  \item fill data gaps in dates and categorical records  
-  \item visualize word clusters and patterns over time
-\end{itemize}
-\\
-\hline
-
-
-\center timeseries & \center Production data &
-\begin{itemize}[left=0pt,nosep]
-  \item \textit{site}: integer or string
-  \item \textit{timestamp}: string or datetime (unstructured)
-  \item \textit{power production}: numeric
-  \item \textit{irradiance}: numeric
-\end{itemize}
-&
-\begin{itemize}[left=0pt,nosep]
-  \item estimate expected energy with multiple models
-  \item evaluate inverter clipping
-\end{itemize}
-\\
-\hline
-
-\center text2time & \center O\&M records and  production data &
-\center see entries for text and timeseries modules above
-&
-\begin{itemize}[left=0pt,nosep]
-  \item analyze overlaps between O\&M and production (timeseries) records
-  \item visualize overlaps between O\&M records and production data
-\end{itemize}
-\\
-\hline
-
-
-\center iv & \center IV records &
-\begin{itemize}[left=0pt,nosep]
-  \item \textit{current}: 1D array
-  \item \textit{voltage}: 1D array
-  \item \textit{irradiance}: numeric
-  \item \textit{temperature}: numeric
-\end{itemize}
-&
-\begin{itemize}[left=0pt,nosep]
-  \item simulate IV curves with physical faults 
-  \item extract diode parameters from IV curves
-  \item classify faults using IV curves
-\end{itemize}
-\\
-\hline
-\end{tabular}
-\caption{Table with itemized column}
-\end{table}
-
-
 Module | Type of data | Example data features | Highlights of functions
 ------- | ------ | --------- | -----------
-text | O&M records | - *timestamps* string or datetime <br> - *issue description* string (unstructured) <br> - *classification* string (structured) | - fill data gaps in dates and categorical records <br> - visualize word clusters and patterns over time
-timeseries | Production data | - site: integer or string <br> - *timestamp* string or datetime <br> - *power production* numeric <br> - *irradiance* numeric | - estimate expected energy with multiple models <br> - evaluate inverter clipping
-text2time | O&M records and <br> production data | see entries for `text` and <br>  `timeseries` modules above | - analyze overlaps between O&M and production (timeseries) records <br> - visualize overlaps between O&M records and production data
-iv | IV records | - *current* 1D array <br> - *voltage* 1D array <br> - *irradiance* numeric <br> - *temperature* numeric | - *simulate* IV curves with physical faults <br> - extract diode parameters from IV curves <br> - classify faults using IV curves
-
-<!-- ![table](table.png) -->
+text | O&M records | timestamps, issue description, issue classification | fill data gaps in dates and categorical records, visualize word clusters and patterns over time
+timeseries | Production data | *site*, *timestamp*, *power production*, *irradiance* | estimate expected energy with multiple models, evaluate inverter clipping
+text2time | O&M records and production data | see entries for `text` and  `timeseries` modules above | analyze overlaps between O&M and production (timeseries) records, visualize overlaps between O&M records and production data
+iv | IV records | *current*, *voltage*, *irradiance*, *temperature*  | *simulate* IV curves with physical faults, extract diode parameters from IV curves,. classify faults using IV curves
 
 The functions within each module can be used to build pipelines that integrate relevant data processing, fusion, and visualization capabilities to support user endgoals. For example, a user with IV curve data could build a pipeline that leverages functions within the `iv` module to process and extract diode parameters within IV curves as well as train models to support classifications based on fault type. A pipeline could be also be built that leverages functions across modules if a user has access to multiple types of data (e.g., both O&M and production records). A sample end-to-end workflow using `pvOps` modules could be: 
 1. Use functions within the `text` module to systematically review data quality issues within O&M records, train a machine learning model on available records, and use the model to estimate possible labels for missing entries
