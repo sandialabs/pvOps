@@ -1,0 +1,4 @@
+0.1.7 (September 20 2021)
+-------------------------
+
+Updated functions for data processing (text and timeseries) analysis. Also includes IV curve functions

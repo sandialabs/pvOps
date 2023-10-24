@@ -37,7 +37,7 @@ def calculate_IVparams(v, c):
 
     # for snippet_idx in range(len(v[::5])):
     # isc and rsh
-    if type(isc_lim) == float:
+    if isinstance(isc_lim, float):
         isc_size = int(len(c) * isc_lim)
     else:
         isc_size = isc_lim
@@ -47,7 +47,7 @@ def calculate_IVparams(v, c):
     rsh = 1 / (isc_lm.coef_[0][0] * -1)
 
     # voc and rs
-    if type(voc_lim) == float:
+    if isinstance(voc_lim, float):
         voc_size = int(len(v) * voc_lim)
     else:
         voc_size = voc_lim

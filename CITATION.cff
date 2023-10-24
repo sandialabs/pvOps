@@ -1,0 +1,23 @@
+cff-version: 1.1.0
+message: "If you use this software, please cite it as below."
+authors:
+  - family-names: Hopwood
+    given-names: Michael
+    orcid: https://orcid.org/0000-0001-6190-1767
+   - family-names: Gunda
+    given-names: Thushara
+    orcid: https://orcid.org/0000-0003-1945-4064
+   - family-names: Mendoza
+    given-names: Hector
+    orcid: https://orcid.org/1234
+title: "pvOps: Improving Operational Assessments through Data Fusion"
+version: 0.2.0
+doi: 10.5281/zenodo.4776181
+date-released: 2021-05-26
+keywords:
+  - reliability assessment
+  - operations research
+  - data fusion
+  - machine learning
+  - natural language processing
+license: "BSD-3C"

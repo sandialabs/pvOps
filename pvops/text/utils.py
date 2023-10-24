@@ -80,3 +80,52 @@ def remap_attributes(om_df, remapping_df, remapping_col_dict,
               "{sum(df[ATTRIBUTE_COL].isna())}")
 
     return df
+
+def remap_words_in_text(om_df, remapping_df, remapping_col_dict):
+    """A utility function which remaps a text column of om_df using columns
+       within remapping_df.
+
+    Parameters
+    ----------
+    om_df : DataFrame
+        A pandas dataframe containing O&M note data
+    remapping_df : DataFrame
+        Holds columns that define the remappings
+    remapping_col_dict : dict of {str : str}
+        A dictionary that contains the column names that describes how
+        remapping is going to be done
+
+        - data : string, should be assigned to associated
+          column name in om_df which will have its text tokenized and remapped
+        - remapping_col_from : string, should be assigned
+          to associated column name in remapping_df that matches
+          original attribute of interest in om_df
+        - remapping_col_to : string, should be assigned to
+          associated column name in remapping_df that contains the
+          final mapped entries
+
+    Returns
+    -------
+    DataFrame
+        dataframe with remapped columns populated
+    """
+    df = om_df.copy()
+    TEXT_COL = remapping_col_dict["data"]
+    REMAPPING_COL_FROM = remapping_col_dict["remapping_col_from"]
+    REMAPPING_COL_TO = remapping_col_dict["remapping_col_to"]
+
+    # drop any values where input value is equal to output value
+    remapping_df = remapping_df[remapping_df[REMAPPING_COL_FROM] != remapping_df[REMAPPING_COL_TO]]
+
+    # case-sensitive
+    remapping_df[REMAPPING_COL_FROM] = remapping_df[REMAPPING_COL_FROM].str.lower()
+    remapping_df[REMAPPING_COL_TO] = remapping_df[REMAPPING_COL_TO].str.lower()
+    df[TEXT_COL] = df[TEXT_COL].str.lower()
+
+    renamer = dict(
+        zip(remapping_df[REMAPPING_COL_FROM], remapping_df[REMAPPING_COL_TO])
+    )
+
+    df[TEXT_COL] = df[TEXT_COL].replace(renamer, regex=True)
+
+    return df

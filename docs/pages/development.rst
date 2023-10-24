@@ -73,21 +73,6 @@ to be parsed and displayed correctly. For an example of what this should look li
 
 Additional examples can be found in the 
 `napoleon documentation <https://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_numpy.html>`_.
-The following boilerplate can be copy-pasted into the top of a function definition
-to help get things started::
-
-    """Summary line.
-
-    Extended description of function.
-
-    Parameters
-    ----------
-
-    Returns
-    -------
-
-
-    """
 
 Extending Documentation
 ^^^^^^^^^^^^^^^^^^^^^^^
