@@ -1,4 +1,4 @@
-iv package
+iv module
 ==========
 
 iv.extractor module

@@ -1,4 +1,4 @@
-text2time package
+text2time module
 =================
 
 text2time.preprocess module

@@ -1,0 +1,19 @@
+0.2.0 (August 9 2023)
+-----------------------
+
+This release incorporates new functions and addresses depreciated commands in some of the package dependencies.
+
+Documentation
+~~~~~~~~~~~~~
+
+* Doc pages "makeover" in preparation for JOSS publication
+* Added additional context and detail to example notebooks.
+* Added module guides
+* Added contributing pages
+
+New Features
+~~~~~~~~~~~~
+
+* Added `get_attributes_from_keywords` to text.classify
+* Added `get_keywords_of_interest` to text.preprocess
+* Added `remap_words_in_text` to text.visualize

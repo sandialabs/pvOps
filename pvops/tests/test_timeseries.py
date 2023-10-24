@@ -7,7 +7,7 @@ from pvops.timeseries import preprocess as tprep
 from pvops.text2time import preprocess as t2tprep
 
 # Define csv paths
-datadir = os.path.join('examples', 'example_data')
+datadir = os.path.join('tutorials', 'example_data')
 example_OMpath = os.path.join(datadir, 'example_om_data2.csv')
 example_prodpath = os.path.join(datadir, 'example_perf_data.csv')
 example_metapath = os.path.join(datadir, 'example_metadata2.csv')

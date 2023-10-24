@@ -1,4 +1,4 @@
-timeseries package
+timeseries module
 ==================
 
 timeseries.preprocess module

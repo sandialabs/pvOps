@@ -11,7 +11,7 @@ import random
 from tqdm import tqdm
 import pvlib
 from pvops.iv.utils import get_CEC_params
-from pvops.iv.physics_utils import voltage_pts, add_series, bypass,\
+from pvops.iv.physics_utils import voltage_pts, add_series, bypass, \
     intersection, iv_cutoff, gt_correction
 
 

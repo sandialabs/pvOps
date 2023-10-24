@@ -1,4 +1,4 @@
-IV package
+IV Guide
 ===============
 
 Module Overview
@@ -7,6 +7,11 @@ Module Overview
 
 These functions focus on current-voltage (IV) curve simulation and 
 classification.
+
+Tutorials that exemplify usage can be found at:
+  - `tutorial_iv_classifier.ipynb <https://github.com/sandialabs/pvOps/blob/master/tutorials/tutorial_iv_classifier.ipynb>`_.
+  - `tutorial_iv_diode_extractor.ipynb <https://github.com/sandialabs/pvOps/blob/master/tutorials/tutorial_iv_diode_extractor.ipynb>`_.
+  - `tutorial_iv_simulator.ipynb <https://github.com/sandialabs/pvOps/blob/master/tutorials/tutorial_iv_simulator.ipynb>`_.
 
 extractor
 ^^^^^^^^^^^^^^^^^^^^^

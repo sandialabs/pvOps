@@ -1,0 +1,11 @@
+0.1.9 (November 21 2022)
+-------------------------
+
+Includes updated documentation and fixes for dependency issues
+
+
+Documentation
+~~~~~~~~~~~~~
+
+* Docstrings polished across the package.
+* Resolved documentation build errors and warnings
