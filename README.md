@@ -12,11 +12,15 @@ Installation
 =============
 pvops can be installed using `pip`. See more information at [readthedocs](https://pvops.readthedocs.io/en/latest/).
 
+Tutorials
+=========
+To get started with pvops we recommended working with the [tutorials](https://pvops.readthedocs.io/en/latest/pages/tutorials.html)
+
 
 Package Layout and Documentation
 ==============
 
-The package is delineated into the following directories. Refer to the `tutorials` directory for a full run-through of the available functionality.
+The package is delineated into the following directories.
 ```
 ├───docs                : Documentation directory
 |

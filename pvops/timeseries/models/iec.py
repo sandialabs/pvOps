@@ -3,7 +3,7 @@ import numpy as np
 def iec_calc(prod_df, prod_col_dict, meta_df, meta_col_dict,
              gi_ref=1000.0):
     """Calculates expected energy using measured irradiance
-    based on IEC calculations
+    based on IEC calculations. 
 
     Parameters
     ----------
@@ -21,9 +21,9 @@ def iec_calc(prod_df, prod_col_dict, meta_df, meta_col_dict,
           site-ID column name in prod_df
         - **timestamp** (*string*), should be assigned to
           time-stamp column name in prod_df
-        - **irradiance** (*string*), should be assigned to
+        - **irradiance** (*string*), **plane-of-array**. Should be assigned to
           irradiance column name in prod_df, where data
-          should be in [W/m^2]
+          should be in [W/m^2].
         - **baseline** (*string*), should be assigned to
           preferred column name to capture IEC calculations
           in prod_df

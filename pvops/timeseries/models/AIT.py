@@ -180,7 +180,8 @@ class AIT(Processer, Predictor):
 def AIT_calc(prod_df, prod_col_dict):
     """
     Calculates expected energy using measured irradiance
-    based on trained regression model from field data
+    based on trained regression model from field data.
+    Plane-of-array irradiance is recommended when using the pre-trained AIT model.
 
     Parameters
     ----------
