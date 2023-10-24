@@ -95,7 +95,6 @@ def supervised_classifier_defs(settings_flag):
             },
             "RidgeClassifier": {
                 "clf__alpha": [0.0, 1e-3, 1.0],
-                "clf__normalize": [False, True],
             },
             "SGDClassifier": {
                 "clf__loss": ["squared_hinge"],
@@ -158,7 +157,7 @@ def supervised_classifier_defs(settings_flag):
             },
             "RidgeClassifier": {
                 "clf__alpha": [0.0, 1e-3, 1.0],
-                "clf__normalize": [False, True],
+                # "clf__normalize": [False, True],
             },
             "SGDClassifier": {
                 "clf__loss": ["squared_hinge"],
@@ -221,7 +220,7 @@ def supervised_classifier_defs(settings_flag):
             },
             "RidgeClassifier": {
                 "clf__alpha": [0.0, 1e-3, 1.0, 1e-4, 1e-3, 1e-2, 1e-1, 1.0],
-                "clf__normalize": [False, True],
+                # "clf__normalize": [False, True],
             },
             "SGDClassifier": {
                 "clf__loss": ["squared_hinge", "hinge", "log"],

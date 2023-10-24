@@ -178,7 +178,7 @@ def visualize_attribute_timeseries(
     newdf[LABEL_COLUMN] = asset_sums
     newdf[DATE_COLUMN] = index_sums
 
-    cmap = plt.cm.get_cmap(cmap_name, len(asset_set))
+    cmap = matplotlib.colormaps.get_cmap(cmap_name).resampled(len(asset_set))
 
     graphs = []
     for i, a in enumerate(asset_set):

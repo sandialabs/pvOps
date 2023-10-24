@@ -50,7 +50,7 @@ class Example:
 
     def visualize_cluster_entropy(self, cols):
         def eval_kmeans(X, k):
-            km = KMeans(n_clusters=k)
+            km = KMeans(n_clusters=k, n_init=10)
             km.fit(X)
             return km
 

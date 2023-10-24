@@ -284,6 +284,8 @@ def om_summary_stats(om_df, meta_df, om_col_dict, meta_col_dict):
     # Adding age column to om_df, but first initiating a COD column in the
     # OM-data (using NANs) to be able to take the difference between two columns
     om_df[meta_cod] = np.nan
+    om_df[meta_cod] = om_df[meta_cod].astype("O")
+
     for i in cod_dates.index:
         om_df.loc[i, meta_cod] = cod_dates[i]
     om_df[meta_cod] = pd.to_datetime(om_df[meta_cod])
@@ -485,7 +487,7 @@ def prod_anomalies(prod_df, prod_col_dict, minval=1.0, repval=np.nan, ffill=True
     prod_df.loc[mask, prod_ener] = repval
 
     if ffill:
-        prod_df.loc[:, prod_ener].fillna(method="ffill", inplace=True)
+        prod_df.loc[:, prod_ener].ffill(inplace=True)
         addressed = addressedwna
 
     return prod_df, addressed
