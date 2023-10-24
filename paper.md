@@ -50,6 +50,73 @@ PV data collected in the field varies greatly in structure (i.e., timeseries and
 # Package Overview 
 The following table summarizes the four modules within `pvOps` by presenting: the type of data they analyze, example data features, and highlights of relevant functions. 
 
+\begin{table}[ht]
+\centering
+\begin{tabular}{|>{\RaggedRight}p{2cm}|>{\RaggedRight}p{2cm}|>{\RaggedRight}p{4cm}|>{\RaggedRight}p{4cm}|}
+% \begin{tabular}{llll}
+\hline
+Module & Type of data & Example data features & Highlights of functions\\ \midrule\hline
+\center text & \center O\&M records &
+\begin{itemize}[left=0pt,nosep]
+  \item \textit{timestamp}: string or datetime
+  \item \textit{issue description}: string (unstructured)
+  \item \textit{classification}: string (structured)
+\end{itemize}
+&
+\begin{itemize}[left=0pt,nosep]
+  \item fill data gaps in dates and categorical records  
+  \item visualize word clusters and patterns over time
+\end{itemize}
+\\
+\hline
+
+
+\center timeseries & \center Production data &
+\begin{itemize}[left=0pt,nosep]
+  \item \textit{site}: integer or string
+  \item \textit{timestamp}: string or datetime (unstructured)
+  \item \textit{power production}: numeric
+  \item \textit{irradiance}: numeric
+\end{itemize}
+&
+\begin{itemize}[left=0pt,nosep]
+  \item estimate expected energy with multiple models
+  \item evaluate inverter clipping
+\end{itemize}
+\\
+\hline
+
+\center text2time & \center O\&M records and  production data &
+\center see entries for text and timeseries modules above
+&
+\begin{itemize}[left=0pt,nosep]
+  \item analyze overlaps between O\&M and production (timeseries) records
+  \item visualize overlaps between O\&M records and production data
+\end{itemize}
+\\
+\hline
+
+
+\center iv & \center IV records &
+\begin{itemize}[left=0pt,nosep]
+  \item \textit{current}: 1D array
+  \item \textit{voltage}: 1D array
+  \item \textit{irradiance}: numeric
+  \item \textit{temperature}: numeric
+\end{itemize}
+&
+\begin{itemize}[left=0pt,nosep]
+  \item simulate IV curves with physical faults 
+  \item extract diode parameters from IV curves
+  \item classify faults using IV curves
+\end{itemize}
+\\
+\hline
+\end{tabular}
+\caption{Table with itemized column}
+\end{table}
+
+
 Module | Type of data | Example data features | Highlights of functions
 ------- | ------ | --------- | -----------
 text | O&M records | - *timestamps* string or datetime <br> - *issue description* string (unstructured) <br> - *classification* string (structured) | - fill data gaps in dates and categorical records <br> - visualize word clusters and patterns over time
