@@ -278,7 +278,7 @@ def test_visualize_attribute_connectivity():
 
     om_col_dict = {"attribute1_col": "Attr1", "attribute2_col": "Attr2"}
 
-    ax, G = visualize.visualize_attribute_connectivity(
+    fig, G = visualize.visualize_attribute_connectivity(
         df,
         om_col_dict,
         figsize=(10, 8),
@@ -289,7 +289,7 @@ def test_visualize_attribute_connectivity():
         },
     )
 
-    assert isinstance(ax, matplotlib.axes.Axes)
+    assert isinstance(fig, matplotlib.pyplot.Figure)
     assert list(G.edges()) == [("A", "X"), ("B", "X"), ("C", "Y"), ("C", "Z")]
 
     matplotlib.pyplot.close()

@@ -28,7 +28,6 @@ def visualize_attribute_connectivity(
     attribute_colors=["lightgreen", "cornflowerblue"],
     edge_width_scalar=10,
     graph_aargs={},
-    ax=None,
 ):
     """Visualize a knowledge graph which shows the frequency of combinations between attributes
     ``ATTRIBUTE1_COL`` and ``ATTRIBUTE2_COL``
@@ -64,17 +63,15 @@ def visualize_attribute_connectivity(
         - font_weight='bold'
         - node_size=19000
         - font_size=35
-    ax : axis
-        axis to draw on, defaults to None and will create a new figure and axis in this case.
 
     Returns
     -------
     Matplotlib axis,
     networkx graph
     """
-    if ax is None: # create a new figure
-        fig = plt.figure(facecolor='w', edgecolor='k')
-        ax = plt.gca()
+    # initialize figure
+    fig = plt.figure(figsize=figsize,facecolor='w', edgecolor='k')
+    ax = plt.gca()
     
     # attribute column names
     ATTRIBUTE1_COL = om_col_dict["attribute1_col"]
@@ -136,7 +133,7 @@ def visualize_attribute_connectivity(
     
     plt.show(block=False)
 
-    return ax, G
+    return fig, G
 
 
 def visualize_attribute_timeseries(
