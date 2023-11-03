@@ -4,6 +4,7 @@
 [![License](https://img.shields.io/pypi/l/pvOps?color=green)](https://github.com/sandialabs/pvOps/blob/master/LICENSE)
 [![ActionStatus](https://github.com/sandialabs/pvOps/workflows/lint%20and%20test/badge.svg)](https://github.com/sandialabs/pvOps/actions)
 [![DOI](https://zenodo.org/badge/289032705.svg)](https://zenodo.org/badge/latestdoi/289032705)
+[![status](https://joss.theoj.org/papers/6c3554c98b1771125613cff94241847c/status.svg)](https://joss.theoj.org/papers/6c3554c98b1771125613cff94241847c)
 
 pvops contains a series of functions to facilitate fusion of text-based data with time series production data collected at photovoltaic sites. The package also contains example datasets and tutorials to help demonstrate how the functions can be used.
 
@@ -11,15 +12,19 @@ Installation
 =============
 pvops can be installed using `pip`. See more information at [readthedocs](https://pvops.readthedocs.io/en/latest/).
 
+Tutorials
+=========
+To get started with pvops we recommended working with the [tutorials](https://pvops.readthedocs.io/en/latest/pages/tutorials.html)
+
 
 Package Layout and Documentation
 ==============
 
-The package is delineated into the following directories. Refer to the `examples` directory for a full run-through of the available functionality.
+The package is delineated into the following directories.
 ```
 ├───docs                : Documentation directory
 |
-├───examples            : Functionality examples directory
+├───tutorials           : Contains tutorials of functionality
 │   └─── example_data   : └─── Example data
 |
 └───pvops               : Source function library

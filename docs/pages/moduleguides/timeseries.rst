@@ -13,8 +13,11 @@ types of expected energy models:
 * Linear: a high flexibility linear regression model.
 
 Additionally, the ability to generate expected energy via IEC 
-standards is implemented in the :py:mod:`~pvops.timeseries.models.iec`
+standards (iec 61724-1) is implemented in the :py:mod:`~pvops.timeseries.models.iec`
 module.
+
+An example of usage can be found in 
+`tutorial_timeseries_module.ipynb <https://github.com/sandialabs/pvOps/blob/master/tutorials/tutorial_timeseries_module.ipynb>`.
 
 Preprocess
 ^^^^^^^^^^^^^^^^^^^^^

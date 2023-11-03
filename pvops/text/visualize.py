@@ -2,6 +2,7 @@
 import matplotlib
 import matplotlib.pyplot as plt
 import networkx as nx
+from sklearn.metrics import ConfusionMatrixDisplay
 from networkx.algorithms import bipartite
 
 # data structures
@@ -235,7 +236,7 @@ def visualize_attribute_timeseries(
     newdf[LABEL_COLUMN] = asset_sums
     newdf[DATE_COLUMN] = index_sums
 
-    cmap = plt.cm.get_cmap(cmap_name, len(asset_set))
+    cmap = matplotlib.colormaps.get_cmap(cmap_name).resampled(len(asset_set))
 
     graphs = []
     for i, a in enumerate(asset_set):
@@ -439,3 +440,46 @@ def visualize_word_frequency_plot(
     fig = plt.figure(figsize=(12, 6))
     fd.plot(30, cumulative=False, title=title, figure=fig, **graph_aargs)
     return fd
+
+
+def visualize_classification_confusion_matrix(om_df, col_dict, title=''):
+    """Visualize confusion matrix comparing known categorical values, and predicted categorical values.
+
+    Parameters
+    ----------
+    om_df : DataFrame
+        A pandas dataframe containing O&M data, which contains columns specified in om_col_dict
+    col_dict : dict of {str : str}
+        A dictionary that contains the column names needed:
+
+        - data : string, should be assigned to associated column which stores the tokenized text logs
+        - attribute_col : string, will be assigned to attribute column and used to create new attribute_col
+        - predicted_col : string, will be used to create keyword search label column
+
+    title : str
+        Optional, title of plot
+
+    Returns
+    -------
+    Matplotlib figure instance
+    """
+    act_col = col_dict['attribute_col']
+    pred_col = col_dict['predicted_col']
+
+    # drop any predicted labels with no actual labels in the data, for a cleaner visual
+    no_real_values = [cat for cat in om_df[pred_col].unique() if cat not in om_df[act_col].unique()]
+    no_real_values_mask = om_df[pred_col].isin(no_real_values)
+    om_df = om_df[~no_real_values_mask]
+    caption_txt = f'NOTE: Predicted values{no_real_values} had no actual values in the dataset.'
+
+    plt.rcParams.update({'font.size': 8})
+    cm_display = ConfusionMatrixDisplay.from_predictions(y_true=om_df[act_col],
+                                                         y_pred=om_df[pred_col],
+                                                         normalize='true',
+                                                         )
+    fig = cm_display.plot()
+    plt.xticks(rotation=90)
+    plt.tight_layout()
+    plt.figtext(0.00, 0.01, caption_txt, wrap=True, fontsize=7)
+    plt.title(title)
+    return fig
