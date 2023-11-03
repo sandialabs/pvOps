@@ -72,22 +72,32 @@ def visualize_attribute_connectivity(
     Matplotlib axis,
     networkx graph
     """
+    if ax is None: # create a new figure
+        fig = plt.figure(facecolor='w', edgecolor='k')
+        ax = plt.gca()
+    
+    # attribute column names
     ATTRIBUTE1_COL = om_col_dict["attribute1_col"]
     ATTRIBUTE2_COL = om_col_dict["attribute2_col"]
+    
+    ax.set_title(
+        f"Connectivity between {ATTRIBUTE2_COL} and {ATTRIBUTE1_COL}",
+        fontweight="bold",
+    )
 
+    # subset dataframe to relevant columns
     df_mask = (om_df[ATTRIBUTE1_COL].notna() == True) & (om_df[ATTRIBUTE2_COL].notna() == True)
     df = om_df.loc[df_mask].reset_index(drop=True)
 
     # obtain connectivity weights between attributes
     nx_data = {}
-    for a in np.unique(df[ATTRIBUTE1_COL].tolist()):
-        df_iter = df[df[ATTRIBUTE1_COL] == a]
-        for i in np.unique(df_iter[ATTRIBUTE2_COL].tolist()):
-            w = len(df_iter[df_iter[ATTRIBUTE2_COL] == i])
-            nx_data[(a, i)] = w
+    for attr1 in np.unique(df[ATTRIBUTE1_COL].tolist()):
+        df_iter = df[df[ATTRIBUTE1_COL] == attr1]
+        for attr2 in np.unique(df_iter[ATTRIBUTE2_COL].tolist()):
+            w = len(df_iter[df_iter[ATTRIBUTE2_COL] == attr2])
+            nx_data[(attr1, attr2)] = w
 
     # create graph
-
     G = nx.Graph()
     G.add_nodes_from(df[ATTRIBUTE1_COL], bipartite=0)
     G.add_nodes_from(df[ATTRIBUTE2_COL], bipartite=1)
@@ -101,20 +111,15 @@ def visualize_attribute_connectivity(
         rescaled_weight = 1 + (edge_width_scalar * weight / max_weight) #between 1 and edge_width_scalar+1
         G[node1][node2]["weight"] = rescaled_weight
         weights.append(rescaled_weight)
-                
-    if ax is None:
-        fig, ax = plt.subplots(figsize=figsize)
+    
 
-    fig.suptitle(
-        f"Connectivity between {ATTRIBUTE2_COL} and {ATTRIBUTE1_COL}",
-        # fontsize=50,
-        y=.95,
-        fontweight="bold",
-    )
 
+
+    # get bipartite positioning
     top_nodes = list(df[ATTRIBUTE2_COL].unique())
     pos = nx.drawing.layout.bipartite_layout(G, top_nodes, align='horizontal')
     
+    # assign colors based on attribute column
     color_map = []
     for node in G:
         if node in np.unique(df[ATTRIBUTE2_COL].tolist()):
@@ -122,13 +127,14 @@ def visualize_attribute_connectivity(
         else:
             color_map.append(attribute_colors[0])
 
-
     nx.draw_networkx(
         G, 
         width=weights, 
         node_color=color_map, 
         pos=pos, 
         **graph_aargs)
+    
+    plt.show(block=False)
 
     return ax, G
 
