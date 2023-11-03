@@ -286,8 +286,6 @@ def test_visualize_attribute_connectivity():
         graph_aargs={
             "with_labels": True,
             "font_weight": "bold",
-            # "node_size": 30,
-            # "font_size": 5,
         },
     )
 
