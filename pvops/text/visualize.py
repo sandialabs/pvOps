@@ -70,13 +70,13 @@ def visualize_attribute_connectivity(
     networkx graph
     """
     # initialize figure
-    fig = plt.figure(figsize=figsize,facecolor='w', edgecolor='k')
+    fig = plt.figure(figsize=figsize, facecolor='w', edgecolor='k')
     ax = plt.gca()
-    
+
     # attribute column names
     ATTRIBUTE1_COL = om_col_dict["attribute1_col"]
     ATTRIBUTE2_COL = om_col_dict["attribute2_col"]
-    
+
     ax.set_title(
         f"Connectivity between {ATTRIBUTE2_COL} and {ATTRIBUTE1_COL}",
         fontweight="bold",
@@ -104,18 +104,15 @@ def visualize_attribute_connectivity(
     max_weight = max(nx_data.values())
     weights = []
     for node1, node2 in nx_data:
-        weight = nx_data[node1,node2]
-        rescaled_weight = 1 + (edge_width_scalar * weight / max_weight) #between 1 and edge_width_scalar+1
+        weight = nx_data[node1, node2]
+        rescaled_weight = 1 + (edge_width_scalar * weight / max_weight)  # between 1 and edge_width_scalar+1
         G[node1][node2]["weight"] = rescaled_weight
         weights.append(rescaled_weight)
-    
-
-
 
     # get bipartite positioning
     top_nodes = list(df[ATTRIBUTE2_COL].unique())
     pos = nx.drawing.layout.bipartite_layout(G, top_nodes, align='horizontal')
-    
+
     # assign colors based on attribute column
     color_map = []
     for node in G:
@@ -130,7 +127,7 @@ def visualize_attribute_connectivity(
         node_color=color_map, 
         pos=pos, 
         **graph_aargs)
-    
+
     plt.show(block=False)
 
     return fig, G
