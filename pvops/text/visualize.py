@@ -51,11 +51,11 @@ def visualize_attribute_connectivity(
 
     figsize : tuple
         Figure size, defaults to (20,10)
-    attribute_colors : list
+    attribute_colors : list[str]
         List of two strings which designate the colors for Attribute1 and Attribute 2, respectively.
     edge_width_scalar : numeric
-        Weight utilized to cause dynamic widths based on number of connections between Attribute 1
-        and Attribute 2.
+        Weight utilized to scale widths based on number of connections between Attribute 1
+        and Attribute 2. Larger values will produce larger widths, and smaller values will produce smaller widths.
     graph_aargs : dict
         Optional, arguments passed to networkx graph drawer.
         Suggested attributes to pass:
@@ -64,6 +64,8 @@ def visualize_attribute_connectivity(
         - font_weight='bold'
         - node_size=19000
         - font_size=35
+    ax : axis
+        axis to draw on, defaults to None and will create a new figure and axis in this case.
 
     Returns
     -------
