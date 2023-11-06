@@ -3,6 +3,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 import networkx as nx
 from sklearn.metrics import ConfusionMatrixDisplay
+from networkx.algorithms import bipartite
 
 # data structures
 import numpy as np
@@ -23,13 +24,16 @@ from nltk.tokenize import word_tokenize
 def visualize_attribute_connectivity(
     om_df,
     om_col_dict,
-    figsize=(40, 20),
+    figsize=(20, 10),
     attribute_colors=["lightgreen", "cornflowerblue"],
     edge_width_scalar=10,
     graph_aargs={},
 ):
     """Visualize a knowledge graph which shows the frequency of combinations between attributes
     ``ATTRIBUTE1_COL`` and ``ATTRIBUTE2_COL``
+
+    NOW USES BIPARTITE LAYOUT
+    ATTRIBUTE2_COL is colored using a colormap.
 
     Parameters
     ----------
@@ -45,12 +49,12 @@ def visualize_attribute_connectivity(
             }
 
     figsize : tuple
-        Figure size
-    attribute_colors : list
+        Figure size, defaults to (20,10)
+    attribute_colors : list[str]
         List of two strings which designate the colors for Attribute1 and Attribute 2, respectively.
     edge_width_scalar : numeric
-        Weight utilized to cause dynamic widths based on number of connections between Attribute 1
-        and Attribute 2.
+        Weight utilized to scale widths based on number of connections between Attribute 1
+        and Attribute 2. Larger values will produce larger widths, and smaller values will produce smaller widths.
     graph_aargs : dict
         Optional, arguments passed to networkx graph drawer.
         Suggested attributes to pass:
@@ -59,38 +63,57 @@ def visualize_attribute_connectivity(
         - font_weight='bold'
         - node_size=19000
         - font_size=35
-        - node_color='darkred'
-        - font_color='red'
 
     Returns
     -------
-    Matplotlib figure instance,
-    networkx EdgeView object
-    i.e. [('A', 'X'), ('X', 'B'), ('C', 'Y'), ('C', 'Z')]
+    Matplotlib axis,
+    networkx graph
     """
-    df = om_df.copy()
+    # initialize figure
+    fig = plt.figure(figsize=figsize, facecolor='w', edgecolor='k')
+    ax = plt.gca()
+
+    # attribute column names
     ATTRIBUTE1_COL = om_col_dict["attribute1_col"]
     ATTRIBUTE2_COL = om_col_dict["attribute2_col"]
 
-    nx_data = []
-    for a in np.unique(df[ATTRIBUTE1_COL].tolist()):
-        df_iter = df[df[ATTRIBUTE1_COL] == a]
-        for i in np.unique(df_iter[ATTRIBUTE2_COL].tolist()):
-            w = len(df_iter[df_iter[ATTRIBUTE2_COL] == i])
-            nx_data.append([a, i, w])
-
-    unique_df = pd.DataFrame(
-        nx_data, columns=[ATTRIBUTE1_COL, ATTRIBUTE2_COL, "w"])
-
-    G = nx.from_pandas_edgelist(unique_df, ATTRIBUTE1_COL, ATTRIBUTE2_COL, "w")
-    fig = plt.figure(figsize=figsize)
-    fig.suptitle(
-        f"Connectivity between {ATTRIBUTE1_COL} and {ATTRIBUTE2_COL}",
-        fontsize=50,
-        y=1.08,
+    ax.set_title(
+        f"Connectivity between {ATTRIBUTE2_COL} and {ATTRIBUTE1_COL}",
         fontweight="bold",
     )
 
+    # subset dataframe to relevant columns
+    df_mask = (om_df[ATTRIBUTE1_COL].notna() == True) & (om_df[ATTRIBUTE2_COL].notna() == True)
+    df = om_df.loc[df_mask].reset_index(drop=True)
+
+    # obtain connectivity weights between attributes
+    nx_data = {}
+    for attr1 in np.unique(df[ATTRIBUTE1_COL].tolist()):
+        df_iter = df[df[ATTRIBUTE1_COL] == attr1]
+        for attr2 in np.unique(df_iter[ATTRIBUTE2_COL].tolist()):
+            w = len(df_iter[df_iter[ATTRIBUTE2_COL] == attr2])
+            nx_data[(attr1, attr2)] = w
+
+    # create graph
+    G = nx.Graph()
+    G.add_nodes_from(df[ATTRIBUTE1_COL], bipartite=0)
+    G.add_nodes_from(df[ATTRIBUTE2_COL], bipartite=1)
+    G.add_edges_from(nx_data.keys())
+
+    # rescale weights and add to graph as attribute
+    max_weight = max(nx_data.values())
+    weights = []
+    for node1, node2 in nx_data:
+        weight = nx_data[node1, node2]
+        rescaled_weight = 1 + (edge_width_scalar * weight / max_weight)  # between 1 and edge_width_scalar+1
+        G[node1][node2]["weight"] = rescaled_weight
+        weights.append(rescaled_weight)
+
+    # get bipartite positioning
+    top_nodes = list(df[ATTRIBUTE2_COL].unique())
+    pos = nx.drawing.layout.bipartite_layout(G, top_nodes, align='horizontal')
+
+    # assign colors based on attribute column
     color_map = []
     for node in G:
         if node in np.unique(df[ATTRIBUTE2_COL].tolist()):
@@ -98,14 +121,16 @@ def visualize_attribute_connectivity(
         else:
             color_map.append(attribute_colors[0])
 
-    edges = G.edges()
-    weights = [G[u][v]["w"] for u, v in edges]
-    weights = np.array(weights)
-    weights = list(1 + (edge_width_scalar * weights /
-                   weights.max()))  # scale 1-11
-    nx.draw_shell(G, width=weights, node_color=color_map, **graph_aargs)
+    nx.draw_networkx(
+        G, 
+        width=weights, 
+        node_color=color_map, 
+        pos=pos, 
+        **graph_aargs)
 
-    return fig, edges
+    plt.show(block=False)
+
+    return fig, G
 
 
 def visualize_attribute_timeseries(
