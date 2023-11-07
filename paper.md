@@ -51,6 +51,7 @@ PV data collected in the field varies greatly in structure (i.e., timeseries and
 The following table summarizes the four modules within `pvOps` by presenting: the type of data they analyze, example data features, and highlights of relevant functions. 
 
 \textbf{Table 1. Summary of modules and functions within `pvOps`}
+
 Module | Type of data | Example data features | Highlights of functions
 ------- | ------ | --------- | -----------
 text | O&M records | *timestamps*, *issue description*, *issue classification* | fill data gaps in dates and categorical records, visualize word clusters and patterns over time
