@@ -57,7 +57,9 @@ Module | Type of data | Example data features | Highlights of functions
 text | O&M records | *timestamps*, *issue description*, *issue classification* | fill data gaps in dates and categorical records, visualize word clusters and patterns over time
  | | | 
 timeseries | Production data | *site*, *timestamp*, *power production*, *irradiance* | estimate expected energy with multiple models, evaluate inverter clipping
+ | | | 
 text2time | O&M records and production data | see entries for `text` and  `timeseries` modules above | analyze overlaps between O&M and production (timeseries) records, visualize overlaps between O&M records and production data
+ | | | 
 iv | IV records | *current*, *voltage*, *irradiance*, *temperature*  | *simulate* IV curves with physical faults, extract diode parameters from IV curves,. classify faults using IV curves
 
 The functions within each module can be used to build pipelines that integrate relevant data processing, fusion, and visualization capabilities to support user endgoals. For example, a user with IV curve data could build a pipeline that leverages functions within the `iv` module to process and extract diode parameters within IV curves as well as train models to support classifications based on fault type. A pipeline could be also be built that leverages functions across modules if a user has access to multiple types of data (e.g., both O&M and production records). A sample end-to-end workflow using `pvOps` modules could be: 
