@@ -55,6 +55,7 @@ The following table summarizes the four modules within `pvOps` by presenting: th
 Module | Type of data | Example data features | Highlights of functions
 ------- | ------ | --------- | -----------
 text | O&M records | *timestamps*, *issue description*, *issue classification* | fill data gaps in dates and categorical records, visualize word clusters and patterns over time
+ | | | 
 timeseries | Production data | *site*, *timestamp*, *power production*, *irradiance* | estimate expected energy with multiple models, evaluate inverter clipping
 text2time | O&M records and production data | see entries for `text` and  `timeseries` modules above | analyze overlaps between O&M and production (timeseries) records, visualize overlaps between O&M records and production data
 iv | IV records | *current*, *voltage*, *irradiance*, *temperature*  | *simulate* IV curves with physical faults, extract diode parameters from IV curves,. classify faults using IV curves
