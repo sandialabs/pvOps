@@ -8,7 +8,7 @@ except ModuleNotFoundError:
     # warnings.warn("")
     pass
 
-__version__ = '0.2.0'
+__version__ = '0.3.0'
 
 __copyright__ = """Copyright 2023 National Technology & Engineering 
 Solutions of Sandia, LLC (NTESS). Under the terms of Contract DE-NA0003525 

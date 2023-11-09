@@ -1,0 +1,91 @@
+0.3.0 (November 9 2023)
+-----------------------
+
+This release incorporates new functions and addresses depreciated commands in some of the package dependencies.
+
+Functionality
+~~~~~~~~~~~~~~
+
+* Updated visualize_attribute_connectivity to use bipartite graph layout (updated function).
+
+* IV related dependencies moved to an installation extra (install using `pip install pvops[iv]`).
+
+* Removed deprecated normalization parameters in ML pipeline (bug fix).
+
+* Updated code to fix deprecation/future warnings.
+
+Testing
+~~~~~~~~~~~~~~
+
+* Added Python 3.11 to the test environment.
+
+Documentation
+~~~~~~~~~~~~~~
+
+* Fix small typos in index.rst.
+
+* Renamed references to examples as tutorials for consistency.
+
+* Updated docs to refer to modules as modules, rather than packages.
+
+* Updated RTD config to install doc requirements using the package installation extra
+
+* Removed redundant boilerplate in development.rst
+
+* Update tested versions in documentation
+
+* Added links to tutorials where appropriate in the user guide.
+
+* Added a simplified version of the module overview table from the JOSS manuscript to the homepage of the documentation.
+
+* Added statement of need to homepage
+
+* Fixed image embed in tutorial
+
+* Added dates to what's new sections
+
+* Expanded patch notes to include recent tags.
+
+* Deleted WIP docs pages to remove "not included in any toctree" errors.
+
+* Added nbsphinx gallery view to tutorials page.
+
+* Added more content to abbreviations page.
+
+Tutorials
+~~~~~~~~~~~~~~
+
+* Rename pvOps examples to tutorials for consistency throughout repository.
+
+* Linked to tutorials in README.
+
+* Added a description of data in timeseries tutorial.
+
+* Removed redundant plots in timeseries tutorial.
+
+Other
+~~~~~~~~~~~~~~
+
+* Added copyright and license attributes to pvops.
+
+* Removed manifest.in (not needed).
+
+* Removed docs/init.py (not a module).
+
+* Chose more appropriate author/copyright in setup.py and conf.py.
+
+* Added version to pvops (pvops.__version__ now exists).
+
+* Removed external licenses (determined to be unnecessary by legal).
+
+* Renamed citation file and updated version number.
+
+* Added noxfile for dev task running.
+
+* Removed unused docker files
+
+* Add standard python files to gitignore
+
+* Removed redundant requirements files
+
+* Pinned documentation related requirements
