@@ -4,9 +4,13 @@ IV Guide
 Module Overview
 ----------------
 
-
 These functions focus on current-voltage (IV) curve simulation and 
 classification.
+
+.. note::
+  To use the capabilites in this module, pvOps must be installed with the ``iv`` option:
+  ``pip install pvops[iv]``.
+
 
 Tutorials that exemplify usage can be found at:
   - `tutorial_iv_classifier.ipynb <https://github.com/sandialabs/pvOps/blob/master/tutorials/tutorial_iv_classifier.ipynb>`_.

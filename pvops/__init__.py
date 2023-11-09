@@ -1,7 +1,12 @@
+import warnings
 from pvops import text
 from pvops import text2time
 from pvops import timeseries
-from pvops import iv
+try:
+    from pvops import iv
+except ModuleNotFoundError:
+    # warnings.warn("")
+    pass
 
 __version__ = '0.2.0'
 

@@ -49,8 +49,6 @@ INSTALL_REQUIRES = [
     'pvlib',
     'pvanalytics',
     'timezonefinder',
-    'pyDOE',
-    'tensorflow',
 ]
 
 DOCS_REQUIRE = [
@@ -66,8 +64,14 @@ DOCS_REQUIRE = [
     'sphinx_rtd_theme==1.3.0',
 ]
 
+IV_REQUIRE = [
+    'keras',
+    'tensorflow',
+    'pyDOE',
+]
+
 EXTRAS_REQUIRE = {
-    'optional': ['ruptures'],
+    'iv': IV_REQUIRE,
     'test': TESTS_REQUIRE,
     'doc': DOCS_REQUIRE
 }
