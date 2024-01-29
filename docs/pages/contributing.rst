@@ -61,24 +61,3 @@ Guidelines for preparing and submitting pull-requests
   the latest `master` commit
   
 - Ensure that appropriate documentation and tests accompany any added features.
-  
-  
-Once a pull-request is submitted you will iterate with NuMAD maintainers
-until your changes are in an acceptable state and can be merged in. You can push
-addditional commits to the branch used to create the pull-request to reflect the
-feedback from maintainers and users of the code.
-
-Questions and feature requests
---------------------------------
-
-For any questions regarding pvOps or requests for additional features,
-users may open an issue on the `pvops issues page <https://github.com/sandialabs/pvops/issues>`_
-or contact the package maintainer found in ``setup.py``.
-
-Guidelines for effective bug reporting
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-- Use a clear, descriptive title for the question or feature request.
-
-- If submitting a feature request, please provide context, examples, and
-  references when relevant.
