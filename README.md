@@ -3,7 +3,6 @@
 [![GitHub version](https://badge.fury.io/gh/sandialabs%2FpvOps.svg)](https://badge.fury.io/gh/sandialabs%2FpvOps)
 [![License](https://img.shields.io/pypi/l/pvOps?color=green)](https://github.com/sandialabs/pvOps/blob/master/LICENSE)
 [![ActionStatus](https://github.com/sandialabs/pvOps/workflows/lint%20and%20test/badge.svg)](https://github.com/sandialabs/pvOps/actions)
-[![DOI](https://zenodo.org/badge/289032705.svg)](https://zenodo.org/badge/latestdoi/289032705)
 [![status](https://joss.theoj.org/papers/6c3554c98b1771125613cff94241847c/status.svg)](https://joss.theoj.org/papers/6c3554c98b1771125613cff94241847c)
 
 pvops contains a series of functions to facilitate fusion of text-based data with time series production data collected at photovoltaic sites. The package also contains example datasets and tutorials to help demonstrate how the functions can be used.
@@ -40,26 +39,29 @@ More information about these modules is available at [readthedocs](https://pvops
 Citing
 ======
 
-If using this package, please cite [our paper](https://ieeexplore.ieee.org/document/9518439) using the following:
+If using this package, please cite our [JOSS paper](https://joss.theoj.org/papers/10.21105/joss.05755#) using the following:
 
 **Citation:** 
 
 ```
-H. Mendoza, M. Hopwood and T. Gunda, "pvOps: Improving Operational Assessments through Data Fusion," 2021 IEEE 48th Photovoltaic Specialists Conference (PVSC), 2021, pp. 0112-0119, doi: 10.1109/PVSC43889.2021.9518439.
+Bonney et al., (2023). pvOps: a Python package for empirical analysis of photovoltaic field data. 
+Journal of Open Source Software, 8(91), 5755, https://doi.org/10.21105/joss.05755
 ```
 
 **BibTex:**
 
 ```
-@INPROCEEDINGS{9518439,
-  author={Mendoza, Hector and Hopwood, Michael and Gunda, Thushara},
-  booktitle={2021 IEEE 48th Photovoltaic Specialists Conference (PVSC)}, 
-  title={pvOps: Improving Operational Assessments through Data Fusion}, 
-  year={2021},
-  volume={},
-  number={},
-  pages={0112-0119},
-  doi={10.1109/PVSC43889.2021.9518439}}
+@article{Bonney2023, 
+  doi = {10.21105/joss.05755}, 
+  url = {https://doi.org/10.21105/joss.05755}, 
+  year = {2023}, 
+  publisher = {The Open Journal}, 
+  volume = {8}, 
+  number = {91}, 
+  pages = {5755}, 
+  author = {Kirk L. Bonney and Thushara Gunda and Michael W. Hopwood and Hector Mendoza and Nicole D. Jackson}, 
+  title = {pvOps: a Python package for empirical analysis of photovoltaic field data}, 
+  journal = {Journal of Open Source Software} }
 ```
 
 Contributing
@@ -74,4 +76,4 @@ Logo Credit: [Daniel Rubinstein](http://www.danielrubinstein.com/)
 Copyright and License
 =======
 
-pvops is copyright through Sandia National Laboratories. The software is distributed under the Revised BSD License. See [copyright and license](https://github.com/sandialabs/pvops/blob/master/LICENSE) for more information.
+pvops is copyright through National Technology & Engineering Solutions of Sandia (NTESS). The software is distributed under the Revised BSD License. See the LICENSE file for more information.
