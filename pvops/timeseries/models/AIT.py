@@ -126,12 +126,11 @@ class AIT(Processer, Predictor):
                                    (0.06624491753542901, [0, 0])]
 
     def predict_subset(self, prod_df, scaler, model_terms, prod_col_dict):
-        prod_df = prod_df.copy()
         self.check_data(prod_df, prod_col_dict)
 
         """1. Standardize the data using same scales"""
         for k, d in scaler.items():
-            data = prod_df[prod_col_dict[k]]
+            data = prod_df[prod_col_dict[k]].copy()
             scaled_data = self._apply_transform(data, d)
             prod_df[self._col_scaled_prefix + prod_col_dict[k]] = scaled_data
 
