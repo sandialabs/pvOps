@@ -349,7 +349,7 @@ class Example:
             pipeline_steps = [
                 ("doc2vec", nlp_utils.Doc2VecModel()), ("clf", None)]
 
-        scoring = make_scorer(f1_score, average="weighted")
+        scoring = make_scorer(f1_score, average="weighted", pos_label=None)
         self.greater_is_better = True
 
         if user_defined_classes is None or user_defined_search_space is None:

@@ -90,7 +90,7 @@ def supervised_classifier_defs(settings_flag):
                 "clf__C": np.logspace(0, 4, 10),
             },
             "PassiveAggressiveClassifier": {
-                "clf__C": [0.0, 0.01, 0.1, 1.0],
+                "clf__C": [0.001, 0.01, 0.1, 1.0],
                 "clf__loss": ["hinge", "squared_hinge"],
             },
             "RidgeClassifier": {
@@ -119,7 +119,7 @@ def supervised_classifier_defs(settings_flag):
             "AdaBoostClassifier": {
                 "clf__n_estimators": [50, 100],
                 "clf__learning_rate": [1.0, 0.9, 0.8],
-                "clf__algorithm": ["SAMME.R"],
+                "clf__algorithm": ["SAMME"],
             },
         }
     elif settings_flag == "normal":
@@ -152,7 +152,7 @@ def supervised_classifier_defs(settings_flag):
                 "clf__C": np.logspace(0, 4, 10),
             },
             "PassiveAggressiveClassifier": {
-                "clf__C": [0.0, 0.01, 0.1, 1.0],
+                "clf__C": [0.001, 0.01, 0.1, 1.0],
                 "clf__loss": ["hinge", "squared_hinge"],
             },
             "RidgeClassifier": {
@@ -182,7 +182,7 @@ def supervised_classifier_defs(settings_flag):
             "AdaBoostClassifier": {
                 "clf__n_estimators": [50, 100],
                 "clf__learning_rate": [1.0, 0.9, 0.8],
-                "clf__algorithm": ["SAMME.R"],
+                "clf__algorithm": ["SAMME"],
             },
         }
     elif settings_flag == "detailed":
@@ -215,7 +215,7 @@ def supervised_classifier_defs(settings_flag):
                 "clf__C": np.logspace(0, 4, 10),
             },
             "PassiveAggressiveClassifier": {
-                "clf__C": [0.0, 0.01, 0.1, 1.0],
+                "clf__C": [0.001, 0.01, 0.1, 1.0],
                 "clf__loss": ["hinge", "squared_hinge"],
             },
             "RidgeClassifier": {
@@ -245,7 +245,7 @@ def supervised_classifier_defs(settings_flag):
             "AdaBoostClassifier": {
                 "clf__n_estimators": [30, 50, 100, 150, 300],
                 "clf__learning_rate": [1.0, 0.9, 0.8, 0.4],
-                "clf__algorithm": ["SAMME.R", "SAMME"],
+                "clf__algorithm": ["SAMME"],
             },
         }
 
