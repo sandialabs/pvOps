@@ -39,7 +39,7 @@ INSTALL_REQUIRES = [
     'pandas',
     'scipy',
     'scikit-learn',
-    'nltk',
+    'nltk>=3.9.1',
     'datefinder',
     'matplotlib',
     'seaborn',
