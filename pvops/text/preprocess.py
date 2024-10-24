@@ -7,9 +7,9 @@ import traceback
 from datetime import datetime, timedelta
 
 try:
-    nltk.data.find('tokenizers/punkt')
+    nltk.data.find('tokenizers/punkt_tab')
 except LookupError:
-    nltk.download('punkt')
+    nltk.download('punkt_tab')
 
 def preprocessor(
     om_df, lst_stopwords, col_dict, print_info=False, extract_dates_only=False
