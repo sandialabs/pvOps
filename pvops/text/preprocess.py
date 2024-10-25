@@ -4,6 +4,7 @@ import nltk
 import numpy as np
 import datefinder
 import traceback
+import gensim
 from datetime import datetime, timedelta
 
 try:
@@ -493,3 +494,33 @@ def get_keywords_of_interest(document_tok, reference_df, reference_col_dict):
     overlap_keywords = reference_dict.keys() & document_tok
     included_keywords = list({reference_dict[x] for x in overlap_keywords})
     return included_keywords
+
+
+def get_bag_of_words_with_corpus_dictionary(documents_tok, lower_thresh=0):
+    """Build a gensim.corpora.Dictionary from a list of tokenized documents.
+    Then convert the documents to a bag-of-words representation with word
+    embeddings and their corresponding frequencies.
+
+    Parameters
+    ----------
+    documents_tok : list of list of str
+        List of tokenized documents, where each tokenized document is itself a list of string values.
+    lower_thresh : int
+        Filter out tokens which appear fewer than lower_thresh times in the whole corpus of documents.
+        These tokens will not be included in the gensim.corpora.Dictionary or the bag-of-words representations.
+
+    Returns
+    -------
+    documents_bow : list of list of tuple
+        List of bag-of-words representations of documents, where each document is itself represented as
+        a list of tuples. Each tuple corresponds to a unique token contained in the document,
+        of the form (word_embedding, frequency)
+    corpus_dictionary: gensim.corpora.Dictionary
+        Mapping from word embeddings to the original string tokens from the corpus of documents.
+    """
+    corpus_dictionary = gensim.corpora.Dictionary(documents_tok)    
+    corpus_dictionary.filter_extremes(no_below=lower_thresh)
+    
+    embedded_docs = [corpus_dictionary.doc2bow(doc) for doc in documents_tok]
+    
+    return embedded_docs, corpus_dictionary
