@@ -97,7 +97,7 @@ def classification_deployer(
 
         .. code-block:: python
 
-            scoring = make_scorer(f1_score, average = 'weighted')
+            scoring = make_scorer(f1_score, average = 'weighted', pos_label = None)
 
         For unsupervised classifiers, one could specify
 
