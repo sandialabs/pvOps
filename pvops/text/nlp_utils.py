@@ -5,7 +5,7 @@ from gensim.models.doc2vec import TaggedDocument, Doc2Vec
 from nltk.tokenize import word_tokenize
 import scipy
 import numpy as np
-from gensim.models import Word2Vec
+from gensim.models import Word2Vec, LdaModel, CoherenceModel
 
 
 class Doc2VecModel(BaseEstimator):
@@ -145,6 +145,25 @@ class DataDensifier(BaseEstimator):
         dense array
         """
         return self.transform(X=X, y=y)
+
+
+def fit_lda(dictionary, bow_documents, num_topics, num_iter=5, random_state=42):
+    
+    model_list = []
+    coherence_values = []
+
+    # fit over multiple iterations
+    for iter in range(num_iter):
+
+        # fit the LDA model; add to our list of models
+        model = LdaModel(bow_documents, num_topics=num_topics, random_state=random_state+iter)
+        model_list.append(model)
+
+        # get the coherence score for this model; add to our list of coherence scores
+        coherencemodel = CoherenceModel(model=model, dictionary=dictionary, corpus=bow_documents, coherence='u_mass')
+        coherence_values.append(coherencemodel.get_coherence())
+
+    return model_list, coherence_values
 
 
 def create_stopwords(lst_langs=["english"], lst_add_words=[], lst_keep_words=[]):
