@@ -39,6 +39,7 @@ INSTALL_REQUIRES = [
     'pandas',
     'scipy',
     'scikit-learn',
+    'scikit-survival',
     'nltk>=3.9.1',
     'datefinder',
     'matplotlib',
@@ -66,7 +67,7 @@ DOCS_REQUIRE = [
 
 IV_REQUIRE = [
     'keras',
-    'tensorflow',
+    'tensorflow;python_version<"3.13"',
     'pyDOE',
 ]
 
