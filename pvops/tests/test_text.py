@@ -15,7 +15,7 @@ def test_text_remove_nondate_nums():
     assert preprocess.text_remove_nondate_nums(example) == answer
 
 
-def test_text_remove_numbers_stopwords():
+def test_text_remove_numbers_stopwords(): # pragma: no cover 
     example = r"This is a test example 10% #10 101 1-1-1 13-1010 10.1 123456789 123/12 executed on 2/4/2020"
     answer = r"This test example executed"
 
