@@ -18,11 +18,11 @@ Alternatively, the package can be installed using github::
 NLTK data
 ----------
 
-Functions in the text package rely on the "punkt" dataset from the nltk package.
+Functions in the text package rely on the "punkt_tab" dataset from the nltk package.
 After proper installation of pvops, run the commands::
     
     >>> import nltk
-    >>> nltk.download('punkt')
+    >>> nltk.download('punkt_tab')
     >>> nltk.download('stopwords')
 
 Those operating under a proxy may have difficulty with this installation.

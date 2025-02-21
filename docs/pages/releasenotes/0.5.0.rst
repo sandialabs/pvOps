@@ -1,0 +1,16 @@
+0.5.0 (February 19 2025)
+------------------------
+
+This release adds a new tutorial demonstrating survival analysis on PV assets.
+
+Tutorials
+~~~~~~~~~~~~~~
+
+* Added a new timeseries survival analysis tutorial demonstrating Kaplan-Meier estimators and Weibull distribution fits.
+
+* Added a new example dataset to go along with the new tutorial.
+
+Other
+~~~~~~~~~~~~~~
+
+* Added scikit-survival as a new dependency. Used for Kaplan-Meier estimators in the new tutorial.
