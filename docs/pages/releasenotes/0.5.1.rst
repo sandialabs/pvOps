@@ -1,0 +1,9 @@
+0.5.1 (February 19 2025)
+------------------------
+
+This release addresses a deprecation preventing the documentation from building.
+
+Other
+~~~~~~~~~~~~~~
+
+* Updated artifact/upload-artifact in buildthedocs from v3 to v4

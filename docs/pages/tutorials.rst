@@ -10,11 +10,12 @@ Check out the tutorials below!
    tutorials/tutorial_textmodule
 
 .. nbgallery::
-   :caption: Energy modelling tutorials:
+   :caption: Timeseries tutorials:
 
    tutorials/tutorial_timeseries
    tutorials/tutorial_AIT_timeseries
    tutorials/tutorial_timeseries_sim
+   tutorials/tutorial_timeseries_survival_analysis
 
 .. nbgallery::
    :caption: IV tutorials:
