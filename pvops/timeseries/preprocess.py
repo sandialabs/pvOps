@@ -375,7 +375,7 @@ def identify_right_censored_data(om_df, col_dict):
     first_fails_df['was_observed'] = True
 
     # find the last failure for a given site
-    last_fails_df = om_df.groupby(site).last().drop(columns=[group_by]) # we don't care about the group_by value
+    last_fails_df = om_df.groupby(site).last().drop(columns=[group_by])  # we don't care about the group_by value
     last_fails_df['was_observed'] = False
 
     # initialize dataframe with a row for every unique site-group_by pair
