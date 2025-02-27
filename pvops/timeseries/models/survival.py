@@ -7,43 +7,34 @@ def get_survival_function(df, col_dict, method):
 
     This function computes the survival function for each unique group in the input DataFrame 
     based on the specified method. It supports the Kaplan-Meier estimator and Weibull distribution 
-    fitting for survival analysis.
+    fitting for survival analysis. The Kaplan-Meier estimator is a non-parametric statistic,
+    while the Weibull distribution is a parametric model.
 
     Parameters
     ----------
     df : pandas.DataFrame
         A DataFrame containing failure data with at least three columns specified in `col_dict`:
-        one for grouping, one for the time to failure, and one indicating whether the failure was observed.
+        one for grouping, one for the time to failure, and one indicating whether the failure was observed
 
-    col_dict : dict
-        A dictionary containing the following keys:
-        - 'group_by': The column name to group by.
-        - 'time_to_fail': The column name representing the time until failure.
-        - 'was_observed': The column name indicating whether the failure was observed (True/False).
+    col_dict : dict of {str : str}
+        A dictionary that contains the column names relevant for survival analysis
+
+        - **group_by** (*string*), should be assigned to the column to group by
+        - **time_to_fail** (*string*), should be assigned to the column containing the time until failure
+        - **was_observed** (*string*), should be assigned to the column indicating whether the failure was observed
 
     method : str
         The method to use for calculating the survival function. Must be one of:
+
         - 'kaplan-meier': Uses the Kaplan-Meier estimator for survival analysis.
         - 'weibull': Fits a Weibull distribution to the data.
 
     Returns
     -------
     dict
-        - If `method` is `'kaplan-meier'`, contains keys `'times'`, `'fail_prob'`, and `'conf_int'`, which denote
-        the times, failure probabilities, and confidence intervals on the failure probabilities.
-        - If `method` is `'weibull'`, contains keys `'shape'`, `'scale'`, and `'distribution'`, which denote
-        the shape parameter, scale parameter, and corresponding fitted `stats.weibull_min` distribution.
 
-    Raises
-    ------
-    ValueError
-        If the specified method is not one of the implemented methods.
-
-    Notes
-    -----
-    The Kaplan-Meier estimator is a non-parametric statistic used to estimate the survival function 
-    from lifetime data, while the Weibull distribution is a parametric model often used in reliability 
-    analysis.
+        - If `method` is `'kaplan-meier'`, contains keys `'times'`, `'fail_prob'`, and `'conf_int'`, which denote the times, failure probabilities, and confidence intervals on the failure probabilities.
+        - If `method` is `'weibull'`, contains keys `'shape'`, `'scale'`, and `'distribution'`, which denote the shape parameter, scale parameter, and corresponding fitted `stats.weibull_min` distribution.
     """
 
     implemented_methods = ['kaplan-meier', 'weibull']
