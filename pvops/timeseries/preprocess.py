@@ -369,7 +369,7 @@ def identify_right_censored_data(om_df, col_dict):
     # extract the columns we need
     group_by = col_dict['group_by']
     site = col_dict['site']
-    
+
     # find the first failure of a given site-group_by pair
     first_fails_df = om_df.groupby([site, group_by]).first()
     first_fails_df['was_observed'] = True

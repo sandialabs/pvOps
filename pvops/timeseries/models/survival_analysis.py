@@ -74,5 +74,5 @@ def get_survival_function(df, col_dict, method):
             group_result = {'shape': shape, 'scale': scale, 'distribution': stats.weibull_min(c=shape, scale=scale)}
 
         results[group] = group_result
-            
+
     return results
