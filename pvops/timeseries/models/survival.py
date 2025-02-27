@@ -1,7 +1,7 @@
 from scipy import stats
 from sksurv.nonparametric import kaplan_meier_estimator
 
-def get_survival_function(df, col_dict, method):
+def fit_survival_function(df, col_dict, method):
     """
     Calculate the survival function for different groups in a DataFrame using specified methods.
 
