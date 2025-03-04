@@ -7,7 +7,6 @@ import pandas as pd
 import numpy as np
 import datetime
 import matplotlib
-import nltk
 
 def test_text_remove_nondate_nums():
     example = r"This is a test example https://www.google.com 10% #10 101 1-1-1 a-e4 13-1010 10.1 123456789 123/12 executed on 2/4/2020"
