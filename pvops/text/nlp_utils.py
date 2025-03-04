@@ -1,11 +1,10 @@
-import nltk
-
 from sklearn.base import BaseEstimator
 from gensim.models.doc2vec import TaggedDocument, Doc2Vec
-from nltk.tokenize import word_tokenize
 import scipy
 import numpy as np
 from gensim.models import Word2Vec
+
+from pvops.text import preprocess
 
 
 class Doc2VecModel(BaseEstimator):
@@ -64,7 +63,7 @@ class Doc2VecModel(BaseEstimator):
         )
         # Tag docs
         tagged_documents = [
-            TaggedDocument(words=word_tokenize(_d.lower()), tags=[str(i)])
+            TaggedDocument(words=preprocess.regex_tokenize(_d.lower()), tags=[str(i)])
             for i, _d in enumerate(raw_documents)
         ]
         # Build vocabulary
@@ -81,7 +80,7 @@ class Doc2VecModel(BaseEstimator):
         """Transforms the documents into Doc2Vec vectors."""
         X = []
         for doc in raw_documents:
-            X.append(self.d2v_model.infer_vector(word_tokenize(doc)))
+            X.append(self.d2v_model.infer_vector(preprocess.regex_tokenize(doc)))
         return X
 
     def fit_transform(self, raw_documents, y=None):
@@ -147,15 +146,19 @@ class DataDensifier(BaseEstimator):
         return self.transform(X=X, y=y)
 
 
-def create_stopwords(lst_langs=["english"], lst_add_words=[], lst_keep_words=[]):
+def create_stopwords(lst_add_words=[], lst_keep_words=[]):
     """Concatenate a list of stopwords using both words grabbed from nltk and user-specified words.
+    The nltk stopwords are those that were current at the release of pvOps version 0.5.0 on
+    Febuary 19th, 2025. See below for more on nltk.
+
+    Bird, Steven, Edward Loper and Ewan Klein (2009), Natural Language Processing with Python. O'Reilly Media Inc.
+
+    https://www.nltk.org/
 
     Parameters
     ----------
-    lst_langs : list
-        List of strings designating the languages for a nltk.corpus.stopwords.words query. If empty list is passed, no stopwords will be queried from nltk.
     lst_add_words : list
-        List of words(e.g., "road" or "street") to add to stopwords list. If these words are already included in the nltk query, a duplicate will not be added.
+        List of words(e.g., "road" or "street") to add to stopwords list. If these words are already included in the nltk list, a duplicate will not be added.
     lst_keep_words : list
         List of words(e.g., "before" or "until") to remove from stopwords list. This is usually used to modify default stop words that might be of interest to PV.
 
@@ -165,13 +168,25 @@ def create_stopwords(lst_langs=["english"], lst_add_words=[], lst_keep_words=[])
         List of alphabetized stopwords
     """
     lst_stopwords = set()
-    for lang in lst_langs:
-        try:
-            stopwords = nltk.corpus.stopwords.words(lang)
-        except LookupError:
-            nltk.download("stopwords")
-            stopwords = nltk.corpus.stopwords.words(lang)
-        lst_stopwords = lst_stopwords.union(stopwords)
+
+    default_stopwords = ["a", "about", "above", "after", "again", "against", "ain", "all", "am", "an", "and",
+                         "any", "are", "aren", "aren't", "as", "at", "be", "because", "been", "before", "being", "below",
+                         "between", "both", "but", "by", "can", "couldn", "couldn't", "d", "did", "didn", "didn't",
+                         "do", "does", "doesn", "doesn't", "doing", "don", "don't", "down", "during", "each", "few",
+                         "for", "from", "further", "had", "hadn", "hadn't", "has", "hasn", "hasn't", "have", "haven",
+                         "haven't", "having", "he", "her", "here", "hers", "herself", "him", "himself", "his", "how",
+                         "i", "if", "in", "into", "is", "isn", "isn't", "it", "it's", "its", "itself", "just", "ll",
+                         "m", "ma", "me", "mightn", "mightn't", "more", "most", "mustn", "mustn't", "my", "myself",
+                         "needn", "needn't", "no", "nor", "not", "now", "o", "of", "off", "on", "once", "only", "or",
+                         "other", "our", "ours", "ourselves", "out", "over", "own", "re", "s", "same", "shan", "shan't",
+                         "she", "she's", "should", "should've", "shouldn", "shouldn't", "so", "some", "such", "t", "than",
+                         "that", "that'll", "the", "their", "theirs", "them", "themselves", "then", "there", "these",
+                         "they", "this", "those", "through", "to", "too", "under", "until", "up", "ve", "very", "was",
+                         "wasn", "wasn't", "we", "were", "weren", "weren't", "what", "when", "where", "which", "while",
+                         "who", "whom", "why", "will", "with", "won", "won't", "wouldn", "wouldn't", "y", "you", "you'd",
+                         "you'll", "you're", "you've", "your", "yours", "yourself", "yourselves"]
+
+    lst_stopwords = lst_stopwords.union(default_stopwords)
     lst_stopwords = lst_stopwords.union(lst_add_words)
     lst_stopwords = list(set(lst_stopwords) - set(lst_keep_words))
     return sorted(list(set(lst_stopwords)))

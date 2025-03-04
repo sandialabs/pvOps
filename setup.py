@@ -40,7 +40,6 @@ INSTALL_REQUIRES = [
     'scipy',
     'scikit-learn',
     'scikit-survival',
-    'nltk>=3.9.1',
     'datefinder',
     'matplotlib',
     'seaborn',
