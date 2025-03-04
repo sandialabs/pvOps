@@ -424,7 +424,7 @@ def visualize_word_frequency_plot(tokenized_words,
     matplotlib.rcParams.update({"font.size": font_size})
 
     unique_tokens = list(set(tokenized_words))
-    unique_tokens.sort(key = lambda token : tokenized_words.count(token), reverse=True)
+    unique_tokens.sort(key=(lambda token: tokenized_words.count(token)), reverse=True)
     unique_tokens = unique_tokens[:num_tokens]
     counts = [tokenized_words.count(token) for token in unique_tokens]
 
