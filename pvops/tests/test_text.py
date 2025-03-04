@@ -79,11 +79,12 @@ def xtest_visualize_word_frequency_plot():
     # the rendered plot, meaning the test will get caught up
     documents = ["A word", "B word", "C word"]
     words = " ".join(documents)
-    tokenized_words = nltk.word_tokenize(words)
+    tokenized_words = preprocess.regex_tokenize(words)
 
-    fig = visualize.visualize_word_frequency_plot(tokenized_words)
+    result = visualize.visualize_word_frequency_plot(tokenized_words)
 
-    assert isinstance(fig, nltk.FreqDist)
+    assert isinstance(result[0], matplotlib.pyplot.Figure)
+    assert isinstance(result[1], dict)
 
 
 def test_visualize_attribute_connectivity():
