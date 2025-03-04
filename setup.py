@@ -49,6 +49,7 @@ INSTALL_REQUIRES = [
     'pvlib',
     'pvanalytics',
     'timezonefinder',
+    'tqdm',
 ]
 
 DOCS_REQUIRE = [

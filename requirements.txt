@@ -15,6 +15,7 @@ pvanalytics
 timezonefinder
 pyDOE
 tensorflow
+tqdm
 
 # Testing
 pytest
