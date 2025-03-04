@@ -15,7 +15,6 @@ import datetime
 from collections import Counter
 
 # Embedding
-import nltk
 from sklearn.feature_extraction.text import TfidfVectorizer
 from gensim.models.doc2vec import TaggedDocument
 from pvops.text import preprocess
@@ -382,10 +381,14 @@ def visualize_document_clusters(cluster_tokens, min_frequency=20):
     return ax
 
 
-def visualize_word_frequency_plot(
-    tokenized_words, title="", font_size=16, graph_aargs={}
-):
-    """Visualize the frequency distribution of words within a set of documents
+def visualize_word_frequency_plot(tokenized_words,
+                                  title="",
+                                  font_size=16,
+                                  num_tokens=30,
+                                  graph_aargs={}):
+    """
+    Visualize the frequency distribution of words within a set of documents. This function
+    identifies unique tokens and counts how many times each appears.
 
     Parameters
     ----------
@@ -395,18 +398,72 @@ def visualize_word_frequency_plot(
         Optional, title of plot
     font_size : int
         Optional, font size
-    aargs :
-        Optional, other parameters passed to nltk.FreqDist.plot()
+    graph_aargs : dict
+        Optional, other parameters passed to `plt.plot`.
+
+        Note certain specific keys are handled by the function directly rather than `plt.plot`,
+        analogously to the keyword arguments in nltk's `nltk.FreqDist.plot`. These are:
+            - `'cumulative'`: computes the count cumulatively (in order of descending count)
+            - `'percents'`: shows the y-axis as a percent of all tokens instead of integer count
+            - `'show'`: whether to call show() the matplotlib.pyplot.Figure instance
+
+    For more on nltk, see below.
+
+    Bird, Steven, Edward Loper and Ewan Klein (2009), Natural Language Processing with Python. O'Reilly Media Inc.
+
+    https://www.nltk.org/
 
     Returns
     -------
-    Matplotlib figure instance
+    Matplotlib Figure instance,
+    dict
+
+    The dict is in the format {token: count} and includes every unique token in descending order of count
     """
+
     matplotlib.rcParams.update({"font.size": font_size})
-    fd = nltk.FreqDist(tokenized_words)
-    fig = plt.figure(figsize=(12, 6))
-    fd.plot(30, cumulative=False, title=title, figure=fig, **graph_aargs)
-    return fd
+
+    unique_tokens = list(set(tokenized_words))
+    unique_tokens.sort(key = lambda token : tokenized_words.count(token), reverse=True)
+    unique_tokens = unique_tokens[:num_tokens]
+    counts = [tokenized_words.count(token) for token in unique_tokens]
+
+    fig, ax = plt.subplots(figsize=(12, 6))
+
+    # treat the nltk-inspired keywords
+    if 'cumulative' in graph_aargs:
+        counts = list(np.cumsum(counts))
+        ylabel = "Cumulative "
+    else:
+        ylabel = ""
+
+    if 'percents' in graph_aargs:
+        counts = [count / len(tokenized_words) * 100 for count in counts]
+        ylabel += "Percents"
+    else:
+        ylabel += "Counts"
+
+    if "show" in graph_aargs:
+        show = graph_aargs["show"]
+    else:
+        show = False
+
+    for used_keyword in ["show", "percents", "cumulative"]:
+        graph_aargs.pop(used_keyword, None)
+
+    # plot
+    ax.grid(True, color="silver")
+    ax.plot(counts, **graph_aargs)
+    ax.set_xticks(range(num_tokens))
+    ax.set_xticklabels([token for token in unique_tokens], rotation=90)
+    ax.set_xlabel("Samples")
+    ax.set_ylabel(ylabel)
+    ax.set_title(title)
+
+    if show:
+        fig.show()
+
+    return fig, {token: count for token, count in zip(unique_tokens, counts)}
 
 
 def visualize_classification_confusion_matrix(om_df, col_dict, title=''):
