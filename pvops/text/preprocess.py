@@ -1,5 +1,4 @@
 import re
-import nltk
 
 import numpy as np
 import datefinder
