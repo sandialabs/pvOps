@@ -18,7 +18,7 @@ from collections import Counter
 import nltk
 from sklearn.feature_extraction.text import TfidfVectorizer
 from gensim.models.doc2vec import TaggedDocument
-from nltk.tokenize import word_tokenize
+from pvops.text import preprocess
 
 
 def visualize_attribute_connectivity(
@@ -264,7 +264,7 @@ def visualize_cluster_entropy(
         X = df[col].tolist()
         X = [x.lower() for x in X]
 
-        tokenized_data = [word_tokenize(x) for x in X]
+        tokenized_data = [preprocess.regex_tokenize(x) for x in X]
 
         doc2vec_data = [
             TaggedDocument(words=x, tags=[str(i)]) for i, x in enumerate(tokenized_data)
