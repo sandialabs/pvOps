@@ -1,4 +1,4 @@
-0.5.1 (February 19 2025)
+0.5.2 (February 21 2025)
 ------------------------
 
 This release updates the documentation to reflect changes starting at v0.4.0 and fixes dependency requirements.
