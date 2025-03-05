@@ -74,9 +74,7 @@ def test_visualize_attribute_timeseries():
     assert isinstance(fig, matplotlib.figure.Figure)
 
 
-def xtest_visualize_word_frequency_plot():
-    # Decommissioned because nltk's freqplot automatically shows
-    # the rendered plot, meaning the test will get caught up
+def test_visualize_word_frequency_plot():
     documents = ["A word", "B word", "C word"]
     words = " ".join(documents)
     tokenized_words = preprocess.regex_tokenize(words)
