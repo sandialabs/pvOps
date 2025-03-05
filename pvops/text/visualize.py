@@ -428,6 +428,9 @@ def visualize_word_frequency_plot(tokenized_words,
     unique_tokens = unique_tokens[:num_tokens]
     counts = [tokenized_words.count(token) for token in unique_tokens]
 
+    # trim number of tokens if number of unique ones is less than the requested number
+    num_tokens = min(num_tokens, len(unique_tokens))
+
     fig, ax = plt.subplots(figsize=(12, 6))
 
     # treat the nltk-inspired keywords
