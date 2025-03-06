@@ -7,7 +7,6 @@ import pandas as pd
 import numpy as np
 import datetime
 import matplotlib
-import nltk
 
 def test_text_remove_nondate_nums():
     example = r"This is a test example https://www.google.com 10% #10 101 1-1-1 a-e4 13-1010 10.1 123456789 123/12 executed on 2/4/2020"
@@ -15,198 +14,11 @@ def test_text_remove_nondate_nums():
     assert preprocess.text_remove_nondate_nums(example) == answer
 
 
-##### REMOVE ONCE NLTK STOPWORDS ISSUE IS RESOLVED
-import pytest
-@pytest.mark.skip(reason="no way of currently testing this")
-#####
 def test_text_remove_numbers_stopwords():
     example = r"This is a test example 10% #10 101 1-1-1 13-1010 10.1 123456789 123/12 executed on 2/4/2020"
     answer = r"This test example executed"
 
-    stopwords_answer = [
-        "a",
-        "about",
-        "above",
-        "after",
-        "again",
-        "against",
-        "ain",
-        "all",
-        "am",
-        "an",
-        "and",
-        "any",
-        "are",
-        "aren",
-        "aren't",
-        "as",
-        "at",
-        "be",
-        "because",
-        "been",
-        "before",
-        "being",
-        "below",
-        "between",
-        "both",
-        "but",
-        "by",
-        "can",
-        "couldn",
-        "couldn't",
-        "d",
-        "did",
-        "didn",
-        "didn't",
-        "do",
-        "does",
-        "doesn",
-        "doesn't",
-        "doing",
-        "don",
-        "don't",
-        "down",
-        "during",
-        "each",
-        "few",
-        "for",
-        "from",
-        "further",
-        "had",
-        "hadn",
-        "hadn't",
-        "has",
-        "hasn",
-        "hasn't",
-        "have",
-        "haven",
-        "haven't",
-        "having",
-        "he",
-        "her",
-        "here",
-        "hers",
-        "herself",
-        "him",
-        "himself",
-        "his",
-        "how",
-        "i",
-        "if",
-        "in",
-        "into",
-        "is",
-        "isn",
-        "isn't",
-        "it",
-        "it's",
-        "its",
-        "itself",
-        "just",
-        "ll",
-        "m",
-        "ma",
-        "me",
-        "mightn",
-        "mightn't",
-        "more",
-        "most",
-        "mustn",
-        "mustn't",
-        "my",
-        "myself",
-        "needn",
-        "needn't",
-        "no",
-        "nor",
-        "not",
-        "now",
-        "o",
-        "of",
-        "off",
-        "on",
-        "once",
-        "only",
-        "or",
-        "other",
-        "our",
-        "ours",
-        "ourselves",
-        "out",
-        "over",
-        "own",
-        "re",
-        "s",
-        "same",
-        "shan",
-        "shan't",
-        "she",
-        "she's",
-        "should",
-        "should've",
-        "shouldn",
-        "shouldn't",
-        "so",
-        "some",
-        "such",
-        "t",
-        "than",
-        "that",
-        "that'll",
-        "the",
-        "their",
-        "theirs",
-        "them",
-        "themselves",
-        "then",
-        "there",
-        "these",
-        "they",
-        "this",
-        "those",
-        "through",
-        "to",
-        "too",
-        "under",
-        "until",
-        "up",
-        "ve",
-        "very",
-        "was",
-        "wasn",
-        "wasn't",
-        "we",
-        "were",
-        "weren",
-        "weren't",
-        "what",
-        "when",
-        "where",
-        "which",
-        "while",
-        "who",
-        "whom",
-        "why",
-        "will",
-        "with",
-        "won",
-        "won't",
-        "wouldn",
-        "wouldn't",
-        "y",
-        "you",
-        "you'd",
-        "you'll",
-        "you're",
-        "you've",
-        "your",
-        "yours",
-        "yourself",
-        "yourselves",
-    ]
-
     stopwords = nlp_utils.create_stopwords()
-    assert stopwords_answer == stopwords
     assert preprocess.text_remove_numbers_stopwords(example, stopwords) == answer
 
 
@@ -262,16 +74,15 @@ def test_visualize_attribute_timeseries():
     assert isinstance(fig, matplotlib.figure.Figure)
 
 
-def xtest_visualize_word_frequency_plot():
-    # Decommissioned because nltk's freqplot automatically shows
-    # the rendered plot, meaning the test will get caught up
+def test_visualize_word_frequency_plot():
     documents = ["A word", "B word", "C word"]
     words = " ".join(documents)
-    tokenized_words = nltk.word_tokenize(words)
+    tokenized_words = preprocess.regex_tokenize(words)
 
-    fig = visualize.visualize_word_frequency_plot(tokenized_words)
+    result = visualize.visualize_word_frequency_plot(tokenized_words)
 
-    assert isinstance(fig, nltk.FreqDist)
+    assert isinstance(result[0], matplotlib.pyplot.Figure)
+    assert isinstance(result[1], dict)
 
 
 def test_visualize_attribute_connectivity():

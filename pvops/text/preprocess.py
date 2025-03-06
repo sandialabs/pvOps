@@ -1,15 +1,43 @@
 import re
-import nltk
 
 import numpy as np
 import datefinder
 import traceback
 from datetime import datetime, timedelta
 
-try:
-    nltk.data.find('tokenizers/punkt_tab')
-except LookupError:
-    nltk.download('punkt_tab')
+
+def regex_tokenize(doc, pattern=r'(?<=\w)([^\w\s]+)(?=\s)|(?<=\s)([^\w\s]+)(?=\w)'):
+    """
+    Tokenize a document into words and punctuation using a regular expression pattern.
+
+    This function takes a string document and splits it into tokens based on the specified regular expression pattern.
+    The default pattern splits leading and trailing punctuation from words while ignoring punctuation
+    interior to words or numbers (i.e., alphanumeric characters). From there, the tokens
+    are split along whitespace.
+
+    Parameters
+    ----------
+    doc : str
+        The input document (text) to be tokenized.
+
+    pattern : str, optional
+        The regular expression pattern to be used.
+
+    Returns
+    -------
+    list of str
+        A list of tokens extracted from the input document, including both words and punctuation.
+    """
+
+    # Temporarily buffer the document with spaces
+    doc = ' ' + doc + ' '
+    # Buffer anything matching the pattern with spaces on either side
+    doc = re.sub(pattern, r' \1\2 ', doc)
+    # replace any contiguous whitespace with a single space
+    doc = re.sub(r'\s+', ' ', doc)
+    # remove leading and ending whitespace; break into tokens along spaces
+    return doc.strip().split(' ')
+
 
 def preprocessor(
     om_df, lst_stopwords, col_dict, print_info=False, extract_dates_only=False
@@ -369,7 +397,7 @@ def text_remove_nondate_nums(document, PRINT_INFO=False):
 
     document = str(document).lower()
     # print('prechk:',words)
-    document = nltk.word_tokenize(document)
+    document = regex_tokenize(document)
 
     if PRINT_INFO:
         print("TOKENED: ", document)
@@ -444,7 +472,7 @@ def text_remove_numbers_stopwords(document, lst_stopwords):
     rem_num = re.sub("[0-9]+", "", document)
 
     # remove all spaces
-    document_tok = nltk.word_tokenize(rem_num)
+    document_tok = regex_tokenize(rem_num)
     document = [i for i in document_tok if i not in lst_stopwords]
     document = " ".join(document)
 

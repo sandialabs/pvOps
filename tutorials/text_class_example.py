@@ -119,7 +119,6 @@ class Example:
             lst_keep_words += input_lst_keep_stopwords
 
         lst_stopwords = nlp_utils.create_stopwords(
-            ["english"],
             lst_add_words=lst_add_stopwords,
             lst_keep_words=lst_keep_words,
         )
