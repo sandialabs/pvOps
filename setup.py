@@ -34,8 +34,11 @@ TESTS_REQUIRE = [
     'pytest',
 ]
 
+PYTHON_REQUIRES = [
+    'python>=3.7',
+]
+
 INSTALL_REQUIRES = [
-    'python>=3.7'
     'numpy',
     'pandas',
     'scipy',
@@ -107,6 +110,7 @@ setup(
     name=DISTNAME,
     use_scm_version=True,
     packages=PACKAGES,
+    python_requires=PYTHON_REQUIRES,
     install_requires=INSTALL_REQUIRES,
     extras_require=EXTRAS_REQUIRE,
     tests_require=TESTS_REQUIRE,
