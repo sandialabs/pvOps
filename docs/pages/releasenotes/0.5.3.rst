@@ -1,0 +1,17 @@
+0.5.3 (March 5 2025)
+------------------------
+
+This release takes the existing survival analysis tutorial and formalizes parts of it
+into functions within the timeseries module.
+
+Functionality
+~~~~~~~~~~~~~~
+
+* Created a new function in `pvops.timeseries.preprocess` that identifies right-censored data.
+
+* Created a new model under `pvops.timeseries.models` to fit survival analysis functions, namely, Kaplan-Meier and Weibull.
+
+Tutorials
+~~~~~~~~~~~~~~
+
+* Simplified the survival analysis tutorial now that the main functionality is incorporated into pvOps.
