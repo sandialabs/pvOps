@@ -173,8 +173,6 @@ def create_stopwords(lst_add_words=[], lst_keep_words=[]):
     with resources.open_text('pvops.text', 'stopwords.txt') as file:
         default_stopwords = file.read().split()
 
-    # default_stopwords = read_csv('stopwords.txt', header=None)[0].to_list()
-
     lst_stopwords = lst_stopwords.union(default_stopwords)
     lst_stopwords = lst_stopwords.union(lst_add_words)
     lst_stopwords = list(set(lst_stopwords) - set(lst_keep_words))
