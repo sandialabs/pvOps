@@ -1,0 +1,18 @@
+0.6.0 (March 12 2025)
+------------------------
+
+This release removes the `nltk` dependency and implements analogous functionality where needed in pvops.
+
+Functionality
+~~~~~~~~~~~~~~
+
+* `pvops.text.preprocess.regex_tokenize` for tokenizing text documents (replaces instances of `nltk.tokenize.word_tokenize`)
+
+Other
+~~~~~~
+
+* Includes a static version of the nltk English stopwords in `stopwords.txt` under `pvops.text`
+
+* `pvops.text.nltk_utils.create_stopwords` modified to pull from this new stopwords file (breaking change: removed language argument)
+
+* `pvops.text.visualize.visualize_word_frequency_plot` functionality implemented manually rather than through `nltk`; previous calls should still work

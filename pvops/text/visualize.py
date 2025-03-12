@@ -402,23 +402,26 @@ def visualize_word_frequency_plot(tokenized_words,
         Optional, other parameters passed to `plt.plot`.
 
         Note certain specific keys are handled by the function directly rather than `plt.plot`,
-        analogously to the keyword arguments in nltk's `nltk.FreqDist.plot`. These are:
+        analogously to the keyword arguments in nltk's `nltk.FreqDist.plot`, which
+        was previously called inside this function. These are:
             - `'cumulative'`: computes the count cumulatively (in order of descending count)
             - `'percents'`: shows the y-axis as a percent of all tokens instead of integer count
             - `'show'`: whether to call show() the matplotlib.pyplot.Figure instance
+
+    Returns
+    -------
+    tuple of (Matplotlib Figure instance, dict)
+
+    Notes
+    ------
+
+    The returned dict is in the format {token: count} and includes every unique token in descending order of count
 
     For more on nltk, see below.
 
     Bird, Steven, Edward Loper and Ewan Klein (2009), Natural Language Processing with Python. O'Reilly Media Inc.
 
     https://www.nltk.org/
-
-    Returns
-    -------
-    Matplotlib Figure instance,
-    dict
-
-    The dict is in the format {token: count} and includes every unique token in descending order of count
     """
 
     matplotlib.rcParams.update({"font.size": font_size})

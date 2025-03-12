@@ -5,6 +5,8 @@ What's New
 
 These are new features and improvements of note in each release.
 
+.. include:: releasenotes/0.6.0.rst
+
 .. include:: releasenotes/0.5.3.rst
 
 .. include:: releasenotes/0.5.2.rst
