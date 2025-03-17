@@ -29,6 +29,7 @@ production data, and current-voltage (IV) curves.
      - Production data
      - - estimate expected energy with multiple models
        - evaluate inverter clipping
+       - survival analysis for O&M records
    * - text2time 
      - O&M records and production data 
      - - analyze overlaps between O&M and production (timeseries) records
