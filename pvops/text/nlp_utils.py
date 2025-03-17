@@ -1,11 +1,11 @@
-import nltk
-
 from sklearn.base import BaseEstimator
 from gensim.models.doc2vec import TaggedDocument, Doc2Vec
-from nltk.tokenize import word_tokenize
 import scipy
 import numpy as np
+from importlib import resources
 from gensim.models import Word2Vec
+
+from pvops.text import preprocess
 
 
 class Doc2VecModel(BaseEstimator):
@@ -64,7 +64,7 @@ class Doc2VecModel(BaseEstimator):
         )
         # Tag docs
         tagged_documents = [
-            TaggedDocument(words=word_tokenize(_d.lower()), tags=[str(i)])
+            TaggedDocument(words=preprocess.regex_tokenize(_d.lower()), tags=[str(i)])
             for i, _d in enumerate(raw_documents)
         ]
         # Build vocabulary
@@ -81,7 +81,7 @@ class Doc2VecModel(BaseEstimator):
         """Transforms the documents into Doc2Vec vectors."""
         X = []
         for doc in raw_documents:
-            X.append(self.d2v_model.infer_vector(word_tokenize(doc)))
+            X.append(self.d2v_model.infer_vector(preprocess.regex_tokenize(doc)))
         return X
 
     def fit_transform(self, raw_documents, y=None):
@@ -147,15 +147,19 @@ class DataDensifier(BaseEstimator):
         return self.transform(X=X, y=y)
 
 
-def create_stopwords(lst_langs=["english"], lst_add_words=[], lst_keep_words=[]):
+def create_stopwords(lst_add_words=[], lst_keep_words=[]):
     """Concatenate a list of stopwords using both words grabbed from nltk and user-specified words.
+    The nltk stopwords are those that were current at the release of pvOps version 0.5.0 on
+    Febuary 19th, 2025. See below for more on nltk.
+
+    Bird, Steven, Edward Loper and Ewan Klein (2009), Natural Language Processing with Python. O'Reilly Media Inc.
+
+    https://www.nltk.org/
 
     Parameters
     ----------
-    lst_langs : list
-        List of strings designating the languages for a nltk.corpus.stopwords.words query. If empty list is passed, no stopwords will be queried from nltk.
     lst_add_words : list
-        List of words(e.g., "road" or "street") to add to stopwords list. If these words are already included in the nltk query, a duplicate will not be added.
+        List of words(e.g., "road" or "street") to add to stopwords list. If these words are already included in the nltk list, a duplicate will not be added.
     lst_keep_words : list
         List of words(e.g., "before" or "until") to remove from stopwords list. This is usually used to modify default stop words that might be of interest to PV.
 
@@ -165,13 +169,11 @@ def create_stopwords(lst_langs=["english"], lst_add_words=[], lst_keep_words=[])
         List of alphabetized stopwords
     """
     lst_stopwords = set()
-    for lang in lst_langs:
-        try:
-            stopwords = nltk.corpus.stopwords.words(lang)
-        except LookupError:
-            nltk.download("stopwords")
-            stopwords = nltk.corpus.stopwords.words(lang)
-        lst_stopwords = lst_stopwords.union(stopwords)
+
+    with resources.open_text('pvops.text', 'stopwords.txt') as file:
+        default_stopwords = file.read().split()
+
+    lst_stopwords = lst_stopwords.union(default_stopwords)
     lst_stopwords = lst_stopwords.union(lst_add_words)
     lst_stopwords = list(set(lst_stopwords) - set(lst_keep_words))
     return sorted(list(set(lst_stopwords)))
