@@ -1,4 +1,4 @@
-0.6.0 (March 12 2025)
+0.6.0 (March 17 2025)
 ------------------------
 
 This release removes the `nltk` dependency and implements analogous functionality where needed in pvops.

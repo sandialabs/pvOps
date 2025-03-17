@@ -1,0 +1,11 @@
+0.6.1 (March 17 2025)
+-----------------------
+
+This release makes minor documentation updates.
+
+Documentation
+~~~~~~~~~~~~~
+
+* The "Overview" page now includes the new survival analysis functionality added to the timeseries module.
+
+* The release date is corrected for version 0.6.0 on the "What's New" page.
