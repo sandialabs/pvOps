@@ -11,7 +11,9 @@ from pvops.text import preprocess
 class Doc2VecModel(BaseEstimator):
     """Performs a gensim Doc2Vec transformation of the input documents to create
     embedded representations of the documents. See gensim's
-    Doc2Vec model for information regarding the hyperparameters.
+    Doc2Vec model for information regarding the hyperparameters: https://radimrehurek.com/gensim/models/doc2vec.html.
+    Inherits from `sklearn.base.BaseEstimator`. This class is built specifically to work inside a sklearn pipeline.
+    Therefore, it uses the default ``transform``, ``fit``, ``fit_transform`` method structure.
     """
 
     def __init__(
@@ -46,7 +48,20 @@ class Doc2VecModel(BaseEstimator):
         self.epochs = epochs
 
     def fit(self, raw_documents, y=None):
-        """Fits the Doc2Vec model."""
+        """
+        Fits the Doc2Vec model.
+
+        Parameters
+        ----------
+        raw_documents : list
+            Input documents.
+        y : None
+            Placeholder; not utilized.
+
+        Returns
+        -------
+        Doc2VecModel object
+        """
         # Initialize model
         self.d2v_model = Doc2Vec(
             vector_size=self.vector_size,
@@ -78,14 +93,40 @@ class Doc2VecModel(BaseEstimator):
         return self
 
     def transform(self, raw_documents):
-        """Transforms the documents into Doc2Vec vectors."""
+        """
+        Transforms the documents into Doc2Vec vectors.
+
+        Parameters
+        ----------
+        raw_documents : list
+            Input documents.
+
+        Returns
+        -------
+        list
+            Embeddings of the input documents.
+        """
         X = []
         for doc in raw_documents:
             X.append(self.d2v_model.infer_vector(preprocess.regex_tokenize(doc)))
         return X
 
     def fit_transform(self, raw_documents, y=None):
-        """Utilizes the ``fit()`` and ``transform()`` methods in this class."""
+        """
+        Utilizes the ``fit()`` and ``transform()`` methods in this class.
+
+        Parameters
+        ----------
+        raw_documents : list
+            Input documents.
+        y : None
+            Placeholder; not utilized.
+
+        Returns
+        -------
+        list
+            Embeddings of the input documents.
+        """
         self.fit(raw_documents)
         return self.transform(raw_documents)
 
@@ -94,7 +135,7 @@ class DataDensifier(BaseEstimator):
     """A data structure transformer which converts sparse data to dense data.
     This process is usually incorporated in this library when doing unsupervised machine learning.
     This class is built specifically to work inside a sklearn pipeline.
-    Therefore, it uses the default ``transform``, ``fit``, ``fit_transform`` method structure.  
+    Therefore, it uses the default ``transform``, ``fit``, ``fit_transform`` method structure.
     """
 
     def transform(self, X, y=None):
@@ -138,7 +179,8 @@ class DataDensifier(BaseEstimator):
         ----------
         X : array
             Input data
-        y : Not utilized.
+        y : None
+            Placeholder; not utilized.
 
         Returns
         -------
@@ -170,7 +212,7 @@ def create_stopwords(lst_add_words=[], lst_keep_words=[]):
     """
     lst_stopwords = set()
 
-    with resources.open_text('pvops.text', 'stopwords.txt') as file:
+    with resources.files('pvops.text').joinpath('stopwords.txt').open('r') as file:
         default_stopwords = file.read().split()
 
     lst_stopwords = lst_stopwords.union(default_stopwords)

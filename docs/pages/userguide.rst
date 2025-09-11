@@ -12,10 +12,10 @@ User Guide
     :maxdepth: 1
     :caption: Module Guides
  
-    moduleguides/text
-    moduleguides/text2time
-    moduleguides/timeseries
-    moduleguides/iv
+    moduleguides/guide_text
+    moduleguides/guide_text2time
+    moduleguides/guide_timeseries
+    moduleguides/guide_iv
     
 .. toctree::
     :maxdepth: 1

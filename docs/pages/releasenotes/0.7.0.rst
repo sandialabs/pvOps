@@ -1,0 +1,39 @@
+0.7.0 (September 9 2025)
+------------------------
+
+This release makes updates to the text module tutorials and docstrings, as well as some miscellaneous non-breaking changes
+to associated text module functions.
+
+Functionality
+~~~~~~~~~~~~~~
+
+* All functions in the submodule `pvops.text.visualize` now accept an optional `ax` keyword argument, allowing the user to pass a matplotlib Axes instance.
+
+* All functions in the submodule `pvops.text.visualize` now return a matplotlib Figure instance (previously, some incorrectly returned Axes instances).
+
+Tutorials
+~~~~~~~~~~~~~~
+
+* Some tutorials have been renamed to better clarify their contents. All tutorial names now follow the format: `tutorial_{MODULE}_{FUNCTIONALITY}.ipynb`.
+
+* Previously, text module tutorials called functions from an additional Python script. All of these functions have been pulled into the tutorials proper.
+
+* Text tutorials have been numbered in a logical progression.
+
+* Text tutorials have had their contents fleshed out, in particular more descriptive markdown sections describing the functionality being demonstrated.
+
+Documentation
+~~~~~~~~~~~~~
+
+* Docstrings were fixed for some functions that were improperly formatted.
+
+* Docstrings were updated for `pvops.text.visualize` functions' new `ax` argument.
+
+Other
+~~~~~~
+
+* Minor changes to plotting functions in the submodule `pvops.text.visualize` related to text size and other miscellaneous aspects of figures.
+
+* Python versions for testing/linting changed from 3.8-3.11 to 3.9-3.13. 3.8 has reached end-of-life, and 3.13 is current (see: https://devguide.python.org/versions/).
+
+* Building docs changed to use Python 3.13 (previously 3.11).

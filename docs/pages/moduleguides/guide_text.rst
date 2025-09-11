@@ -18,8 +18,8 @@ to prepare data for natural language processing (text.nlp_utils submodule),
 and a visualization suite (text.visualize submodule).
 
 An example implementation of all capabilities can be found in 
-`text_class_example.py <https://github.com/sandialabs/pvOps/blob/master/tutorials/text_class_example.py>`_ 
-for specifics, and `tutorial_textmodule.ipynb <https://github.com/sandialabs/pvOps/blob/master/tutorials/tutorial_textmodule.ipynb>`_ for basics.
+`tutorial_text_class_example.py <https://github.com/sandialabs/pvOps/blob/master/tutorials/tutorial_text_class_example.py>`_ 
+for specifics, and `tutorial_text.ipynb <https://github.com/sandialabs/pvOps/blob/master/tutorials/tutorial_text.ipynb>`_ for basics.
 
 Text pre-processing
 ^^^^^^^^^^^^^^^^^^^^^
@@ -32,13 +32,13 @@ Additionally, there are options to extract dates from the text.
 * :py:func:`~pvops.text.preprocess.preprocessor` acts as a wrapper function, 
   utilizing the other preprocessing functions, which prepares the data for machine learning. 
 
-  * See ``text_class_example.prep_data_for_ML`` for an example.
+  * See ``tutorials/tutorial_text_class_example.prep_data_for_ML`` function for an example.
 
 * :py:func:`~pvops.text.preprocess.preprocessor` should be used with the keyword argument
   `extract_dates_only = True` if the primary interest is date extraction
-  instead continuing to use the data for machine learning.
+  instead of continuing to use the data for machine learning.
 
-  * See ``text_class_example.extract_dates`` module for an example.
+  * See ``tutorials/tutorial_text_class_example.extract_dates`` function for an example.
 
 
 Text classification
@@ -56,13 +56,14 @@ These functions process the O&M data to make an inference on the specified event
     :py:func:`~pvops.text.defaults.unsupervised_classifier_defs`
     functions return default values for conducting the grid search.
     
-  * See ``text_class_example.classify_supervised`` or ``text_class_example.classify_unsupervised`` 
-    modules for an example.
+  * See ``tutorials/tutorial_text_class_example.classify_supervised``
+    or ``tutorials/tutorial_text_class_example.classify_unsupervised`` 
+    functions for an example.
 
 * Once the model is built and selected, classification (for supervised ML) 
   or clustering (for unsupervised ML) analysis can be conducted on the best model returned from the pipeline object.
 
-  * See ``text_class_example.predict_best_model`` module for an example.
+  * See ``tutorials/tutorial_text_class_example.predict_best_model`` function for an example.
 
 
 Utils

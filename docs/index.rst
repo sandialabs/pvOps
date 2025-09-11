@@ -25,6 +25,7 @@ production data, and current-voltage (IV) curves.
      - O&M records
      - - fill data gaps in dates and categorical records
        - visualize word clusters and patterns over time
+       - classify records using both keyword and machine learning methods
    * - timeseries
      - Production data
      - - estimate expected energy with multiple models

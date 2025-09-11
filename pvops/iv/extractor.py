@@ -133,7 +133,7 @@ class BruteForceExtractor():
 
         if self.verbose >= 2:
             print(
-                f'\tSimulations completed after {round(time.time()-start_t,2)} seconds')
+                f'\tSimulations completed after {round(time.time() - start_t, 2)} seconds')
 
         return sim
 

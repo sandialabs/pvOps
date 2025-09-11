@@ -27,50 +27,47 @@ def visualize_attribute_connectivity(
     attribute_colors=["lightgreen", "cornflowerblue"],
     edge_width_scalar=10,
     graph_aargs={},
+    ax=None
 ):
-    """Visualize a knowledge graph which shows the frequency of combinations between attributes
-    ``ATTRIBUTE1_COL`` and ``ATTRIBUTE2_COL``
-
-    NOW USES BIPARTITE LAYOUT
-    ATTRIBUTE2_COL is colored using a colormap.
+    """Visualize a bipartite graph which shows the frequency of combinations between attributes
+    ``ATTRIBUTE1_COL`` and ``ATTRIBUTE2_COL``.
 
     Parameters
     ----------
     om_df : DataFrame
-        A pandas dataframe containing O&M data, which contains columns specified in om_col_dict
-    om_col_dict : dict of {str : str}
+        A pandas dataframe containing O&M data, which contains columns specified in `om_col_dict`
+    om_col_dict : dict of {str: str}
         A dictionary that contains the column names to be used in
-        visualization::
+        visualization. Must have the following structure (with keys matching exactly)::
 
-            {
-                'attribute1_col' : string,
-                'attribute2_col' : string
-            }
+            {'attribute1_col': string, 'attribute2_col': string}
 
     figsize : tuple
-        Figure size, defaults to (20,10)
+        Optional. Figure size, defaults to `(20,10)`. Ignored if `ax` is provided.
     attribute_colors : list[str]
-        List of two strings which designate the colors for Attribute1 and Attribute 2, respectively.
+        List of two strings which designate the colors for `attribute1_col` and `attribute2_col`, respectively.
     edge_width_scalar : numeric
-        Weight utilized to scale widths based on number of connections between Attribute 1
-        and Attribute 2. Larger values will produce larger widths, and smaller values will produce smaller widths.
+        Weight utilized to scale widths based on number of connections between `attribute1_col` and `attribute2_col`.
+        Larger values will produce larger widths, and smaller values will produce smaller widths.
     graph_aargs : dict
         Optional, arguments passed to networkx graph drawer.
         Suggested attributes to pass:
-
         - with_labels=True
         - font_weight='bold'
         - node_size=19000
         - font_size=35
+    ax : matplotlib.pyplot.Axes
+        Optional, axis to plot on. If not provided, will create a new instance.
 
     Returns
     -------
-    Matplotlib axis,
-    networkx graph
+    matplotlib figure instance, networkx graph
     """
     # initialize figure
-    fig = plt.figure(figsize=figsize, facecolor='w', edgecolor='k')
-    ax = plt.gca()
+    if ax is None:
+        fig, ax = plt.subplots(figsize=figsize)
+    else:
+        fig = ax.get_figure()
 
     # attribute column names
     ATTRIBUTE1_COL = om_col_dict["attribute1_col"]
@@ -133,7 +130,7 @@ def visualize_attribute_connectivity(
 
 
 def visualize_attribute_timeseries(
-    om_df, om_col_dict, date_structure="%Y-%m", figsize=(12, 6), cmap_name="brg"
+    om_df, om_col_dict=None, date_structure="%Y-%m", figsize=(12, 6), cmap_name="brg", ax=None
 ):
     """Visualize stacked bar chart of attribute frequency over time, where x-axis is time and y-axis is count, displaying separate bars
     for each label within the label column
@@ -141,21 +138,22 @@ def visualize_attribute_timeseries(
     Parameters
     ----------
     om_df : DataFrame
-        A pandas dataframe of O&M data, which contains columns in om_col_dict
+        A pandas dataframe of O&M data, which contains columns in `om_col_dict`
     om_col_dict : dict of {str : str}
         A dictionary that contains the column names relevant for the get_dates fn
 
         - **label** (*string*), should be assigned to associated column name for the label/attribute of interest in om_df
         - **date** (*string*), should be assigned to associated column name for the dates relating to the documents in om_df
-
     date_structure : str
         Controls the resolution of the bar chart's timeseries
         Default : "%Y-%m". Can change to include finer resolutions (e.g., by including day, "%Y-%m-%d")
         or coarser resolutions (e.g., by year, "%Y")
     figsize : tuple
-        Optional, figure size
+        Optional, figure size. Ignored if `ax` is provided.
     cmap_name : str
         Optional, color map name in matplotlib
+    ax : matplotlib.pyplot.Axes
+        Optional, axis to plot on. If not provided, creates a new instance.
 
     Returns
     -------
@@ -172,7 +170,10 @@ def visualize_attribute_timeseries(
             out[loc] = val
         return out
 
-    fig = plt.figure(figsize=figsize)
+    if ax is None:
+        fig, ax = plt.subplots(figsize=figsize)
+    else:
+        fig = ax.get_figure()
     asset_set = list(set(df[LABEL_COLUMN].tolist()))
 
     dates = df[DATE_COLUMN].tolist()
@@ -210,18 +211,19 @@ def visualize_attribute_timeseries(
         valcounts = iter_[DATE_COLUMN].value_counts()
         valcounts.sort_index(inplace=True)
         vals = restructure(valcounts.values, valcounts.index, date_set)
-        p = plt.bar(date_set, vals, color=cmap(i))
+        p = ax.bar(date_set, vals, color=cmap(i))
         graphs.append(p[0])
 
-    plt.legend(graphs, list(asset_set))
-    plt.xlabel("Month")
-    plt.ylabel(f"Affected {LABEL_COLUMN} counts")
-    plt.xticks(rotation=45)
+    ax.grid()
+    ax.legend(graphs, list(asset_set))
+    ax.set_xlabel("Month")
+    ax.set_ylabel(f"Affected {LABEL_COLUMN} counts")
+    ax.set_xticks(ax.get_xticks(), ax.get_xticklabels(), rotation=45)
     return fig
 
 
 def visualize_cluster_entropy(
-    doc2vec, eval_kmeans, om_df, data_cols, ks, cmap_name="brg"
+    doc2vec, eval_kmeans, om_df, data_cols, ks, cmap_name="brg", ax=None
 ):
     """Visualize entropy of embedding space parition. Currently only supports doc2vec embedding.
 
@@ -248,6 +250,8 @@ def visualize_cluster_entropy(
         List of k parameters required for the clustering mechanic `eval_kmeans`
     cmap_name :
         Optional, color map
+    ax : matplotlib.Axes
+        Optional, axis to plot on. If not provided, creates a new instance.
 
     Returns
     -------
@@ -256,7 +260,10 @@ def visualize_cluster_entropy(
     df = om_df.copy()
     cols = data_cols
 
-    fig = plt.figure(figsize=(6, 6))
+    if ax is None:
+        fig, ax = plt.subplots(figsize=(6, 6))
+    else:
+        fig = ax.get_figure()
     cmap = plt.cm.get_cmap(cmap_name, len(cols) * 2)
 
     for i, col in enumerate(cols):
@@ -281,7 +288,7 @@ def visualize_cluster_entropy(
             km = eval_kmeans(X_doc2vec, true_k)
             sse.append(km.inertia_)
             clusters.append(km.labels_)
-        plt.plot(
+        ax.plot(
             ks, sse, color=cmap(2 * i), marker="o", label=f"Doc2Vec + {col} entropy"
         )
 
@@ -294,18 +301,20 @@ def visualize_cluster_entropy(
             km = eval_kmeans(X_tfidf, true_k)
             sse.append(km.inertia_)
             clusters.append(km.labels_)
-        plt.plot(
+        ax.plot(
             ks, sse, color=cmap(2 * i + 1), marker="o", label=f"TF-IDF + {col} entropy"
         )
 
-    plt.xlabel(r"Number of clusters *k*")
-    plt.ylabel("Sum of squared distance")
-    plt.legend()
+    ax.grid()
+    ax.set_ylim(0, None)
+    ax.set_xlabel(r"Number of clusters *k*")
+    ax.set_ylabel("Sum of squared distance")
+    ax.legend()
 
     return fig
 
 
-def visualize_document_clusters(cluster_tokens, min_frequency=20):
+def visualize_document_clusters(cluster_tokens, min_frequency=20, ax=None):
     """Visualize words most frequently occurring in a cluster. Especially useful when visualizing
     the results of an unsupervised partitioning of documents.
 
@@ -315,6 +324,8 @@ def visualize_document_clusters(cluster_tokens, min_frequency=20):
         List of tokenized documents
     min_frequency : int
         Minimum number of occurrences that a word must have in a cluster for it to be visualized
+    ax : matplotlib.Axes
+        Optional, axis to plot on. If not provided, creates a new instance.
 
     Returns
     -------
@@ -352,7 +363,8 @@ def visualize_document_clusters(cluster_tokens, min_frequency=20):
         freq_list.append(freq)
         word_list.append(wd)
 
-    # fig = plt.figure(figsize=(10,20))
+    if ax is None:
+        _, ax = plt.subplots(figsize=(12, 6))
 
     filter_cluster_list = []
     filter_freq_list = []
@@ -364,8 +376,7 @@ def visualize_document_clusters(cluster_tokens, min_frequency=20):
 
     df = pd.DataFrame(index=filter_cluster_list)
     df["freq"] = filter_freq_list
-    ax = df["freq"].plot(kind="barh", figsize=(
-        20, 14), color="coral", fontsize=13)
+    df["freq"].plot(kind="barh", color="coral", ax=ax)
 
     xbias = 0.3
     ybias = 0.0
@@ -374,18 +385,18 @@ def visualize_document_clusters(cluster_tokens, min_frequency=20):
             i.get_width() + xbias,
             i.get_y() + ybias,
             filter_word_list[idx],
-            fontsize=15,
             color="dimgrey",
         )
 
-    return ax
+    return ax.get_figure()
 
 
 def visualize_word_frequency_plot(tokenized_words,
                                   title="",
                                   font_size=16,
                                   num_tokens=30,
-                                  graph_aargs={}):
+                                  graph_aargs={},
+                                  ax=None):
     """
     Visualize the frequency distribution of words within a set of documents. This function
     identifies unique tokens and counts how many times each appears.
@@ -397,16 +408,18 @@ def visualize_word_frequency_plot(tokenized_words,
     title : str
         Optional, title of plot
     font_size : int
-        Optional, font size
+        Optional, unused. Left for compatibility.
     graph_aargs : dict
         Optional, other parameters passed to `plt.plot`.
 
         Note certain specific keys are handled by the function directly rather than `plt.plot`,
         analogously to the keyword arguments in nltk's `nltk.FreqDist.plot`, which
         was previously called inside this function. These are:
-            - `'cumulative'`: computes the count cumulatively (in order of descending count)
-            - `'percents'`: shows the y-axis as a percent of all tokens instead of integer count
-            - `'show'`: whether to call show() the matplotlib.pyplot.Figure instance
+        - `'cumulative'`: computes the count cumulatively (in order of descending count)
+        - `'percents'`: shows the y-axis as a percent of all tokens instead of integer count
+        - `'show'`: whether to call show() the matplotlib.pyplot.Figure instance
+    ax : matplotlib.Axes
+        Optional, axis to plot on. Otherwise creates a new instance.
 
     Returns
     -------
@@ -423,9 +436,6 @@ def visualize_word_frequency_plot(tokenized_words,
 
     https://www.nltk.org/
     """
-
-    matplotlib.rcParams.update({"font.size": font_size})
-
     unique_tokens = list(set(tokenized_words))
     unique_tokens.sort(key=(lambda token: tokenized_words.count(token)), reverse=True)
     unique_tokens = unique_tokens[:num_tokens]
@@ -434,7 +444,10 @@ def visualize_word_frequency_plot(tokenized_words,
     # trim number of tokens if number of unique ones is less than the requested number
     num_tokens = min(num_tokens, len(unique_tokens))
 
-    fig, ax = plt.subplots(figsize=(12, 6))
+    if ax is None:
+        fig, ax = plt.subplots(figsize=(12, 6))
+    else:
+        fig = ax.get_figure()
 
     # treat the nltk-inspired keywords
     if 'cumulative' in graph_aargs:
@@ -458,10 +471,11 @@ def visualize_word_frequency_plot(tokenized_words,
         graph_aargs.pop(used_keyword, None)
 
     # plot
-    ax.grid(True, color="silver")
+    ax.grid()
     ax.plot(counts, **graph_aargs)
     ax.set_xticks(range(num_tokens))
     ax.set_xticklabels([token for token in unique_tokens], rotation=90)
+    ax.set_ylim(0, None)
     ax.set_xlabel("Samples")
     ax.set_ylabel(ylabel)
     ax.set_title(title)
@@ -472,22 +486,21 @@ def visualize_word_frequency_plot(tokenized_words,
     return fig, {token: count for token, count in zip(unique_tokens, counts)}
 
 
-def visualize_classification_confusion_matrix(om_df, col_dict, title=''):
+def visualize_classification_confusion_matrix(om_df, col_dict, title='', ax=None):
     """Visualize confusion matrix comparing known categorical values, and predicted categorical values.
 
     Parameters
     ----------
     om_df : DataFrame
         A pandas dataframe containing O&M data, which contains columns specified in om_col_dict
-    col_dict : dict of {str : str}
+    col_dict : dict of {str: str}
         A dictionary that contains the column names needed:
-
-        - data : string, should be assigned to associated column which stores the tokenized text logs
-        - attribute_col : string, will be assigned to attribute column and used to create new attribute_col
-        - predicted_col : string, will be used to create keyword search label column
-
+        - attribute_col : string, assigned to the true labels
+        - predicted_col : string, assigned to the predicted labels
     title : str
         Optional, title of plot
+    ax : matplotlib.Axes
+        Optional, axis to plot on. Otherwise creates a new instance.
 
     Returns
     -------
@@ -500,16 +513,20 @@ def visualize_classification_confusion_matrix(om_df, col_dict, title=''):
     no_real_values = [cat for cat in om_df[pred_col].unique() if cat not in om_df[act_col].unique()]
     no_real_values_mask = om_df[pred_col].isin(no_real_values)
     om_df = om_df[~no_real_values_mask]
-    caption_txt = f'NOTE: Predicted values{no_real_values} had no actual values in the dataset.'
+    caption_txt = f'NOTE: Predicted values\n{no_real_values}\nhad no actual values in the dataset.'
 
-    plt.rcParams.update({'font.size': 8})
-    cm_display = ConfusionMatrixDisplay.from_predictions(y_true=om_df[act_col],
-                                                         y_pred=om_df[pred_col],
-                                                         normalize='true',
-                                                         )
-    fig = cm_display.plot()
-    plt.xticks(rotation=90)
-    plt.tight_layout()
-    plt.figtext(0.00, 0.01, caption_txt, wrap=True, fontsize=7)
-    plt.title(title)
+    if ax is None:
+        fig, ax = plt.subplots(figsize=(12, 6))
+    else:
+        fig = ax.get_figure()
+
+    ConfusionMatrixDisplay.from_predictions(y_true=om_df[act_col],
+                                            y_pred=om_df[pred_col],
+                                            normalize='true',
+                                            ax=ax)
+
+    ax.set_xticks(ax.get_xticks(), ax.get_xticklabels(), rotation=90)
+    print(caption_txt)
+    ax.set_title(title)
+    fig.tight_layout()
     return fig

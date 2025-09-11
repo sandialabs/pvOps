@@ -823,13 +823,13 @@ class Simulator():
 
                     substr_v = bypass(
                         substr_v, self.module_parameters['v_bypass'])
-                    self.multilevel_ivdata['module'][mod_key][f'substr{s+1}']['V'].append(
+                    self.multilevel_ivdata['module'][mod_key][f'substr{s + 1}']['V'].append(
                         substr_v)
-                    self.multilevel_ivdata['module'][mod_key][f'substr{s+1}']['I'].append(
+                    self.multilevel_ivdata['module'][mod_key][f'substr{s + 1}']['I'].append(
                         substr_i)
-                    self.multilevel_ivdata['module'][mod_key][f'substr{s+1}']['T'].append(
+                    self.multilevel_ivdata['module'][mod_key][f'substr{s + 1}']['T'].append(
                         sum(temps) / len(temps))
-                    self.multilevel_ivdata['module'][mod_key][f'substr{s+1}']['E'].append(
+                    self.multilevel_ivdata['module'][mod_key][f'substr{s + 1}']['E'].append(
                         sum(irrs) / len(irrs))
 
                     mod_v, mod_i = add_series(substr_v, substr_i, mod_v, mod_i)
@@ -986,9 +986,9 @@ class Simulator():
 
                     substr_v = bypass(
                         substr_v, self.module_parameters['v_bypass'])
-                    self.multilevel_ivdata['module'][mod_key][f'substr{s+1}']['V'].append(
+                    self.multilevel_ivdata['module'][mod_key][f'substr{s + 1}']['V'].append(
                         substr_v)
-                    self.multilevel_ivdata['module'][mod_key][f'substr{s+1}']['I'].append(
+                    self.multilevel_ivdata['module'][mod_key][f'substr{s + 1}']['I'].append(
                         substr_i)
 
                     if show_debugging_plots:
@@ -1714,7 +1714,7 @@ class Simulator():
             axs[1].axis('off')
 
             rowlabels = [
-                f'condition{i+1}' for i in range(len(formatted_conds))]
+                f'condition{i + 1}' for i in range(len(formatted_conds))]
             our_colors = sns.color_palette("hls", len(rowlabels))
             collabels = self.acceptible_keys
 

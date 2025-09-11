@@ -42,7 +42,8 @@ def regex_tokenize(doc, pattern=r'(?<=\w)([^\w\s]+)(?=\s)|(?<=\s)([^\w\s]+)(?=\w
 def preprocessor(
     om_df, lst_stopwords, col_dict, print_info=False, extract_dates_only=False
 ):
-    """Preprocessing function which processes the raw text data into processed text data and extracts dates
+    """
+    Preprocessing function which processes the raw text data into processed text data and extracts dates
 
     Parameters
     ----------
@@ -50,9 +51,8 @@ def preprocessor(
         A pandas dataframe containing O&M data, which contains at least the columns within col_dict.
     lst_stopwords : list
         List of stop words which will be filtered in final preprocessing step
-    col_dict : dict of {str : str}
+    col_dict : dict of {str: str}
         A dictionary that contains the column names relevant for the get_dates fn
-
         - data : string, should be assigned to associated column which stores the text logs
         - eventstart : string, should be assigned to associated column which stores the log submission datetime
         - save_data_column : string, should be assigned to associated column where the processed text should be stored
@@ -186,7 +186,7 @@ def get_dates(
         Designates the row of the dataframe which is currently being observed. This is required because if the
         current row does not have a valid date in the `eventstart`, then an iterative search is conducted
         by first starting at the nearest rows.
-    col_dict : dict of {str : str}
+    col_dict : dict of {str: str}
         A dictionary that contains the column names relevant for the get_dates fn
 
         - data : string, should be assigned to associated column which stores the text logs
@@ -493,7 +493,7 @@ def get_keywords_of_interest(document_tok, reference_df, reference_col_dict):
     reference_df : DataFrame
         Holds columns that define the reference dictionary to search for keywords of interest,
         Note: This function can currently only handle single words, no n-gram functionality.
-    reference_col_dict : dict of {str : str}
+    reference_col_dict : dict of {str: str}
         A dictionary that contains the column names that describes how
         referencing is going to be done
 
